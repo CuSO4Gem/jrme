@@ -1,7 +1,7 @@
 OS?=LINUX
 #编译或者清除时是否连同处理插件
 #build or clean plugins while make
-PLIGIN?=N
+PLUGIN?=N
 
 ifeq ($(OS),LINUX)
 	TOOL_CHAIN?=gcc
@@ -59,13 +59,13 @@ OBJ_C:=$(patsubst %.c, $(BUILD_DIR)%.o, $(C_FILE))
 #all .o files
 OBJ:=$(OBJ_CPP) $(OBJ_C)
 
-ifeq ($(PLIGIN),Y)
+ifeq ($(PLUGIN),Y)
 	MODULES+=plugin
 endif
 
 #------------------------------remove files-------------------------------#
 CLEAN_TARGET:=$(BUILD_DIR)* $(OUT_DIR)* 
-ifeq ($(PLIGIN),Y)
+ifeq ($(PLUGIN),Y)
 	CLEAN_TARGET+=$(NOTE_IT_PLUGIN)*
 endif
 
