@@ -1,0 +1,3 @@
+这是一个还在开发中的工程，为了能够顺利加载插件，请在环境变量中添加如下内容：
+export NOTE_IT_PLUGIN=你希望保存插件的位置
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$NOTE_IT_PLUGIN
