@@ -10,7 +10,7 @@
 
 using namespace std;
 
-#define PLAG_NAME "timparser_zh"
+#define PLAG_NAME "timeparser_zh"
 #define PLAG_SUBFIX "so"
 
 #include "timeparser_plugin.h"
