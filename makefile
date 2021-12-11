@@ -25,14 +25,14 @@ BUILD_DIR:=$(shell pwd)/build/
 OUT_DIR=./bin/
 #指定可执行文件位置与名字
 ifeq ($(OS),LINUX)							#根据不同的平台，选择不同的链接库 
-	OUT_FILE?=main.elf
+	OUT_FILE?=note-it.elf
 else
-	OUT_FILE?=main.exe
+	OUT_FILE?=note-it.exe
 endif
 OUT_TARGET:=$(OUT_DIR)$(OUT_FILE)
 #调试版本的文件名
 
-DOUT_FILE?=main_debug.elf
+DOUT_FILE?=note-it_debug.elf
 DOUT_TARGET:=$(OUT_DIR)$(DOUT_FILE)
 
 
