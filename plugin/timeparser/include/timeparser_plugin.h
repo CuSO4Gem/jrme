@@ -3,6 +3,14 @@
 
 #include <time.h>
 #include <stdint.h>
+#include "plugin_common.h"
+
+struct pluginVersion {
+    uint16_t mainVersion;
+    uint16_t minVersion;
+};
+
+NOIT_IT_API const static struct pluginVersion  API_VERSION = {0 ,1};
 
 #define YEAR_FLAG   (1<<0)
 #define MONTH_FLGA  (1<<1)
@@ -10,6 +18,12 @@
 #define HOUR_FLAG   (1<<3)
 #define MINUTE_FLAG (1<<4)
 #define SECOND_FLAG (1<<5)
+
+#define TIME_PARSE_FULLY_SUCCESS    4
+#define TIME_PARSE_ALMOST_SUCCESS   3
+#define TIME_PARSE_PARTLY_SUCCESS   2
+#define TIME_PARSE_MAYBE_SUCCESS    1
+#define TIME_PARSE_LITTLE_SUCCESS   0
 
 #define TIME_PARSE_PARAMETER_ERROR -1       //Input parameter error.输入参数错误
 #define TIME_PARSE_STR_ERROR       -2       //Conn't parse the string.无法解析这个字符串

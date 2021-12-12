@@ -1,6 +1,6 @@
 #所需要编译的插件，注意模组名要和文件夹同名
 #The of plugins which would be build. Noticing, plugins name should be as directory name
-PLUGINS+=timeparser_zh
+PLUGINS+=timeparser_en
 
 #指定中间文件存放位置
 #choose a directory to save .o
