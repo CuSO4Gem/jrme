@@ -75,7 +75,7 @@ endif
 ifeq ($(DEBUG),exclusive)
 #编译调试版本
 #bild debug version
-all:$(MODULES) $(OBJ_SRC_CPP) $(OBJ_SRC_C)
+all:build_prepare $(MODULES) $(OBJ_SRC_CPP) $(OBJ_SRC_C)
 	$(TOOL_CHAIN) $(OBJ) -o $(DOUT_TARGET) $(CFLAGS)
 	rm -f $(OUT_TARGET)
 
@@ -103,6 +103,11 @@ test: $(MODULES)
 .PHONY: plugin
 plugin:
 	$(MAKE) -C ./plugin UPPER_BUILD_DIR=$(BUILD_DIR) TOOL_CHAIN=$(TOOL_CHAIN) OS=$(OS)
+
+.PHONY: build_prepare
+build_prepare:
+	mkdir -p $(BUILD_DIR)
+	mkdir -p $(OUT_DIR)
 
 #清除可执行文件
 #clean files
