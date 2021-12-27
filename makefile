@@ -57,7 +57,7 @@ OBJ_CPP:=$(patsubst %.cpp, $(BUILD_DIR)%.o, $(CPP_FILE))
 OBJ_C:=$(patsubst %.c, $(BUILD_DIR)%.o, $(C_FILE))
 #所有的.o文件
 #all .o files
-OBJ:=$(OBJ_CPP) $(OBJ_C)
+OBJ:=$(OBJ_C) $(OBJ_CPP)
 
 ifeq ($(PLUGIN),y)
 	MODULES+=plugin
