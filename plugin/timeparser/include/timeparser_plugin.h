@@ -55,8 +55,21 @@ typedef struct tm* ptm;
  *          4: Fully success
  *             解析完全成功
  */
-int32_t parseTime(const char *str, int32_t len, ptm ptime, uint32_t *flag);
+int32_t parseTime(const char *str, uint32_t len, ptm ptime, uint32_t *flag);
 
 typedef int32_t (*pParseTime)(const char *, int32_t, ptm, uint32_t *);
+
+/**
+ * @brief parse time base Regex
+ * 
+ * @param str intput string
+ * @param len string len
+ * @param ptime out put time
+ * @param flag seach as YEAR_FLAG
+ * 
+ * @return int32_t TIME_PARSE_
+ * 
+ */
+typedef int32_t (*pParseBaseRegex)(const char *, uint32_t, ptm, uint32_t*);
 
 #endif
