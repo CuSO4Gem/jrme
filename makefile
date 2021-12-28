@@ -3,6 +3,10 @@ OS?=LINUX
 #build or clean plugins while make
 PLUGIN?=n
 
+#需要清除的临时文件
+#The tempory files which need to be clear
+TEMP_FILES=src/*.o lib/*.o
+
 ifeq ($(OS),LINUX)
 	TOOL_CHAIN?=gcc
 else 
@@ -51,20 +55,14 @@ C_FILE:=$(notdir $(SRC_C))
 #replace .cpp or .c with .o
 OBJ_SRC_CPP:=$(patsubst %.cpp, %.o, $(SRC_CPP))
 OBJ_SRC_C:=$(patsubst %.c, %.o, $(SRC_C))
-#.o文件的输出路径
-#the output path of .o files
-OBJ_CPP:=$(patsubst %.cpp, $(BUILD_DIR)%.o, $(CPP_FILE))
-OBJ_C:=$(patsubst %.c, $(BUILD_DIR)%.o, $(C_FILE))
-#所有的.o文件
-#all .o files
-OBJ:=$(OBJ_C) $(OBJ_CPP)
+
 
 ifeq ($(PLUGIN),y)
 	MODULES+=plugin
 endif
 
 #------------------------------remove files-------------------------------#
-CLEAN_TARGET:=$(BUILD_DIR)* $(OUT_DIR)* 
+CLEAN_TARGET:= $(OUT_DIR)* $(TEMP_FILES)
 ifeq ($(PLUGIN),y)
 	CLEAN_TARGET+=$(JRME_PLUGIN)*
 endif
@@ -83,16 +81,16 @@ else
 #编译release版本
 #build
 all:$(MODULES) $(OBJ_SRC_CPP) $(OBJ_SRC_C)
-	$(TOOL_CHAIN) $(OBJ) -o $(OUT_TARGET) $(CFLAGS)
+	$(TOOL_CHAIN) $< -o $(OUT_TARGET) $(CFLAGS)
 endif
 
 #将.cpp和.c编译为.o
 #compile .cpp and .c to .o
 $(OBJ_SRC_CPP) : %.o:%.cpp
-	$(TOOL_CHAIN) $< -o $(BUILD_DIR)$(notdir $@) -c  $(CFLAGS)
+	$(TOOL_CHAIN) $< -o $@ -c  $(CFLAGS)
 
 $(OBJ_SRC_C) : %.o:%.c
-	$(TOOL_CHAIN) $< -o $(BUILD_DIR)$(notdir $@) -c  $(CFLAGS)
+	$(TOOL_CHAIN) $< -o $@ -c  $(CFLAGS)
 
 #编译测试用例
 #compile test code
