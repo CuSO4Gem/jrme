@@ -47,15 +47,12 @@ OUT_TARGET:=$(OUT_DIR)$(OUT_FILE)
 DOUT_FILE?=jrme_debug.elf
 DOUT_TARGET:=$(OUT_DIR)$(DOUT_FILE)
 
-#所有的.cpp和.c文件的文件名
-#the file name of all .cpp and .c
-CPP_FILE:=$(notdir $(SRC_CPP))
-C_FILE:=$(notdir $(SRC_C))
 #把.cpp和c 换成.o
 #replace .cpp or .c with .o
 OBJ_SRC_CPP:=$(patsubst %.cpp, %.o, $(SRC_CPP))
 OBJ_SRC_C:=$(patsubst %.c, %.o, $(SRC_C))
 
+OBJ=$(OBJ_SRC_CPP) $(OBJ_SRC_C)
 
 ifeq ($(PLUGIN),y)
 	MODULES+=plugin
@@ -80,8 +77,8 @@ all:build_prepare $(MODULES) $(OBJ_SRC_CPP) $(OBJ_SRC_C)
 else
 #编译release版本
 #build
-all:$(MODULES) $(OBJ_SRC_CPP) $(OBJ_SRC_C)
-	$(TOOL_CHAIN) $< -o $(OUT_TARGET) $(CFLAGS)
+all:build_prepare $(MODULES) $(OBJ_SRC_CPP) $(OBJ_SRC_C)
+	$(TOOL_CHAIN) $(OBJ) -o $(OUT_TARGET) $(CFLAGS)
 endif
 
 #将.cpp和.c编译为.o
@@ -96,19 +93,20 @@ $(OBJ_SRC_C) : %.o:%.c
 #compile test code
 .PHONY: test
 test: $(MODULES)
-	$(MAKE) -C ./test UPPER_BUILD_DIR=$(BUILD_DIR) TOOL_CHAIN=$(TOOL_CHAIN) OS=$(OS) OUT_DIR=$(OUT_DIR)
+	$(MAKE) -C ./test  TOOL_CHAIN=$(TOOL_CHAIN) OS=$(OS) OUT_DIR=$(OUT_DIR)
 
 .PHONY: plugin
 plugin:
-	$(MAKE) -C ./plugin UPPER_BUILD_DIR=$(BUILD_DIR) TOOL_CHAIN=$(TOOL_CHAIN) OS=$(OS)
+	$(MAKE) -C ./plugin TOOL_CHAIN=$(TOOL_CHAIN) OS=$(OS)
 
 .PHONY: build_prepare
 build_prepare:
-	mkdir -p $(BUILD_DIR)
 	mkdir -p $(OUT_DIR)
 
-#清除可执行文件
+#清除可执行
 #clean files
 .PHONY: clean
 clean:
 	rm -rf $(CLEAN_TARGET)
+	$(MAKE) -C ./plugin clean
+	$(MAKE) -C ./test clean
