@@ -28,10 +28,10 @@ int main(int argc, char* argv[]) {
     int32_t ret;
     uint32_t flag = 0;
     std::string time_str = "today";
-    struct tm timeOut;
-    memset(&timeOut, 0, sizeof(timeOut));
-    ret = parse(time_str.c_str(), (uint32_t)time_str.length(), &timeOut, &flag);
-    printf("timeOut.sec = %d\n", timeOut.tm_sec);
+    struct tm timeGot;
+    memset(&timeGot, 0, sizeof(timeGot));
+    ret = parse(time_str.c_str(), (uint32_t)time_str.length(), &timeGot, &flag);
+    printf("time is %d-%d-%d, sec=%d\n", timeGot.tm_year+1900, timeGot.tm_mon ,timeGot.tm_mday, timeGot.tm_sec);
     dlclose(tpHandle);
     return 0;
 }

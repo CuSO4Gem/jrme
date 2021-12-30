@@ -10,7 +10,7 @@ OUT_FILE:=$(PLAGING_NAME).so
 
 #头文件目录
 #include directories
-INCLUDE_DIR:=-I$(shell pwd)/../include -I$(shell pwd)/../../include 
+INCLUDE_DIR:=-I$(shell pwd)/../include -I$(shell pwd)/../../include -I$(shell pwd)/../lib
 
 ifeq ($(OS),LINUX)							#根据不同的平台，选择不同的链接库 
 	CFLAGS:=
