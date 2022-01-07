@@ -270,6 +270,7 @@ int Parser::getTime(ptm timeGot)
     DEBUGP("while start\r\n");
     while ((word=getWord(mRemainStr)).length() != 0)
     {
+        /*
         DEBUGP("mRemainStr=%s\r\n",mRemainStr.c_str());
 #ifdef DEBUG
         printf("inst=");
@@ -278,7 +279,7 @@ int Parser::getTime(ptm timeGot)
             printf("%s",it.c_str());
         }
         printf("\r\n");
-#endif
+#endif*/
         smatch regexResult;
         bool haveNumber = false;
         bool haveLetter = false;
@@ -646,7 +647,7 @@ void Parser::parseFormat(string &words, string &instructions)
         instructions.append(regexResult[2]);
         instructions.append(string("|md"));
         instructions.append(regexResult[3]);
-        regex_replace(words, pattern, "");
+        words = regex_replace(words, pattern, "");
     }
 
     pattern = regex("(\\d{1,2})[^:]{1}(\\d{1,2})[^:]{1}(\\d{4})");
@@ -660,7 +661,7 @@ void Parser::parseFormat(string &words, string &instructions)
         instructions.append(regexResult[2]);
         instructions.append(string("|yy"));
         instructions.append(regexResult[3]);
-        regex_replace(words, pattern, "");
+        words = regex_replace(words, pattern, "");
     }
 
     pattern = regex("(\\d{4})[^:]{1}(\\d{1,2})");
@@ -671,7 +672,7 @@ void Parser::parseFormat(string &words, string &instructions)
         instructions.append(regexResult[1]);
         instructions.append(string("|mo"));
         instructions.append(regexResult[2]);
-        regex_replace(words, pattern, "");
+        words = regex_replace(words, pattern, "");
     }
 
     pattern = regex("(\\d{1,2}):(\\d{1,2}):(\\d{1,2})");
@@ -686,7 +687,7 @@ void Parser::parseFormat(string &words, string &instructions)
         instructions.append(regexResult[2]);
         instructions.append(string("|ss"));
         instructions.append(regexResult[3]);
-        regex_replace(words, pattern, "");
+        words = regex_replace(words, pattern, "");
     }
 
     pattern = regex("(\\d{1,2}):(\\d{1,2})");
@@ -698,7 +699,7 @@ void Parser::parseFormat(string &words, string &instructions)
         instructions.append(regexResult[1]);
         instructions.append(string("|mi"));
         instructions.append(regexResult[2]);
-        regex_replace(words, pattern, "");
+        words = regex_replace(words, pattern, "");
     }
     removeMultipleSpaces(words);
 }
