@@ -158,9 +158,9 @@ void eraseWrod(string &str)
         return;
 }
 
-void printVmInst(list<vmInst_t> &instList)
+void printVmInst(vector<vmInst_t> &instVector)
 {
-    for (auto it:instList)
+    for (auto it:instVector)
     {
         printf("|%c%c", it.cmd[0], it.cmd[1]);
         if (it.haveNumber)
@@ -179,17 +179,17 @@ private:
     int32_t mEstimation;
     string mInStr;
     string mRemainStr;
-    list<vmInst_t> mVmInst;
+    vector<vmInst_t> mVmInst;
     Date mTargetTime;
     uint32_t mParseFlag;
     
-    void instSrot(list<vmInst_t> &instList);
+    void instSrot(vector<vmInst_t> &instVector);
     void parseVM(string &instructions);
     void prepare();
     void parseAmPm(string &words);
-    size_t parseSampleUnit(string &words, list<vmInst_t> &instList);
-    void parseFormat(string &words, list<vmInst_t> &instList);
-    void parsePhrase(string &words, list<vmInst_t> &instList);
+    size_t parseSampleUnit(string &words, vector<vmInst_t> &instVector);
+    void parseFormat(string &words, vector<vmInst_t> &instVector);
+    void parsePhrase(string &words, vector<vmInst_t> &instVector);
 
     void removeMultipleSpaces(string &str);
 };
@@ -211,7 +211,7 @@ int Parser::getTime(ptm timeGot)
     }
     prepare();
 
-    list<list<vmInst_t>> instHolder;
+    list<vector<vmInst_t>> instHolder;
 
     parseAmPm(mRemainStr);
     parseFormat(mRemainStr, mVmInst);
@@ -247,7 +247,7 @@ int Parser::getTime(ptm timeGot)
         }
         if (word==string("ago") && !instHolder.empty())
         {
-            list<vmInst_t> lastInst = *instHolder.end();
+            vector<vmInst_t> lastInst = *instHolder.end();
             size_t i=0;
             for (auto &it:lastInst)
             {
@@ -267,9 +267,9 @@ int Parser::getTime(ptm timeGot)
                 wordLastFlag = false;
                 mEstimation = min(mEstimation, TIME_PARSE_PARTLY_SUCCESS);
             }
-            list<vmInst_t> instList; 
-            instList.push_back(vmInst_t{'y', 'y', true, std::atoi(word.c_str())});
-            instHolder.push_back(instList);
+            vector<vmInst_t> instVector; 
+            instVector.push_back(vmInst_t{'y', 'y', true, std::atoi(word.c_str())});
+            instHolder.push_back(instVector);
             eraseWrod(mRemainStr);
             continue;
         }
@@ -281,9 +281,9 @@ int Parser::getTime(ptm timeGot)
                 wordLastFlag = false;
                 mEstimation = min(mEstimation, TIME_PARSE_PARTLY_SUCCESS);
             }
-            list<vmInst_t> instList; 
-            instList.push_back(vmInst_t{'d', 'd', false, 0});
-            instHolder.push_back(instList);
+            vector<vmInst_t> instVector; 
+            instVector.push_back(vmInst_t{'d', 'd', false, 0});
+            instHolder.push_back(instVector);
             eraseWrod(mRemainStr);
             continue;
         }
@@ -295,38 +295,38 @@ int Parser::getTime(ptm timeGot)
                 wordLastFlag = false;
                 mEstimation = min(mEstimation, TIME_PARSE_PARTLY_SUCCESS);
             }
-            list<vmInst_t> instList; 
-            instList.push_back(vmInst_t{'d', 'd', true, -1});
-            instHolder.push_back(instList);
+            vector<vmInst_t> instVector; 
+            instVector.push_back(vmInst_t{'d', 'd', true, -1});
+            instHolder.push_back(instVector);
             eraseWrod(mRemainStr);
             continue;
         }
         if(regex_search(word, regexResult, regex("(\\d{1,2})(st|nd|th)")))
         {
-            list<vmInst_t> instList; 
-            instList.push_back(vmInst_t{'m', 'd', true, std::atoi(word.c_str())});
-            instHolder.push_back(instList);
+            vector<vmInst_t> instVector; 
+            instVector.push_back(vmInst_t{'m', 'd', true, std::atoi(word.c_str())});
+            instHolder.push_back(instVector);
             eraseWrod(mRemainStr);
             continue;
         }
         if(!haveLetter && haveNumber && !haveOtherChar)
         {
-            list<vmInst_t> instList; 
-            size_t readSize = parseSampleUnit(mRemainStr, instList);
-            if (readSize>0 && !instList.empty())
+            vector<vmInst_t> instVector; 
+            size_t readSize = parseSampleUnit(mRemainStr, instVector);
+            if (readSize>0 && !instVector.empty())
             {
                 mRemainStr.erase(0, readSize);
                 if (wordLastFlag)
                 {
                     wordLastFlag = false;
-                    for (auto it:instList)
+                    for (auto it:instVector)
                     {
                         if (it.haveNumber)
                             it.number = -abs(it.number);
                     }
                 }
 
-                instHolder.push_back(instList);
+                instHolder.push_back(instVector);
                 continue;
             }
         }
@@ -344,6 +344,10 @@ int Parser::getTime(ptm timeGot)
     printf("instructions lenght is %ld\n", mVmInst.size());
     printf("instructions:");
     printVmInst(mVmInst);
+    instSrot(mVmInst);
+    printf("instructions srot:");
+    printVmInst(mVmInst);
+    
     return mEstimation;
 }
 
@@ -362,9 +366,10 @@ void Parser::parseVM(string &instructions)
     /*
     instructions
     am:
-    pm
+    pm:
     yy:year
-    mo:month
+    mo:month order
+    mn: monther and number
     md:day of month
     dd: day
     ww:week
@@ -376,6 +381,34 @@ void Parser::parseVM(string &instructions)
     ss:second
     */
     return;
+}
+
+void Parser::instSrot(vector<vmInst_t> &instVector)
+{
+    char orderTable[][2] = {
+        {'a', 'm'},
+        {'p', 'm'},
+        {'d', 'd'},
+        {'y', 'y'},
+        {'m', 'o'},
+        {'m', 'n'},
+        {'m', 'd'}
+    };
+    int32_t notOrderNumb=0;
+    int32_t scanNumb;
+    int32_t orderNumb;
+    for (orderNumb = 0; orderNumb < sizeof(orderTable); orderNumb++)
+    {
+        for (scanNumb=notOrderNumb; scanNumb<instVector.size(); scanNumb++)
+        {
+            if (instVector[scanNumb].cmd[0]==orderTable[orderNumb][0] &&
+                instVector[scanNumb].cmd[1]==orderTable[orderNumb][1] )
+            {
+                swap(instVector[notOrderNumb], instVector[scanNumb]);
+                notOrderNumb++;
+            }
+        }
+    }
 }
 
 /*
@@ -449,7 +482,7 @@ void Parser::parseAmPm(string &words)
     removeMultipleSpaces(words);
 }
 
-size_t Parser::parseSampleUnit(string &words, list<vmInst_t> &instList)
+size_t Parser::parseSampleUnit(string &words, vector<vmInst_t> &instVector)
 {
     if (words.length()==0)
         return -1;
@@ -493,23 +526,23 @@ size_t Parser::parseSampleUnit(string &words, list<vmInst_t> &instList)
     
     if (unit==string("year") || unit==string("years"))
     {
-        instList.push_back(vmInst_t {{'y', 'y'}, number>=0, number>=0 ? number : 0});
+        instVector.push_back(vmInst_t {{'y', 'y'}, number>=0, number>=0 ? number : 0});
         return unitEnd;
     }
     
     if (unit==string("month") || unit==string("month"))
     {
-        instList.push_back(vmInst_t {{'m', 'o'}, number>=0, number>=0 ? number : 0});
+        instVector.push_back(vmInst_t {{'m', 'n'}, number>=0, number>=0 ? number : 0});
         return unitEnd;
     }
     for (int32_t i = 0; i < 12; i++)
     {
         if (unit.find(monthShortName[i])!=string::npos)
         {
-            instList.push_back(vmInst_t {{'m', 'o'}, true, i});
+            instVector.push_back(vmInst_t {{'m', 'o'}, true, i});
             if (number>0)
             {
-                instList.push_back(vmInst_t {{'m', 'd'}, true, number});
+                instVector.push_back(vmInst_t {{'m', 'd'}, true, number});
             }
             return unitEnd;
         }
@@ -517,74 +550,74 @@ size_t Parser::parseSampleUnit(string &words, list<vmInst_t> &instList)
 
     if (unit==string("weekend"))
     {
-        instList.push_back(vmInst_t {{'w', 'n'}, false, 0});
+        instVector.push_back(vmInst_t {{'w', 'n'}, false, 0});
         return unitEnd;
     }
     
     if (unit==string("week"))
     {
-        instList.push_back(vmInst_t {{'w', 'w'}, number>=0, number>=0 ? number : 0});
+        instVector.push_back(vmInst_t {{'w', 'w'}, number>=0, number>=0 ? number : 0});
         return unitEnd;
     }
     for (int32_t i = 0; i < 7; i++)
     {
         if (unit.find(weekShortName[i])!=string::npos)
         {
-            instList.push_back(vmInst_t {{'w', 'd'}, true, i});
+            instVector.push_back(vmInst_t {{'w', 'd'}, true, i});
             return unitEnd;
         }
     }
     if (unit==string("day") || unit==string("days"))
     {
-        instList.push_back(vmInst_t {{'d', 'd'}, number>=0, number>=0 ? number : 0});
+        instVector.push_back(vmInst_t {{'d', 'd'}, number>=0, number>=0 ? number : 0});
         return unitEnd;
     }
     if (unit==string("morning"))
     {
-        instList.push_back(vmInst_t {{'h', 'n'}, true, 9});
+        instVector.push_back(vmInst_t {{'h', 'n'}, true, 9});
         return unitEnd;
     }
     if (unit==string("noon"))
     {
-        instList.push_back(vmInst_t {{'h', 'n'}, true, 12});
+        instVector.push_back(vmInst_t {{'h', 'n'}, true, 12});
         return unitEnd;
     }
     if (unit==string("afternoon"))
     {
-        instList.push_back(vmInst_t {{'h', 'n'}, true, 14});
+        instVector.push_back(vmInst_t {{'h', 'n'}, true, 14});
         return unitEnd;
     }
     if (unit==string("night"))
     {
-        instList.push_back(vmInst_t {{'h', 'n'}, true, 21});
+        instVector.push_back(vmInst_t {{'h', 'n'}, true, 21});
         return unitEnd;
     }
     if (unit==string("midnight"))
     {
-        instList.push_back(vmInst_t {{'h', 'n'}, true, 24});
+        instVector.push_back(vmInst_t {{'h', 'n'}, true, 24});
         return unitEnd;
     }
     if (unit==string("hour") || unit==string("hours"))
     {
-        instList.push_back(vmInst_t {{'h', 'h'}, number>=0, number>=0 ? number : 0});
+        instVector.push_back(vmInst_t {{'h', 'h'}, number>=0, number>=0 ? number : 0});
         return unitEnd;
     }
     if (unit==string("minute") || unit==string("minutes"))
     {
-        instList.push_back(vmInst_t {{'m', 'i'}, number>=0, number>=0 ? number : 0});
+        instVector.push_back(vmInst_t {{'m', 'i'}, number>=0, number>=0 ? number : 0});
         return unitEnd;
     }
 
     if (unit==string("second") || unit==string("seconds"))
     {
-        instList.push_back(vmInst_t {{'s', 'i'}, number>=0, number>=0 ? number : 0});
+        instVector.push_back(vmInst_t {{'s', 'i'}, number>=0, number>=0 ? number : 0});
         return unitEnd;
     }
     
     return unitEnd;
 }
 
-void Parser::parseFormat(string &words, list<vmInst_t> &instList)
+void Parser::parseFormat(string &words, vector<vmInst_t> &instVector)
 {
     if (words.length()==0)
         return;
@@ -595,9 +628,9 @@ void Parser::parseFormat(string &words, list<vmInst_t> &instList)
         atoi(regexResult.str(2).c_str())<=12 &&
         atoi(regexResult.str(3).c_str())<=31)
     {
-        instList.push_back(vmInst_t {{'y', 'y'}, true, atoi(regexResult.str(1).c_str())});
-        instList.push_back(vmInst_t {{'m', 'o'}, true, atoi(regexResult.str(2).c_str())});
-        instList.push_back(vmInst_t {{'m', 'd'}, true, atoi(regexResult.str(3).c_str())});
+        instVector.push_back(vmInst_t {{'y', 'y'}, true, atoi(regexResult.str(1).c_str())});
+        instVector.push_back(vmInst_t {{'m', 'o'}, true, atoi(regexResult.str(2).c_str())});
+        instVector.push_back(vmInst_t {{'m', 'd'}, true, atoi(regexResult.str(3).c_str())});
         words = regex_replace(words, pattern, "");
     }
 
@@ -606,9 +639,9 @@ void Parser::parseFormat(string &words, list<vmInst_t> &instList)
         atoi(regexResult.str(2).c_str())<=12 &&
         atoi(regexResult.str(3).c_str())<=31)
     {
-        instList.push_back(vmInst_t {{'m', 'd'}, true, atoi(regexResult.str(1).c_str())});
-        instList.push_back(vmInst_t {{'m', 'o'}, true, atoi(regexResult.str(2).c_str())});
-        instList.push_back(vmInst_t {{'y', 'y'}, true, atoi(regexResult.str(3).c_str())});
+        instVector.push_back(vmInst_t {{'m', 'd'}, true, atoi(regexResult.str(1).c_str())});
+        instVector.push_back(vmInst_t {{'m', 'o'}, true, atoi(regexResult.str(2).c_str())});
+        instVector.push_back(vmInst_t {{'y', 'y'}, true, atoi(regexResult.str(3).c_str())});
         words = regex_replace(words, pattern, "");
     }
 
@@ -616,8 +649,8 @@ void Parser::parseFormat(string &words, list<vmInst_t> &instList)
     if (regex_search(words, regexResult, pattern) &&
         atoi(regexResult.str(2).c_str())<=31)
     {
-        instList.push_back(vmInst_t {{'y', 'y'}, true, atoi(regexResult.str(1).c_str())});
-        instList.push_back(vmInst_t {{'m', 'o'}, true, atoi(regexResult.str(2).c_str())});
+        instVector.push_back(vmInst_t {{'y', 'y'}, true, atoi(regexResult.str(1).c_str())});
+        instVector.push_back(vmInst_t {{'m', 'o'}, true, atoi(regexResult.str(2).c_str())});
         words = regex_replace(words, pattern, "");
     }
 
@@ -627,9 +660,9 @@ void Parser::parseFormat(string &words, list<vmInst_t> &instList)
         atoi(regexResult.str(2).c_str())<=60 &&
         atoi(regexResult.str(3).c_str())<=60)
     {
-        instList.push_back(vmInst_t {{'h', 'h'}, true, atoi(regexResult.str(1).c_str())});
-        instList.push_back(vmInst_t {{'h', 'h'}, true, atoi(regexResult.str(2).c_str())});
-        instList.push_back(vmInst_t {{'s', 's'}, true, atoi(regexResult.str(3).c_str())});
+        instVector.push_back(vmInst_t {{'h', 'h'}, true, atoi(regexResult.str(1).c_str())});
+        instVector.push_back(vmInst_t {{'h', 'h'}, true, atoi(regexResult.str(2).c_str())});
+        instVector.push_back(vmInst_t {{'s', 's'}, true, atoi(regexResult.str(3).c_str())});
         words = regex_replace(words, pattern, "");
     }
 
@@ -638,35 +671,35 @@ void Parser::parseFormat(string &words, list<vmInst_t> &instList)
         atoi(regexResult.str(1).c_str())<=24 && 
         atoi(regexResult.str(2).c_str())<=60)
     {
-        instList.push_back(vmInst_t {{'h', 'h'}, true, atoi(regexResult.str(1).c_str())});
-        instList.push_back(vmInst_t {{'h', 'h'}, true, atoi(regexResult.str(2).c_str())});
+        instVector.push_back(vmInst_t {{'h', 'h'}, true, atoi(regexResult.str(1).c_str())});
+        instVector.push_back(vmInst_t {{'h', 'h'}, true, atoi(regexResult.str(2).c_str())});
         words = regex_replace(words, pattern, "");
     }
     removeMultipleSpaces(words);
 }
 
-void Parser::parsePhrase(string &words, list<vmInst_t> &instList)
+void Parser::parsePhrase(string &words, vector<vmInst_t> &instVector)
 {
     string strFind;
     strFind = string("the year before last year");
     if(words.find(strFind)!=string::npos)
     {
         words.replace(words.find(strFind), strFind.length(), "");
-        instList.push_back(vmInst_t {{'y', 'y'}, true, -2});
+        instVector.push_back(vmInst_t {{'y', 'y'}, true, -2});
     }
 
     strFind = string("the month before last month");
     if(words.find(strFind)!=string::npos)
     {
         words.replace(words.find(strFind), strFind.length(), "");
-        instList.push_back(vmInst_t {{'m', 'o'}, true, -2});
+        instVector.push_back(vmInst_t {{'m', 'o'}, true, -2});
     }
 
     strFind = string("the day before yesterday");
     if(words.find(strFind)!=string::npos)
     {
         words.replace(words.find(strFind), strFind.length(), "");
-        instList.push_back(vmInst_t {{'d', 'd'}, true, -2});
+        instVector.push_back(vmInst_t {{'d', 'd'}, true, -2});
     }
 
     removeMultipleSpaces(words);
