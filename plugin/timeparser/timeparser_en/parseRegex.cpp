@@ -1,6 +1,7 @@
 #include <algorithm>
 #include "date.h"
 #include <regex>
+#include <list>
 #include <stdio.h>
 #include <time.h>
 #include "timeparser_plugin.h"
@@ -42,11 +43,11 @@ char weekShortName[][4] = {
     "sun"
 };
 
-typedef struct vmCmd {
+typedef struct vmInst {
   char cmd[2];
   bool haveNumber;
   int32_t number;
-} vmCmd_t;
+} vmInst_t;
 
 constexpr int32_t TWOCC(const char *s)
 {
@@ -170,58 +171,19 @@ private:
     int32_t mEstimation;
     string mInStr;
     string mRemainStr;
-    string mVmStr;
+    list<vmInst_t> mVmInst;
     Date mTargetTime;
     uint32_t mParseFlag;
     
-    vmCmd_t readVMCmd(string &instructions);
-    void parseVM();
+    void parseVM(string &instructions);
     void prepare();
-    void parseAmPm(string &words, string &instructions);
-    size_t parseSampleUnit(const string words, string &instructions);
-    void parseFormat(string &words, string &instructions);
-    void parsePhrase(string &words, string &instructions);
+    void parseAmPm(string &words);
+    size_t parseSampleUnit(string &words, list<vmInst_t> &instList);
+    void parseFormat(string &words, list<vmInst_t> &instList);
+    void parsePhrase(string &words, list<vmInst_t> &instList);
 
     void removeMultipleSpaces(string &str);
 };
-
-vmCmd_t Parser::readVMCmd(string &instructions)
-{
-    vmCmd_t cmd;
-    memset(&cmd, 0, sizeof(cmd));
-    
-    size_t pos;
-    if ((pos = instructions.find("|"))==string::npos)
-        return cmd;
-    if (instructions.length()-pos < 3)
-        return cmd;
-    pos++;
-    cmd.cmd[0] = instructions[pos];
-    pos++;
-    cmd.cmd[1] = instructions[pos];
-    pos++;
-
-    if (!isNumChar(instructions[pos]))
-    {
-        instructions.erase(0, pos+1);
-        return cmd;
-    }
-    else
-    {
-        cmd.haveNumber = true;
-        cmd.number = atoi(&instructions[pos]);
-        while (pos<instructions.length() && isNumChar(instructions[pos]))
-            pos++;
-        
-        if (pos<instructions.length() && instructions[pos]=='-')
-        {
-            cmd.number = -abs(cmd.number);
-            pos++;
-        }
-        instructions.erase(0, pos+1);
-        return cmd;
-    }
-}
 
 Parser::Parser(const char *intStr)
 {
@@ -229,7 +191,6 @@ Parser::Parser(const char *intStr)
     mInStr = string(intStr);
     transform(mInStr.begin(), mInStr.end(), mInStr.begin(), ::tolower);
     mRemainStr = "";
-    mVmStr = string("");
 }
 
 
@@ -241,45 +202,26 @@ int Parser::getTime(ptm timeGot)
     }
     prepare();
 
-    vector<string> instructionsList;
-    string instructions;
-    #ifdef DEBUG
-        printf("inst=");
-        for (auto &it:instructionsList)
-        {
-            printf("%s",it.c_str());
-        }
-        printf("\r\n");
-    #endif
+    list<list<vmInst_t>> instHolder;
 
-    DEBUGP("parseAmPm\r\n");
-    instructions.clear();
-    parseAmPm(mRemainStr, instructions);
-    instructionsList.push_back(instructions);
-    DEBUGP("parsePhrase\r\n");
-    instructions.clear();
-    parseFormat(mRemainStr, instructions);
-    instructionsList.push_back(instructions);
-    DEBUGP("parsePhrase\r\n");
-    instructions.clear();
-    parsePhrase(mRemainStr, instructions);
-    instructionsList.push_back(instructions);
+    parseAmPm(mRemainStr);
+    parseFormat(mRemainStr, mVmInst);
+    parsePhrase(mRemainStr, mVmInst);
     
     string word;
     bool wordLastFlag = false;
-    DEBUGP("while start\r\n");
     while ((word=getWord(mRemainStr)).length() != 0)
     {
-        /*
-        DEBUGP("mRemainStr=%s\r\n",mRemainStr.c_str());
-#ifdef DEBUG
-        printf("inst=");
-        for (auto &it:instructionsList)
-        {
-            printf("%s",it.c_str());
-        }
-        printf("\r\n");
-#endif*/
+//         /*
+//         DEBUGP("mRemainStr=%s\r\n",mRemainStr.c_str());
+// #ifdef DEBUG
+//         printf("inst=");
+//         for (auto &it:instHolder)
+//         {
+//             printf("%s",it.c_str());
+//         }
+//         printf("\r\n");
+// #endif*/
         smatch regexResult;
         bool haveNumber = false;
         bool haveLetter = false;
@@ -304,6 +246,19 @@ int Parser::getTime(ptm timeGot)
             eraseWrod(mRemainStr);
             continue;
         }
+        if (word==string("ago") && !instHolder.empty())
+        {
+            list<vmInst_t> lastInst = *instHolder.end();
+            size_t i=0;
+            for (auto &it:lastInst)
+            {
+                if (it.haveNumber)
+                {
+                    it.number = -abs(it.number);
+                }
+            }
+            
+        }
         /* 4 number, maybe year*/
         if (haveLetter && haveNumber && !haveOtherChar && word.length()==4)
         {
@@ -313,9 +268,9 @@ int Parser::getTime(ptm timeGot)
                 wordLastFlag = false;
                 mEstimation = min(mEstimation, TIME_PARSE_PARTLY_SUCCESS);
             }
-            instructions = string("|yy"); 
-            instructions.append(word);
-            instructionsList.push_back(instructions);
+            list<vmInst_t> instList; 
+            instList.push_back(vmInst_t{'y', 'y', true, std::atoi(word.c_str())});
+            instHolder.push_back(instList);
             eraseWrod(mRemainStr);
             continue;
         }
@@ -327,8 +282,9 @@ int Parser::getTime(ptm timeGot)
                 wordLastFlag = false;
                 mEstimation = min(mEstimation, TIME_PARSE_PARTLY_SUCCESS);
             }
-            instructions = string("|dd");
-            instructionsList.push_back(instructions);
+            list<vmInst_t> instList; 
+            instList.push_back(vmInst_t{'d', 'd', false, 0});
+            instHolder.push_back(instList);
             eraseWrod(mRemainStr);
             continue;
         }
@@ -340,62 +296,68 @@ int Parser::getTime(ptm timeGot)
                 wordLastFlag = false;
                 mEstimation = min(mEstimation, TIME_PARSE_PARTLY_SUCCESS);
             }
-            instructions = string("|dd1-");
-            instructionsList.push_back(instructions);
+            list<vmInst_t> instList; 
+            instList.push_back(vmInst_t{'d', 'd', true, -1});
+            instHolder.push_back(instList);
             eraseWrod(mRemainStr);
             continue;
         }
         if(regex_search(word, regexResult, regex("(\\d{1,2})(st|nd|th)")))
         {
-            instructions = string("|md");
-            instructions.append(regexResult.str(1));
-            instructionsList.push_back(instructions);
+            list<vmInst_t> instList; 
+            instList.push_back(vmInst_t{'m', 'd', true, std::atoi(word.c_str())});
+            instHolder.push_back(instList);
             eraseWrod(mRemainStr);
             continue;
         }
         if(!haveLetter && haveNumber && !haveOtherChar)
         {
-            instructions.clear();
-            size_t readSize = parseSampleUnit(mRemainStr, instructions);
-            if (readSize>0)
+            list<vmInst_t> instList; 
+            size_t readSize = parseSampleUnit(mRemainStr, instList);
+            if (readSize>0 && !instList.empty())
             {
                 mRemainStr.erase(0, readSize);
                 if (wordLastFlag)
                 {
                     wordLastFlag = false;
-                    vmCmd_t cmd = readVMCmd(instructions);
-                    
-                    if (cmd.cmd[0] && cmd.cmd[1])
+                    for (auto it:instList)
                     {
-                        string instTmp = string("|");
-                        instTmp.append(string(cmd.cmd));
-                        if (cmd.haveNumber)
-                            instTmp.append(std::to_string(abs(cmd.number)));
-                        instTmp.append(string("-"));
-                        instTmp.append(instructions);
-                        instructionsList.push_back(instTmp);
+                        if (it.haveNumber)
+                            it.number = -abs(it.number);
                     }
                 }
+
+                instHolder.push_back(instList);
                 continue;
             }
         }
-        DEBUGP("wile end\r\n");
+        /*to do estimate*/
         eraseWrod(mRemainStr);
     }
     
-    instructions.clear();
-    for (auto &it:instructionsList)
-    {
-        instructions.append(it);
-    }
-    instructionsList.clear();
+//     instList.clear();
+//     for (auto &it:instHolder)
+//     {
+//         instList.append(it);
+//     }
+//     instHolder.clear();
 
-    DEBUGP("get instructions:%s\r\n",instructions.c_str());
-    return 0;
+//     DEBUGP("get instructions:%s\r\n",instructions.c_str());
+    return mEstimation;
 }
 
-void Parser::parseVM()
+void Parser::parseVM(string &instructions)
 {
+    // ec::Time now; 
+    // while (true)
+    // {
+    //     vmInst_t cmd = readVMCmd();
+    //     if (cmd.cmd[0]==0 && cmd.cmd[1]==1)
+    //     {
+    //         break;
+    //     }
+    // }
+    
     /*
     instructions
     am:
@@ -450,7 +412,7 @@ void Parser::prepare()
     }
 }
 
-void Parser::parseAmPm(string &words, string &instructions)
+void Parser::parseAmPm(string &words)
 {
     if (words.length()==0)
         return;
@@ -462,7 +424,8 @@ void Parser::parseAmPm(string &words, string &instructions)
         if ((pos==0 || isNumChar(words[pos-1]) || words[pos-1]==' ') &&
            (words[pos+2]=='\0' || isNumChar(words[pos+2]) || words[pos+2]==' '))
         {
-            mVmStr.append(string("|am"));
+            vmInst_t inst = {{'a', 'm'}, false, 0};
+            mVmInst.push_back(inst);
             words = words.replace(pos, 2, " ");
         }
         else
@@ -476,7 +439,8 @@ void Parser::parseAmPm(string &words, string &instructions)
         if ((pos==0 || isNumChar(words[pos-1]) || words[pos-1]==' ') &&
            (words[pos+2]=='\0' || isNumChar(words[pos+2]) || words[pos+2]==' '))
         {
-            mVmStr.append(string("|pm"));
+            vmInst_t inst = {{'p', 'm'}, false, 0};
+            mVmInst.push_back(inst);
         }
         else
             pos++;
@@ -484,7 +448,7 @@ void Parser::parseAmPm(string &words, string &instructions)
     removeMultipleSpaces(words);
 }
 
-size_t Parser::parseSampleUnit(const string words, string &instructions)
+size_t Parser::parseSampleUnit(string &words, list<vmInst_t> &instList)
 {
     if (words.length()==0)
         return -1;
@@ -514,42 +478,37 @@ size_t Parser::parseSampleUnit(const string words, string &instructions)
     }
     
     size_t numberBegin = 0;
-    size_t number=-1;
-    while (numberBegin<words.length())
+    int32_t number=-1;
+    while (numberBegin<words.length() && numberBegin<unitBegin)
     {
         if (isNumChar(words[numberBegin]))
+        {
+            number = atoi(words.c_str()+numberBegin);
             break;
+        }
             
         numberBegin++;
     }
-    if (numberBegin<unitBegin && numberBegin<words.length())
-        number = atoi(words.c_str()+numberBegin); 
     
     if (unit==string("year") || unit==string("years"))
     {
-        instructions.append(string("|yy"));
-        if (number>=0)
-            instructions.append(std::to_string(number));
+        instList.push_back(vmInst_t {{'y', 'y'}, number>=0, number>=0 ? number : 0});
         return unitEnd;
     }
     
     if (unit==string("month") || unit==string("month"))
     {
-        instructions.append(string("|mo"));
-        if (number>=0)
-            instructions.append(std::to_string(number));
+        instList.push_back(vmInst_t {{'m', 'o'}, number>=0, number>=0 ? number : 0});
         return unitEnd;
     }
-    for (size_t i = 0; i < 12; i++)
+    for (int32_t i = 0; i < 12; i++)
     {
         if (unit.find(monthShortName[i])!=string::npos)
         {
-            instructions.append(string("|mo"));
-            instructions.append(std::to_string(i));
+            instList.push_back(vmInst_t {{'m', 'o'}, true, i});
             if (number>0)
             {
-                instructions.append(string("|md"));
-                instructions.append(std::to_string(number));
+                instList.push_back(vmInst_t {{'m', 'd'}, true, number});
             }
             return unitEnd;
         }
@@ -557,80 +516,74 @@ size_t Parser::parseSampleUnit(const string words, string &instructions)
 
     if (unit==string("weekend"))
     {
-        instructions.append(string("|wn"));
+        instList.push_back(vmInst_t {{'w', 'n'}, false, 0});
         return unitEnd;
     }
     
     if (unit==string("week"))
     {
-        instructions.append(string("|ww"));
-        instructions.append(std::to_string(number));
+        instList.push_back(vmInst_t {{'w', 'w'}, number>=0, number>=0 ? number : 0});
         return unitEnd;
     }
-    for (size_t i = 0; i < 7; i++)
+    for (int32_t i = 0; i < 7; i++)
     {
         if (unit.find(weekShortName[i])!=string::npos)
         {
-            instructions.append(string("|wd"));
-            instructions.append(std::to_string(i));
+            instList.push_back(vmInst_t {{'w', 'd'}, true, i});
             return unitEnd;
         }
     }
     if (unit==string("day") || unit==string("days"))
     {
-        instructions.append(string("|dd"));
-        instructions.append(std::to_string(number));
+        instList.push_back(vmInst_t {{'d', 'd'}, number>=0, number>=0 ? number : 0});
         return unitEnd;
     }
     if (unit==string("morning"))
     {
-        instructions.append(string("|hn9"));
-        return unitEnd;
-    }
-    if (unit==string("afternoon"))
-    {
-        instructions.append(string("|hn14"));
+        instList.push_back(vmInst_t {{'h', 'n'}, true, 9});
         return unitEnd;
     }
     if (unit==string("noon"))
     {
-        instructions.append(string("|hn12"));
+        instList.push_back(vmInst_t {{'h', 'n'}, true, 12});
+        return unitEnd;
+    }
+    if (unit==string("afternoon"))
+    {
+        instList.push_back(vmInst_t {{'h', 'n'}, true, 14});
         return unitEnd;
     }
     if (unit==string("night"))
     {
-        instructions.append(string("|hn21"));
+        instList.push_back(vmInst_t {{'h', 'n'}, true, 21});
         return unitEnd;
     }
     if (unit==string("midnight"))
     {
-        instructions.append(string("|hn24"));
+        instList.push_back(vmInst_t {{'h', 'n'}, true, 24});
         return unitEnd;
     }
     if (unit==string("hour") || unit==string("hours"))
     {
-        instructions.append(string("|hh"));
-        instructions.append(std::to_string(number));
+        instList.push_back(vmInst_t {{'h', 'h'}, number>=0, number>=0 ? number : 0});
         return unitEnd;
     }
     if (unit==string("minute") || unit==string("minutes"))
     {
-        instructions.append(string("|mi"));
-        instructions.append(std::to_string(number));
+        instList.push_back(vmInst_t {{'m', 'i'}, number>=0, number>=0 ? number : 0});
         return unitEnd;
     }
 
     if (unit==string("second") || unit==string("seconds"))
     {
-        instructions.append(string("|si"));
-        instructions.append(std::to_string(number));
+        instList.push_back(vmInst_t {{'s', 'i'}, number>=0, number>=0 ? number : 0});
         return unitEnd;
     }
     
     return unitEnd;
 }
 
-void Parser::parseFormat(string &words, string &instructions)
+void Parser::parseFormat(string &words, list<vmInst_t> &instList)
 {
     if (words.length()==0)
         return;
@@ -641,12 +594,9 @@ void Parser::parseFormat(string &words, string &instructions)
         atoi(regexResult.str(2).c_str())<=12 &&
         atoi(regexResult.str(3).c_str())<=31)
     {
-        instructions.append(string("|yy"));
-        instructions.append(regexResult[1]);
-        instructions.append(string("|mo"));
-        instructions.append(regexResult[2]);
-        instructions.append(string("|md"));
-        instructions.append(regexResult[3]);
+        instList.push_back(vmInst_t {{'y', 'y'}, true, atoi(regexResult.str(1).c_str())});
+        instList.push_back(vmInst_t {{'m', 'o'}, true, atoi(regexResult.str(2).c_str())});
+        instList.push_back(vmInst_t {{'m', 'd'}, true, atoi(regexResult.str(3).c_str())});
         words = regex_replace(words, pattern, "");
     }
 
@@ -655,12 +605,9 @@ void Parser::parseFormat(string &words, string &instructions)
         atoi(regexResult.str(2).c_str())<=12 &&
         atoi(regexResult.str(3).c_str())<=31)
     {
-        instructions.append(string("|md"));
-        instructions.append(regexResult[1]);
-        instructions.append(string("|mo"));
-        instructions.append(regexResult[2]);
-        instructions.append(string("|yy"));
-        instructions.append(regexResult[3]);
+        instList.push_back(vmInst_t {{'m', 'd'}, true, atoi(regexResult.str(1).c_str())});
+        instList.push_back(vmInst_t {{'m', 'o'}, true, atoi(regexResult.str(2).c_str())});
+        instList.push_back(vmInst_t {{'y', 'y'}, true, atoi(regexResult.str(3).c_str())});
         words = regex_replace(words, pattern, "");
     }
 
@@ -668,10 +615,8 @@ void Parser::parseFormat(string &words, string &instructions)
     if (regex_search(words, regexResult, pattern) &&
         atoi(regexResult.str(2).c_str())<=31)
     {
-        instructions.append(string("|yy"));
-        instructions.append(regexResult[1]);
-        instructions.append(string("|mo"));
-        instructions.append(regexResult[2]);
+        instList.push_back(vmInst_t {{'y', 'y'}, true, atoi(regexResult.str(1).c_str())});
+        instList.push_back(vmInst_t {{'m', 'o'}, true, atoi(regexResult.str(2).c_str())});
         words = regex_replace(words, pattern, "");
     }
 
@@ -681,12 +626,9 @@ void Parser::parseFormat(string &words, string &instructions)
         atoi(regexResult.str(2).c_str())<=60 &&
         atoi(regexResult.str(3).c_str())<=60)
     {
-        instructions.append(string("|hh"));
-        instructions.append(regexResult[1]);
-        instructions.append(string("|mi"));
-        instructions.append(regexResult[2]);
-        instructions.append(string("|ss"));
-        instructions.append(regexResult[3]);
+        instList.push_back(vmInst_t {{'h', 'h'}, true, atoi(regexResult.str(1).c_str())});
+        instList.push_back(vmInst_t {{'h', 'h'}, true, atoi(regexResult.str(2).c_str())});
+        instList.push_back(vmInst_t {{'s', 's'}, true, atoi(regexResult.str(3).c_str())});
         words = regex_replace(words, pattern, "");
     }
 
@@ -695,37 +637,35 @@ void Parser::parseFormat(string &words, string &instructions)
         atoi(regexResult.str(1).c_str())<=24 && 
         atoi(regexResult.str(2).c_str())<=60)
     {
-        instructions.append(string("|hh"));
-        instructions.append(regexResult[1]);
-        instructions.append(string("|mi"));
-        instructions.append(regexResult[2]);
+        instList.push_back(vmInst_t {{'h', 'h'}, true, atoi(regexResult.str(1).c_str())});
+        instList.push_back(vmInst_t {{'h', 'h'}, true, atoi(regexResult.str(2).c_str())});
         words = regex_replace(words, pattern, "");
     }
     removeMultipleSpaces(words);
 }
 
-void Parser::parsePhrase(string &words, string &instructions)
+void Parser::parsePhrase(string &words, list<vmInst_t> &instList)
 {
     string strFind;
     strFind = string("the year before last year");
     if(words.find(strFind)!=string::npos)
     {
         words.replace(words.find(strFind), strFind.length(), "");
-        instructions.append(string("|yy2-"));
+        instList.push_back(vmInst_t {{'y', 'y'}, true, -2});
     }
 
     strFind = string("the month before last month");
     if(words.find(strFind)!=string::npos)
     {
         words.replace(words.find(strFind), strFind.length(), "");
-        instructions.append(string("|mo2-"));
+        instList.push_back(vmInst_t {{'m', 'o'}, true, -2});
     }
 
     strFind = string("the day before yesterday");
     if(words.find(strFind)!=string::npos)
     {
         words.replace(words.find(strFind), strFind.length(), "");
-        instructions.append(string("|md2-"));
+        instList.push_back(vmInst_t {{'d', 'd'}, true, -2});
     }
 
     removeMultipleSpaces(words);
