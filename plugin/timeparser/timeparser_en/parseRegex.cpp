@@ -143,10 +143,7 @@ string getWord(const string &str)
     {
         pos++;
     }
-    if (pos>=str.length())
-        return string("");
     size_t end = pos;
-    
     return str.substr(begin, end-begin);
 }
 
@@ -159,6 +156,17 @@ void eraseWrod(string &str)
         str.erase(0, pos);
     else
         return;
+}
+
+void printVmInst(list<vmInst_t> &instList)
+{
+    for (auto it:instList)
+    {
+        printf("|%c%c", it.cmd[0], it.cmd[1]);
+        if (it.haveNumber)
+            printf("%d", it.number);
+    }
+    printf("\n");
 }
 
 class Parser
@@ -175,6 +183,7 @@ private:
     Date mTargetTime;
     uint32_t mParseFlag;
     
+    void instSrot(list<vmInst_t> &instList);
     void parseVM(string &instructions);
     void prepare();
     void parseAmPm(string &words);
@@ -212,16 +221,6 @@ int Parser::getTime(ptm timeGot)
     bool wordLastFlag = false;
     while ((word=getWord(mRemainStr)).length() != 0)
     {
-//         /*
-//         DEBUGP("mRemainStr=%s\r\n",mRemainStr.c_str());
-// #ifdef DEBUG
-//         printf("inst=");
-//         for (auto &it:instHolder)
-//         {
-//             printf("%s",it.c_str());
-//         }
-//         printf("\r\n");
-// #endif*/
         smatch regexResult;
         bool haveNumber = false;
         bool haveLetter = false;
@@ -335,14 +334,16 @@ int Parser::getTime(ptm timeGot)
         eraseWrod(mRemainStr);
     }
     
-//     instList.clear();
-//     for (auto &it:instHolder)
-//     {
-//         instList.append(it);
-//     }
-//     instHolder.clear();
-
-//     DEBUGP("get instructions:%s\r\n",instructions.c_str());
+    for (auto &holderIt:instHolder)
+    {
+        for (auto &it:holderIt)
+        {
+            mVmInst.push_back(it);
+        }
+    }
+    printf("instructions lenght is %ld\n", mVmInst.size());
+    printf("instructions:");
+    printVmInst(mVmInst);
     return mEstimation;
 }
 
