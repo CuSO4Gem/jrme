@@ -92,11 +92,8 @@ pParseTime parseFunction;
 
 TEST(parse, sp)
 {
-    timeDetail detail = {
-        string("2021-1 today"),
-        0, 0, 0, 0, 0, 0,
-        0,
-    };
+    timeDetail detail = {string("2020-2-1"), 2021, 1, 1, 9, 0, 0, YEAR_FLAG|MONTH_FLGA|DAY_FLAG};
+
     printf("send to parse:%s\r\n", detail.sentence.c_str());
     int32_t ret;
     uint32_t flag = 0;

@@ -6,7 +6,7 @@
 extern "C" {
 #endif
 
-int32_t parseRegex(const char*, uint32_t, ptm);
+int32_t parseRegex(const char*, uint32_t, ptm, uint32_t*);
 
 #ifdef __cplusplus
 }

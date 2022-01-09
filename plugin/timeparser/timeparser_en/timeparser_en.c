@@ -8,7 +8,6 @@ NOIT_IT_API int32_t parseTime(const char *str, uint32_t len, ptm ptime, uint32_t
         return TIME_PARSE_PARAMETER_ERROR;
     }
     
-    ptime->tm_sec = 12;
-    parseRegex(str, 6,ptime);
+    int32_t estimation = parseRegex(str, len, ptime, flag);
     return TIME_PARSE_LITTLE_SUCCESS;
 }
