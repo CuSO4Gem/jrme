@@ -486,7 +486,7 @@ Date & Date::setMonth(int month)
 Date & Date::setDay(int day)
 {
 	day = day % 32;
-	_tm.tm_mon = (day > 1) ? day : 1;
+	_tm.tm_mday = (day > 1) ? day : 1;
 	_update();
 	return *this;
 }
@@ -723,7 +723,7 @@ bool Date::operator < (const Date & other)
 	return _tm.tm_sec < other._tm.tm_sec;
 }
 
-bool Date::operator = (const Date & other)
+bool Date::operator == (const Date & other)
 {
 	return (_tm.tm_year == other._tm.tm_year) &&
 			(_tm.tm_mon == other._tm.tm_mon) &&
