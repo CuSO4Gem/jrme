@@ -78,6 +78,23 @@ inline bool isLetterOnly(const string &str)
     else
         return true;
 }
+
+inline uint32_t lastBitOrder(uint32_t b)
+{
+    int i;
+    if (b==0)
+        return 0;
+    else
+    {
+        i=0;
+        while (b&0x1!=0x1)
+        {
+            b=b>>1;
+            i++;
+        }
+    }
+    return i;
+}
 /**
  * @brief 找到从pos开始的下一个单词开头（不计算开通的空格）
  * @return size_t 下一个单词的开头
@@ -184,13 +201,14 @@ private:
     uint32_t mParseFlag;
     
     void instSrot(vector<vmInst_t> &instVector);
-    uint32_t parseVM(vector<vmInst_t> &vmInst);
+    void parseVM(vector<vmInst_t> &vmInst, uint32_t *resultFlag, int32_t *estimation);
     void prepare();
     void parseAmPm(string &words);
     size_t parseSampleUnit(string &words, vector<vmInst_t> &instVector);
     void parseFormat(string &words, vector<vmInst_t> &instVector);
     void parsePhrase(string &words, vector<vmInst_t> &instVector);
-    bool setDateConflict(Date &dst, uint32_t *dstFlag, Date &src, const uint32_t *srcFlag);
+    bool setDateForce(Date &dst, uint32_t *dstFlag, Date &src, const uint32_t *srcFlag);
+    bool setDateWeek(Date &dst, uint32_t *dstFlag, Date &src, const uint32_t *srcFlag);
     void removeMultipleSpaces(string &str);
 };
 
@@ -351,45 +369,49 @@ int Parser::getTime(ptm timeGot)
     return mEstimation;
 }
 
-void Parser::parseVM(vector<vmInst_t> &vmInst)
+void Parser::parseVM(vector<vmInst_t> &vmInst, uint32_t *resultFlag, int32_t *estimation)
 {
     Time ecTime;
     Date nowDate = ecTime.toDate();
     Date resultDate = ecTime.toDate();
-    bool am=false;
+    uint32_t flagOut = 0, flagWeekOut = 0;
+    bool pm = false;
     
     for (auto &it:vmInst)
     {
-        
+        Date tmpDate = resultDate;
+        uint32_t flag = 0, flagWeek = 0;
+        int weekDay;
         switch (TWOCC(it.cmd))
         {
         case TWOCC("am"):
-            am=true;
+            pm = false;
             break;
 
         case TWOCC("pm"):
+            pm = true;
             break;
 
         case TWOCC("dd"):
-            Date tmpDate = resultDate;
-            tmpDate.setDate(nowDate.year(), nowDate.month(), nowDate.day(), 9, 0, 0);
+            tmpDate.set(nowDate.year(), nowDate.month(), nowDate.day(), 9, 0, 0);
             if (it.haveNumber && it.number<=0)
                 tmpDate = tmpDate.toTime().addDay(it.number);
             else if (it.haveNumber && it.number>0)
             {
-                mEstimation = min(TIME_PARSE_PARTLY_SUCCESS, mEstimation);
+                *estimation = min(TIME_PARSE_PARTLY_SUCCESS, *estimation);
                 break;
             }
 
-            uint32_t flag = YEAR_FLAG|MONTH_FLGA|DAY_FLAG;
-            if (setDateConflict(resultDate, &mParseFlag, tmpDate, &flag))
+            flag = YEAR_FLAG|MONTH_FLGA|DAY_FLAG;
+            if (setDateForce(resultDate, &flagOut, tmpDate, &flag))
             {
-                mEstimation = min(TIME_PARSE_PARTLY_SUCCESS, mEstimation);
+                *estimation = min(TIME_PARSE_PARTLY_SUCCESS, *estimation);
             }
+            flagOut |= flag;
             break;
 
         case TWOCC("yy"):
-            Date tmpDate = resultDate;
+            tmpDate = resultDate;
             if (!it.haveNumber)
                 tmpDate.setYear(nowDate.year());
             else if (0==it.number)
@@ -400,20 +422,21 @@ void Parser::parseVM(vector<vmInst_t> &vmInst)
                 tmpDate.setYear(it.number);
             else
             {
-                mEstimation = min(TIME_PARSE_PARTLY_SUCCESS, mEstimation);
+                *estimation = min(TIME_PARSE_PARTLY_SUCCESS, *estimation);
                 break;
             }
             
-            uint32_t flag = YEAR_FLAG;
-            if (setDateConflict(resultDate, &mParseFlag, tmpDate, &flag))
+            flag = YEAR_FLAG;
+            if (setDateForce(resultDate, &flagOut, tmpDate, &flag))
             {
-                mEstimation = min(TIME_PARSE_PARTLY_SUCCESS, mEstimation);
+                *estimation = min(TIME_PARSE_PARTLY_SUCCESS, *estimation);
             }
+            flagOut |= flag;
             break;
         
         case TWOCC("mo"):
-            Date tmpDate = resultDate;
-            uint32_t flag = MONTH_FLGA;
+            tmpDate = resultDate;
+            flag = MONTH_FLGA;
             if (!it.haveNumber)
                 tmpDate.setMonth(nowDate.month());
             else if (it.haveNumber==0)
@@ -429,18 +452,19 @@ void Parser::parseVM(vector<vmInst_t> &vmInst)
             }
             else
             {
-                mEstimation = min(TIME_PARSE_PARTLY_SUCCESS, mEstimation);
+                *estimation = min(TIME_PARSE_PARTLY_SUCCESS, *estimation);
                 break;
             }
 
-            if (setDateConflict(resultDate, &mParseFlag, tmpDate, &flag))
+            if (setDateForce(resultDate, &flagOut, tmpDate, &flag))
             {
-                mEstimation = min(TIME_PARSE_PARTLY_SUCCESS, mEstimation);
+                *estimation = min(TIME_PARSE_PARTLY_SUCCESS, *estimation);
             }
+            flagOut= flag;
             break;
         
-        case WOCC("mo"):
-            Date tmpDate = resultDate;
+        case TWOCC("mn"):
+            tmpDate = resultDate;
             
             if (!it.haveNumber)
                 ;
@@ -450,49 +474,188 @@ void Parser::parseVM(vector<vmInst_t> &vmInst)
                 tmpDate.addMonth(it.number);
             else
             {
-                mEstimation = min(TIME_PARSE_PARTLY_SUCCESS, mEstimation);
+                *estimation = min(TIME_PARSE_PARTLY_SUCCESS, *estimation);
                 break;
             }
             
-            uint32_t flag = YEAR_FLAG|MONTH_FLGA;
-            if (setDateConflict(resultDate, &mParseFlag, tmpDate, &flag))
+            flag = YEAR_FLAG|MONTH_FLGA;
+            if (setDateForce(resultDate, &flagOut, tmpDate, &flag))
             {
-                mEstimation = min(TIME_PARSE_PARTLY_SUCCESS, mEstimation);
+                *estimation = min(TIME_PARSE_PARTLY_SUCCESS, *estimation);
             }
+            flagOut |= flag;
             break;
 
-        case WOCC("md"):
-            Date tmpDate = resultDate;
+        case TWOCC("md"):
+            tmpDate = resultDate;
 
             if(it.haveNumber && 1<=it.number && it.number<=31)
             {                
                 tmpDate.setDay(it.number);
                 if (tmpDate.month() != resultDate.month())
                 {
-                    mEstimation = min(TIME_PARSE_PARTLY_SUCCESS, mEstimation);
+                    *estimation = min(TIME_PARSE_PARTLY_SUCCESS, *estimation);
                     break;
                 }
             }
             else
             {
-                mEstimation = min(TIME_PARSE_PARTLY_SUCCESS, mEstimation);
+                *estimation = min(TIME_PARSE_PARTLY_SUCCESS, *estimation);
                 break;
             }
 
-            uint32_t flag = DAY_FLAG;
-            if (setDateConflict(resultDate, &mParseFlag, tmpDate, &flag))
+            flag = DAY_FLAG;
+            if (setDateForce(resultDate, &flagOut, tmpDate, &flag))
             {
-                mEstimation = min(TIME_PARSE_PARTLY_SUCCESS, mEstimation);
+                *estimation = min(TIME_PARSE_PARTLY_SUCCESS, *estimation);
             }
+            flagOut |= flag;
             break;
         
-        case WOCC("ww"):
-            Date tmpDate = resultDate;
-            uint32_t flag = DAY_FLAG;
+        case TWOCC("ww"):
+            tmpDate = resultDate;
+            weekDay = resultDate.week();
+            if (!it.haveNumber)
+            {
+                if (weekDay != 1)
+                {
+                    tmpDate = tmpDate.toTime().addDay(-(weekDay-1));
+                }
+            }
+            else if (it.number==0)
+            {
+                if (weekDay != 1)
+                {
+                    tmpDate = tmpDate.toTime().addDay(-(weekDay-1));
+                }
+            }
+            else if (it.number<0)
+            {
+                tmpDate = tmpDate.toTime().addDay(-(weekDay-1 + 7*it.number));
+            }
+            else
+            {
+                *estimation = min(TIME_PARSE_PARTLY_SUCCESS, *estimation);
+                break;
+            }
 
+            flagWeek = YEAR_FLAG|MONTH_FLGA|DAY_FLAG;
+            setDateWeek(resultDate, &flagOut, tmpDate, &flagWeek);
+            flagWeekOut |= flagWeek;
+            break;
+        case TWOCC("wd"):
+            tmpDate = resultDate;
+            if (!it.haveNumber)
+                break;
+            else if (it.number>0)
+            {
+                int dayOffast = resultDate.week() - it.number;
+                resultDate = resultDate.toTime().addDay(dayOffast).toDate();
+                if (nowDate<resultDate)
+                {
+                    resultDate.toTime().addDay(-7).toDate();
+                }
+            }
+            else if (it.number<0)
+            {
+                int dayOffast = resultDate.week() - abs(it.number);
+                resultDate = resultDate.toTime().addDay(dayOffast - 7).toDate();
+            }
+            else
+            {
+                *estimation = min(TIME_PARSE_PARTLY_SUCCESS, *estimation);
+                break;
+            }
+            flagOut |= YEAR_FLAG|MONTH_FLGA|DAY_FLAG;
+            break;
+        
+        case TWOCC("hh"):
+            if (!it.haveNumber)
+                break;
+            else if (it.number>=0)
+            {
+                if (pm && it.haveNumber<=12)
+                    tmpDate.setHour(it.number+12);
+                else
+                    tmpDate.setHour(it.number);
+            }
+            else if (it.number<0)
+            {
+                tmpDate.toTime().addHour(it.number);
+            }
+            else
+                break;
+
+            flag = HOUR_FLAG;
+            if (setDateForce(resultDate, &flagOut, tmpDate, &flag))
+            {
+                *estimation = min(TIME_PARSE_PARTLY_SUCCESS, *estimation);
+            }
+            flagOut |= flag;
+            break;
+        
+        case TWOCC("mi"):
+            if (!it.haveNumber)
+                break;
+            else if (it.number>=0)
+            {
+                tmpDate.setMinute(it.number);
+            }
+            else if (it.number<0)
+            {
+                tmpDate.toTime().addMinute(it.number);
+            }
+            else
+                break;
+
+            flag = MINUTE_FLAG;
+            if (setDateForce(resultDate, &flagOut, tmpDate, &flag))
+            {
+                *estimation = min(TIME_PARSE_PARTLY_SUCCESS, *estimation);
+            }
+            flagOut |= flag;
+            break;
+        
+        case TWOCC("ss"):
+            if (!it.haveNumber)
+                break;
+            else if (it.number>=0)
+            {
+                tmpDate.setSecond(it.number);
+            }
+            else if (it.number<0)
+            {
+                tmpDate.toTime().setSeconds(it.number);
+            }
+            else
+                break;
+
+            flag = SECOND_FLAG;
+            if (setDateForce(resultDate, &flagOut, tmpDate, &flag))
+            {
+                *estimation = min(TIME_PARSE_PARTLY_SUCCESS, *estimation);
+            }
+            flagOut |= flag;
+            break;
+        
+        case TWOCC("hn"):
+            if (((flagOut|flagWeek)&(HOUR_FLAG|MINUTE_FLAG|SECOND_FLAG))!=0)
+                break;
+            else if (it.haveNumber && it.haveNumber<=24)
+            {
+                resultDate.setHour(it.haveNumber);
+                resultDate.setMinute(0);
+                resultDate.setSecond(0);
+                flagWeek |= HOUR_FLAG|MINUTE_FLAG|SECOND_FLAG;
+            }
+            else
+            {
+                *estimation = min(TIME_PARSE_PARTLY_SUCCESS, *estimation);
+                break;
+            }
             
             break;
-
+            
         default:
             break;
         }
@@ -500,29 +663,11 @@ void Parser::parseVM(vector<vmInst_t> &vmInst)
 
     if (resultDate.year()<1900)
     {
-        mEstimation = min(TIME_PARSE_LITTLE_SUCCESS, mEstimation);
+        *estimation = min(TIME_PARSE_LITTLE_SUCCESS, *estimation);
     }
     
-    
-    
-    /*
-    instructions
-    am:
-    pm:
-    dd: day
-    yy:year
-    mo:month order
-    mn: monther and number
-    md:day of month
-    ww:week
-    wd:day of month
-    wn: week end
-    hh:hour
-    hn:not speic hour, such as "night"
-    mi:minute
-    ss:second
-    */
-    return;
+    *resultFlag = flagOut|flagWeekOut;
+    return ;
 }
 
 void Parser::instSrot(vector<vmInst_t> &instVector)
@@ -895,44 +1040,102 @@ void Parser::removeMultipleSpaces(string &str){
     }
 }
 
-bool Parser::setDateConflict(Date &dst, uint32_t *dstFlag, Date &src, const uint32_t *srcFlag)
+/**
+ * @brief 设置时间并检测冲突，无论有没有冲突都会设置时间
+ * 
+ * @param dst 目标时间
+ * @param dstFlag 目标时间有效的标记
+ * @param src 源时间
+ * @param srcFlag 希望设置目标时间的部分
+ * @return true 设置时间时发现有冲突
+ * @return false 设置时间时没发现冲突
+ */
+bool Parser::setDateForce(Date &dst, uint32_t *dstFlag, Date &src, const uint32_t *srcFlag)
 {
     bool conflict = false;
-    if (*srcFlag&YEAR_FLAG)
+    if (lastBitOrder(*srcFlag)>=YEAR_FLAG)
     {
         if ((*dstFlag&YEAR_FLAG) && dst.year()!=src.year())
             conflict = true;
         dst.setYear(src.year());
     }
-    if (*srcFlag&MONTH_FLGA)
+    if (lastBitOrder(*srcFlag)>=MONTH_FLGA)
     {
         if ((*dstFlag&MONTH_FLGA) && dst.month()!=src.month())
             conflict = true;
         dst.setMonth(src.month());
     }
-    if (*srcFlag&DAY_FLAG)
+    if (lastBitOrder(*srcFlag)>=DAY_FLAG)
     {
         if ((*dstFlag&DAY_FLAG) && dst.day()!=src.day())
             conflict = true;
         dst.setDay(src.day());
     }
-    if (*srcFlag&HOUR_FLAG)
+    if (lastBitOrder(*srcFlag)>=HOUR_FLAG)
     {
         if ((*dstFlag&HOUR_FLAG) && dst.hour()!=src.hour())
             conflict = true;
         dst.setHour(src.hour());
     }
-    if (*srcFlag&MINUTE_FLAG)
+    if (lastBitOrder(*srcFlag)>=MINUTE_FLAG)
     {
         if ((*dstFlag&MINUTE_FLAG) && dst.minute()!=src.minute())
             conflict = true;
         dst.setMinute(src.minute());
     }
-    if (*srcFlag&SECOND_FLAG)
+    if (lastBitOrder(*srcFlag)>=SECOND_FLAG)
     {
         if ((*dstFlag&SECOND_FLAG) && dst.second()!=src.second())
             conflict = true;
         dst.setSecond(src.second());
+    }
+    return conflict;
+}
+
+bool Parser::setDateWeek(Date &dst, uint32_t *dstFlag, Date &src, const uint32_t *srcFlag)
+{
+    bool conflict = false;
+    if (lastBitOrder(*srcFlag)>=YEAR_FLAG)
+    {
+        if ((*dstFlag&YEAR_FLAG) && dst.year()!=src.year())
+            conflict = true;
+        else
+            dst.setYear(src.year());
+    }
+    if (lastBitOrder(*srcFlag)>=MONTH_FLGA)
+    {
+        if ((*dstFlag&MONTH_FLGA) && dst.month()!=src.month())
+            conflict = true;
+        else
+            dst.setMonth(src.month());
+    }
+    if (lastBitOrder(*srcFlag)>=DAY_FLAG)
+    {
+        if ((*dstFlag&DAY_FLAG) && dst.day()!=src.day())
+            conflict = true;
+        else
+            dst.setDay(src.day());
+    }
+    if (lastBitOrder(*srcFlag)>=HOUR_FLAG)
+    {
+        if ((*dstFlag&HOUR_FLAG) && dst.hour()!=src.hour())
+            conflict = true;
+        else
+            dst.setHour(src.hour());
+    }
+    if (lastBitOrder(*srcFlag)>=MINUTE_FLAG)
+    {
+        if ((*dstFlag&MINUTE_FLAG) && dst.minute()!=src.minute())
+            conflict = true;
+        else
+            dst.setMinute(src.minute());
+    }
+    if (lastBitOrder(*srcFlag)>=SECOND_FLAG)
+    {
+        if ((*dstFlag&SECOND_FLAG) && dst.second()!=src.second())
+            conflict = true;
+        else
+            dst.setSecond(src.second());
     }
     return conflict;
 }
