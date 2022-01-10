@@ -26,7 +26,7 @@ struct timeDetail
 };
 
 vector<timeDetail> formateTestCase = {
-    {string("2021-1-1"), 2021, 1, 1, 9, 0, 0, YEAR_FLAG|MONTH_FLGA|DAY_FLAG},
+    {string("2021-2-1"), 2021, 2, 1, 9, 0, 0, YEAR_FLAG|MONTH_FLGA|DAY_FLAG},
     {string("1/1/2021"), 2021, 1, 1, 9, 0, 0, YEAR_FLAG|MONTH_FLGA|DAY_FLAG},
 
     {string("8:33"), 0, 0, 0, 8, 33, 0, HOUR_FLAG|MINUTE_FLAG},
@@ -43,45 +43,54 @@ bool timePareCmp(ptm pTime,uint32_t parseFlag, timeDetail *detail)
     struct tm *nowTime;
     tt = time(NULL);
     nowTime = localtime(&tt);
-    if (detail->flag|= parseFlag&detail->flag)
+    if ((detail->flag&parseFlag)!=detail->flag)
     {
+        printf("timePareCmp flag error %X VS %X\n", detail->flag, parseFlag);
         return false;
     }
 
     if ((detail->flag|YEAR_FLAG) && (pTime->tm_year+1900)!=detail->year)
     {
+        printf("error year %d should be %d\n", pTime->tm_year+1900, detail->year);
         return false;
     } else if (!(detail->flag|YEAR_FLAG) && pTime->tm_year!=nowTime->tm_year)
     {
+        printf("erro year should be now");
         return false;
     }
-    
+
     if ((detail->flag|MONTH_FLGA) && pTime->tm_mon!=detail->month)
     {
+        printf("error %d should be %d\n", pTime->tm_mon, detail->month);
         return false;
     } else if (!(detail->flag|MONTH_FLGA) && pTime->tm_mon!=nowTime->tm_mon)
     {
+        printf("error month should be now");
         return false;
     }
-    
     if ((detail->flag|DAY_FLAG) && pTime->tm_mday!=detail->day)
     {
+        printf("error day %d should be %d\n", pTime->tm_mday, detail->day);
         return false;
     } else if (!(detail->flag|DAY_FLAG) && pTime->tm_mday!=nowTime->tm_mday)
     {
+        printf("error day should be now");
         return false;
     }
 
     if ((detail->flag|HOUR_FLAG) && pTime->tm_hour!=detail->hour)
     {
+        printf("error hour %d should be %d\n", pTime->tm_hour, detail->hour);
         false;
     }
     if ((detail->flag|MINUTE_FLAG) && pTime->tm_min!=detail->minute)
     {
+        printf("error minute %d should be %d\n", pTime->tm_min, detail->minute);
         false;
     }
     if ((detail->flag|SECOND_FLAG) && pTime->tm_sec!=detail->second)
     {
+        printf("error second %d should be %d\n", pTime->tm_sec, detail->second);
         false;
     }
 
@@ -100,7 +109,7 @@ TEST(parse, sp)
     struct tm timeGot;
     memset(&timeGot, 0, sizeof(timeGot));
     ret = parseFunction(detail.sentence.c_str(), (uint32_t)detail.sentence.length(), &timeGot, &flag);
-    printf("time is %d-%d-%d ", timeGot.tm_year+1900, timeGot.tm_mon ,timeGot.tm_mday);
+    printf("ret = %d time is %d-%d-%d ", ret, timeGot.tm_year+1900, timeGot.tm_mon ,timeGot.tm_mday);
     printf("%d:%d:%d\n", timeGot.tm_hour, timeGot.tm_min ,timeGot.tm_sec);
 }
 
@@ -108,11 +117,11 @@ TEST(parse, formate)
 {
     int32_t ret;
     uint32_t flag = 0;
-    struct tm timeGot;
 
     for (auto &it:formateTestCase)
     {
-        memset(&timeGot, 0, sizeof(timeGot));
+        printf("send to parse:%s\r\n", it.sentence.c_str());
+        struct tm timeGot;
         flag = 0;
         ret = parseFunction(it.sentence.c_str(), (uint32_t)it.sentence.length(), &timeGot, &flag);
         ASSERT_GE(ret, 1) ;
