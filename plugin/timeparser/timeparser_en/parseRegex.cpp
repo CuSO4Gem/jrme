@@ -361,13 +361,15 @@ int Parser::getTime(ptm timeGot, uint32_t *flag)
     }
     printVmInst(mVmInst);
     instSrot(mVmInst);
-    printf("instructions srot:");
+    #ifdef DEBUG
+    DEBUGP("instructions srot:");
     printVmInst(mVmInst);
+    #endif
     
     mParseResult = parseVM(mVmInst, &mParseFlag, &mEstimation);
-    DEBUGP("after parse time is %s\n", mParseResult.format().c_str());
-    timeGot->tm_year = mParseResult.year()-1900;
-    timeGot->tm_mon = mParseResult.month();
+    DEBUGP("after parse time is %s\n\n", mParseResult.format().c_str());
+    timeGot->tm_year = mParseResult.year() - 1900;
+    timeGot->tm_mon = mParseResult.month() - 1;
     timeGot->tm_mday = mParseResult.day();
     timeGot->tm_hour = mParseResult.hour();
     timeGot->tm_min = mParseResult.minute();
@@ -582,10 +584,10 @@ Date Parser::parseVM(vector<vmInst_t> &vmInst, uint32_t *resultFlag, int32_t *es
                 break;
             else if (it.number>=0)
             {
-                if (pm && it.haveNumber<=12)
-                    tmpDate.setHour(it.number+12);
+                if (pm && it.number<=12)
+                    tmpDate.setHour((it.number+12)%24);
                 else
-                    tmpDate.setHour(it.number);
+                    tmpDate.setHour(it.number%24);
             }
             else if (it.number<0)
             {
@@ -649,9 +651,9 @@ Date Parser::parseVM(vector<vmInst_t> &vmInst, uint32_t *resultFlag, int32_t *es
         case TWOCC("hn"):
             if (((flagOut|flagWeek)&(HOUR_FLAG|MINUTE_FLAG|SECOND_FLAG))!=0)
                 break;
-            else if (it.haveNumber && it.haveNumber<=24)
+            else if (it.haveNumber && it.number<=24)
             {
-                resultDate.setHour(it.haveNumber);
+                resultDate.setHour(it.haveNumber%24);
                 resultDate.setMinute(0);
                 resultDate.setSecond(0);
                 flagWeek |= HOUR_FLAG|MINUTE_FLAG|SECOND_FLAG;
@@ -730,6 +732,8 @@ void Parser::instSrot(vector<vmInst_t> &instVector)
 void Parser::prepare()
 {
     uint32_t spaceAccount=0;
+    char *strBuffer = (char *)malloc(mInStr.length() + 1);
+    size_t j=0;
     for (size_t i = 0; i < mInStr.length(); i++)
     {
         char ch;
@@ -745,9 +749,13 @@ void Parser::prepare()
         else
             ch = mInStr[i];
 
-        mRemainStr.append(string(&ch));
+        strBuffer[j] = ch;
+        j++;
     }
-    
+    strBuffer[j] = '\0';
+    mRemainStr = string(strBuffer);
+    free(strBuffer);
+
     while (mRemainStr.find("on ")!=string::npos)
     {
         mRemainStr.replace(mRemainStr.find("on "), 2, "in");
@@ -756,6 +764,7 @@ void Parser::prepare()
     {
         mRemainStr.replace(mRemainStr.find("at "), 2, "in");
     }
+    
 }
 
 void Parser::parseAmPm(string &words)
@@ -783,10 +792,11 @@ void Parser::parseAmPm(string &words)
     {
         //一个合格的pm，前后应该只有空格或者数字
         if ((pos==0 || isNumChar(words[pos-1]) || words[pos-1]==' ') &&
-           (words[pos+2]=='\0' || isNumChar(words[pos+2]) || words[pos+2]==' '))
+           (words[pos+2]=='\0'  || isNumChar(words[pos+2]) || words[pos+2]==' '))
         {
             vmInst_t inst = {{'p', 'm'}, false, 0};
             mVmInst.push_back(inst);
+            words = words.replace(pos, 2, " ");
         }
         else
             pos++;
@@ -954,8 +964,10 @@ void Parser::parseFormat(string &words, vector<vmInst_t> &instVector)
         return;
     smatch regexResult;
 
+    //YYY-MM-DD
     regex pattern = regex("(\\d{4})[^:]{1,1}(\\d{1,2})[^:]{1,1}(\\d{1,2})");
     if (regex_search(words, regexResult, pattern) &&
+        atoi(regexResult.str(1).c_str())>=1900 &&
         atoi(regexResult.str(2).c_str())<=12 &&
         atoi(regexResult.str(3).c_str())<=31)
     {
@@ -965,17 +977,21 @@ void Parser::parseFormat(string &words, vector<vmInst_t> &instVector)
         words = regex_replace(words, pattern, "");
     }
 
+    //DD-MM-YYYY
     pattern = regex("(\\d{1,2})[^:]{1}(\\d{1,2})[^:]{1}(\\d{4})");
     if (regex_search(words, regexResult, pattern) &&
+        atoi(regexResult.str(1).c_str())<=31 &&
         atoi(regexResult.str(2).c_str())<=12 &&
-        atoi(regexResult.str(3).c_str())<=31)
+        atoi(regexResult.str(3).c_str())>=1900)
     {
+        DEBUGP("DD-MM-YYYY\n");
         instVector.push_back(vmInst_t {{'m', 'd'}, true, atoi(regexResult.str(1).c_str())});
         instVector.push_back(vmInst_t {{'m', 'o'}, true, atoi(regexResult.str(2).c_str())});
         instVector.push_back(vmInst_t {{'y', 'y'}, true, atoi(regexResult.str(3).c_str())});
         words = regex_replace(words, pattern, "");
     }
 
+    //YY-MM
     pattern = regex("(\\d{4})[^:]{1}(\\d{1,2})");
     if (regex_search(words, regexResult, pattern) &&
         atoi(regexResult.str(2).c_str())<=31)
@@ -985,6 +1001,7 @@ void Parser::parseFormat(string &words, vector<vmInst_t> &instVector)
         words = regex_replace(words, pattern, "");
     }
 
+    //hh:mm:ss
     pattern = regex("(\\d{1,2}):(\\d{1,2}):(\\d{1,2})");
     if (regex_search(words, regexResult, pattern) &&
         atoi(regexResult.str(1).c_str())<=24 && 
@@ -992,18 +1009,19 @@ void Parser::parseFormat(string &words, vector<vmInst_t> &instVector)
         atoi(regexResult.str(3).c_str())<=60)
     {
         instVector.push_back(vmInst_t {{'h', 'h'}, true, atoi(regexResult.str(1).c_str())});
-        instVector.push_back(vmInst_t {{'h', 'h'}, true, atoi(regexResult.str(2).c_str())});
+        instVector.push_back(vmInst_t {{'m', 'i'}, true, atoi(regexResult.str(2).c_str())});
         instVector.push_back(vmInst_t {{'s', 's'}, true, atoi(regexResult.str(3).c_str())});
         words = regex_replace(words, pattern, "");
     }
 
+    //hh:mm
     pattern = regex("(\\d{1,2}):(\\d{1,2})");
     if (regex_search(words, regexResult, pattern) &&
         atoi(regexResult.str(1).c_str())<=24 && 
         atoi(regexResult.str(2).c_str())<=60)
     {
         instVector.push_back(vmInst_t {{'h', 'h'}, true, atoi(regexResult.str(1).c_str())});
-        instVector.push_back(vmInst_t {{'h', 'h'}, true, atoi(regexResult.str(2).c_str())});
+        instVector.push_back(vmInst_t {{'m', 'i'}, true, atoi(regexResult.str(2).c_str())});
         words = regex_replace(words, pattern, "");
     }
     removeMultipleSpaces(words);
@@ -1171,5 +1189,6 @@ int32_t parseRegex(const char *str, uint32_t len ,ptm ptime, uint32_t *flag)
     
     Parser timeParser(str);
     int32_t estimation = timeParser.getTime(ptime, flag);
+
     return estimation;
 }
