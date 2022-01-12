@@ -79,7 +79,7 @@ inline bool isLetterOnly(const string &str)
     if (i==str.length())
         return true;
     //some word may have '.', such as, Feb.
-    else if (i==str.length()-1 && str[i-1]=='.')
+    else if (i==str.length()-1 && str[i]=='.')
         return true;
     else
         return false;
@@ -249,6 +249,7 @@ int Parser::getTime(ptm timeGot, uint32_t *flag)
         bool haveNumber = false;
         bool haveLetter = false;
         bool haveOtherChar = false;
+        // bool havePointChar = false;
 
         for (size_t i = 0; i < word.length(); i++)
         {
@@ -256,6 +257,9 @@ int Parser::getTime(ptm timeGot, uint32_t *flag)
                 haveNumber = true;
             else if (isLetter(word[i]))
                 haveLetter = true;
+            //some word end with '.'
+            else if (i==word.length()-1 && word[i]=='.')
+                ;
             else
             {
                 haveOtherChar = true;
@@ -333,7 +337,7 @@ int Parser::getTime(ptm timeGot, uint32_t *flag)
             eraseWrod(mRemainStr);
             continue;
         }
-        if(true)
+        if(!haveOtherChar)
         {
             vector<vmInst_t> instVector; 
             size_t readSize = parseSampleUnit(mRemainStr, instVector);
