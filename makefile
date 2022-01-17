@@ -12,7 +12,8 @@ ifeq ($(OS),LINUX)
 else 
 	TOOL_CHAIN?=x86_64-w64-mingw32-gcc
 endif
-					
+
+STATIC:=-static				
 ifeq ($(OS),LINUX)							#根据不同的平台，选择不同的链接库 
 	CFLAGS:= -I./src -I./include -I./lib -I./plugin/timeparser/include -Llib -lc -lstdc++ -ldl
 else
@@ -71,14 +72,14 @@ ifeq ($(DEBUG),exclusive)
 #编译调试版本
 #bild debug version
 all:build_prepare editor $(MODULES) $(OBJ_SRC_CPP) $(OBJ_SRC_C)
-	$(TOOL_CHAIN) $(OBJ) -o $(DOUT_TARGET) $(CFLAGS) -Leditor -leditor
+	$(TOOL_CHAIN) $(OBJ) -o $(DOUT_TARGET) $(CFLAGS) -Leditor -leditor $(STATIC)
 	rm -f $(OUT_TARGET)
 
 else
 #编译release版本
 #build
 all:build_prepare editor $(MODULES) $(OBJ_SRC_CPP) $(OBJ_SRC_C)
-	$(TOOL_CHAIN) $(OBJ) -o $(OUT_TARGET) $(CFLAGS) -Leditor -leditor
+	$(TOOL_CHAIN) $(OBJ) -o $(OUT_TARGET) $(CFLAGS) -Leditor -leditor $(STATIC)
 endif
 
 #将.cpp和.c编译为.o
