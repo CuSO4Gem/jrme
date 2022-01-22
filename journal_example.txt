@@ -1,0 +1,9 @@
+==========journal==========
+My first journal
+==========config==========
+date=2022-1-1 9:00
+tag=first;second;
+level=10
+==========content==========
+hello world!
+===========================
