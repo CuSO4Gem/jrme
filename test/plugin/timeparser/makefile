@@ -1,8 +1,5 @@
-ifeq ($(OS),LINUX)							#根据不同的平台，选择不同的链接库 
-	CFLAGS:= -I./ -L./lib -lc -lstdc++ -ldl -lgtest -lm -pthread
-else
-	CFLAGS:= -I./ -L./lib -lstdc++ -ldl -DWINDOWS
-endif
+
+CFLAGS:= -I./ -L./lib -lc -lstdc++ -ldl -lgtest -lm -pthread
 
 #需要清除的临时文件
 #The tempory files which need to be clear
@@ -13,11 +10,7 @@ CLEAN_TARGET:=*.o *.elf *.exe
 SRC_CPP:=$(wildcard  $(shell pwd)/*.cpp)
 SRC_C:=$(wildcard  $(shell pwd)*.c)
 #指定可执行文件位置与名字
-ifeq ($(OS),LINUX)
-	OUT_FILE?=timeparser_test.elf
-else
-	OUT_FILE?=timeparser_test.exe
-endif
+OUT_FILE?=timeparser_test.elf
 OUT_TARGET:=$(OUT_FILE)
 #调试版本的文件名
 #the file name of debug version
