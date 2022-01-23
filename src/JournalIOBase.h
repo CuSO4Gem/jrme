@@ -1,8 +1,11 @@
 #ifndef JOURNAL_IO_BASE_H
 #define JOURNAL_IO_BASE_H
 
+#include <memory>
 #include <list>
 #include <string>
+
+#include "Journal.h"
 
 using namespace std;
 
@@ -51,24 +54,16 @@ public:
     virtual bool setWriteMode() = 0;
     /**
      * @brief read and parser from file
-     * 
-     * @param title 
-     * @param config 
-     * @param content 
-     * @return true read success
-     * @return false read fail
+     * @return nullptr: read fail
+     * @return not nllptr: read success
      */
-    virtual bool readJournal(string &title, string &config, string &content) = 0;
+    virtual shared_ptr<Journal> readJournal() = 0;
 
     /**
      * @brief write journal to file
-     * 
-     * @param title 
-     * @param config 
-     * @param content 
      * @return true 
      * @return false 
      */
-    virtual bool writeJournal(const string &title, const string &config, const string &content) = 0;
+    virtual bool writeJournal(shared_ptr<Journal> journal) = 0;
 };
 #endif
