@@ -29,6 +29,27 @@ public:
     virtual list<string> formateSupport() = 0;
 
     /**
+     * @brief is IO support Aes-256 encryption
+     * 
+     * @return true 
+     * @return false 
+     */
+    virtual bool isSupportAes256() = 0;
+
+    /**
+     * @brief Set the Key object to object
+     * 
+     * @param key 
+     */
+    virtual void setKey(uint8_t key[32]) = 0;
+
+    /**
+     * @brief clear key
+     * 
+     */
+    virtual void clearKey() = 0;
+
+    /**
      * @brief open file and ready to parse
      * 
      * @param path the journal path

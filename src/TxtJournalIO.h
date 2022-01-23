@@ -28,6 +28,10 @@ public:
 
     uint32_t apiSupport();
     list<string> formateSupport();
+    bool isSupportAes256();
+    void setKey(uint8_t key[32]);
+    void clearKey();
+    
     bool setReadMod();
     bool setWriteMode();
     bool openJournal(string path);
