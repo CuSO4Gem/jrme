@@ -214,8 +214,8 @@ shared_ptr<Journal> TxtJournalIO::readJournal()
         for (size_t i = 0; i < lineBuffer.length(); i++)
         {
             if (lineBuffer[i] != ' ' &&
-                lineBuffer[i] != '\t'
-                lineBuffer[i] != '\r'
+                lineBuffer[i] != '\t' &&
+                lineBuffer[i] != '\r' &&
                 lineBuffer[i] != '\n')
             {
                 haveContent = true;
