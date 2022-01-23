@@ -245,17 +245,20 @@ bool TxtJournalIO::writeJournal(const string &title, const string &config, const
     string lineBuffer = string("==========journal==========\n");
     mJrounal.write(lineBuffer.c_str(), lineBuffer.length());
     mJrounal.write(title.c_str(), title.length());
-    mJrounal.write("\n", 1);
+    if (title[title.length()-1]!='\n')
+        mJrounal.write("\n", 1);
 
     lineBuffer = string("==========config==========\n");
     mJrounal.write(lineBuffer.c_str(), lineBuffer.length());
     mJrounal.write(config.c_str(), config.length());
-    mJrounal.write("\n", 1);
+    if (config[config.length()-1]!='\n')
+        mJrounal.write("\n", 1);
 
     lineBuffer = string("==========content==========\n");
     mJrounal.write(lineBuffer.c_str(), lineBuffer.length());
     mJrounal.write(content.c_str(), content.length());
-    mJrounal.write("\n", 1);
+    if (content[content.length()-1]!='\n')
+        mJrounal.write("\n", 1);
 
     lineBuffer = string("===========================\n\n");
     mJrounal.write(lineBuffer.c_str(), lineBuffer.length());

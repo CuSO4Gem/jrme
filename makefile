@@ -94,7 +94,7 @@ $(OBJ_SRC_C) : %.o:%.c
 #compile test code
 .PHONY: test
 test: $(MODULES)
-	$(MAKE) -C ./test  TOOL_CHAIN=$(TOOL_CHAIN) OS=$(OS) OUT_DIR=$(OUT_DIR)
+	$(MAKE) -C ./test  TOOL_CHAIN=$(TOOL_CHAIN) OS=$(OS) CODE_DIR=$(shell pwd)/
 
 .PHONY: plugin
 plugin:
