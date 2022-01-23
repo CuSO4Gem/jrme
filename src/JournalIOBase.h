@@ -56,7 +56,7 @@ public:
      * @return true open success
      * @return false open failed
      */
-    virtual bool openJournal(string path) = 0;
+    virtual bool open(string path) = 0;
 
     /**
      * @brief set read mod, it can read journal

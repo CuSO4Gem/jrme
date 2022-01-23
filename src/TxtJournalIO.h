@@ -17,7 +17,7 @@ enum processState {
 class TxtJournalIO : public JournalIOBase
 {
 private:
-    fstream mJrounal;
+    fstream mjournal;
     string mJournalPath;
     size_t mJournalStart;
     enum processState mState;
@@ -34,7 +34,7 @@ public:
     
     bool setReadMod();
     bool setWriteMode();
-    bool openJournal(string path);
+    bool open(string path);
     shared_ptr<Journal> readJournal();
     bool writeJournal(shared_ptr<Journal> journal);
 };
