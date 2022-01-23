@@ -208,7 +208,22 @@ shared_ptr<Journal> TxtJournalIO::readJournal()
             finded = true;
             break;
         }
-        else
+        
+        /* ignore the line wich without any content*/
+        bool haveContent = false;
+        for (size_t i = 0; i < lineBuffer.length(); i++)
+        {
+            if (lineBuffer[i] != ' ' &&
+                lineBuffer[i] != '\t'
+                lineBuffer[i] != '\r'
+                lineBuffer[i] != '\n')
+            {
+                haveContent = true;
+                break;
+            }
+        }
+        
+        if (haveContent)
             readBuffer.append(lineBuffer + string("\n"));
     }
     if (!finded)
