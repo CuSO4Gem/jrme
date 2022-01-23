@@ -71,14 +71,17 @@ bool TxtJournalIO::openJournal(string path)
         else
         {
             mJrounal.close();
+            mState = INITED;
             return true;
         }
     }
 
+    /*an empty file, just rewrite it*/
     mJrounal.seekg(0, ios::end);
-    if (mJrounal.tellg()<21)
+    if (0==mJrounal.tellg())
     {
         mJrounal.close();
+        mState = INITED;
         return true;
     }
     mJrounal.seekg(0, ios::beg);

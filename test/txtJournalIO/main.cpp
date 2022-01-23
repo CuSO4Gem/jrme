@@ -23,8 +23,8 @@ TEST(TxtJournalIO, read)
     journalIO.setReadMod();
     for (size_t i = 0; i < 3; i++)
     {
-        shared_ptr<Journal> gotJournal = journalIO.readJournal();
-        ASSERT_TRUE(gotJournal!=nullptr) << "journalIO read faild";
+        shared_ptr<Journal> journal = journalIO.readJournal();
+        ASSERT_TRUE(journal!=nullptr) << "journalIO read faild";
         
         string lineBuffer;
         Journal jStandard;
@@ -35,28 +35,56 @@ TEST(TxtJournalIO, read)
         getline(journalStore, lineBuffer, '#');
         jStandard.setContent(lineBuffer);
         
-        ASSERT_TRUE(*gotJournal == jStandard) << "fail in loop " << to_string(i);
+        ASSERT_TRUE(*journal == jStandard) << "fail in loop " << to_string(i);
     }
 }
-/*
+
 TEST(TxtJournalIO, write)
 {
     ifstream journalStore;
     journalStore.open("read1Store.txt");
-    ASSERT_TRUE(journalStore.is_open()) << "read1Store.txt open failed";
+    ASSERT_TRUE(journalStore.is_open()) << "read1Store.txt open failed when verfy write";
+    
     TxtJournalIO journalIO;
-    ASSERT_TRUE(journalIO.openJournal("test.txt")) << "TxtJournalIO open failed";
-    journalIO.setWriteMode();
-    list<shared_ptr<Journal>> journalList;
+    string fileToWrite = string("test.txt");
+    ASSERT_TRUE(journalIO.openJournal(fileToWrite)) << "TxtJournalIO open failed";
+    bool ret = journalIO.setWriteMode();
+    for (size_t i = 0; i < 3; i++)
+    {
+        string lineBuffer;
+        shared_ptr<Journal> jStandard = shared_ptr<Journal>(new Journal);
+        getline(journalStore, lineBuffer, '#');
+        jStandard->setTitle(lineBuffer);
+        getline(journalStore, lineBuffer, '#');
+        jStandard->setConfig(lineBuffer);
+        getline(journalStore, lineBuffer, '#');
+        jStandard->setContent(lineBuffer);
+        
+        bool writeRet = journalIO.writeJournal(jStandard);
+        ASSERT_TRUE(writeRet) << "journalIO wirte file:" << fileToWrite << " failed";
+    }
+    
+    /* verfy writen file */
+    journalStore.seekg(0, ios::beg);
+    ASSERT_TRUE(journalStore.is_open()) << "read1Store.txt open failed when verfy write";
+    journalIO.setReadMod();
     for (size_t i = 0; i < 3; i++)
     {
         shared_ptr<Journal> journal = journalIO.readJournal();
-        ASSERT_TRUE(gotJournal!=nullptr) << "journalIO read faild";
-        journalList.push_back(journal);
+        ASSERT_TRUE(journal!=nullptr) << "journalIO read faild when verfy write";
+        
+        string lineBuffer;
+        Journal jStandard;
+        getline(journalStore, lineBuffer, '#');
+        jStandard.setTitle(lineBuffer);
+        getline(journalStore, lineBuffer, '#');
+        jStandard.setConfig(lineBuffer);
+        getline(journalStore, lineBuffer, '#');
+        jStandard.setContent(lineBuffer);
+        
+        ASSERT_TRUE(*journal == jStandard) << " verfy write fail in loop " << to_string(i);
     }
-    
-
-}*/
+}
 
 int main(int argc, char* argv[]) {
     
