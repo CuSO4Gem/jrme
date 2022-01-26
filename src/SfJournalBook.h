@@ -3,7 +3,9 @@
 
 #include <list>
 #include <memory>
+#include <mutex>
 
+#include "AutoLock.h"
 #include "Journal.h"
 #include "JournalBookBase.h"
 #include "JournalIOBase.h"
@@ -13,6 +15,8 @@ class SfJournalBook : public JournalBookBase
 {
 private:
     shared_ptr<JournalIOBase> mJournalIO;
+    list<shared_ptr<Journal>> mJournalList;
+    mutex mJournalListLock;
 
 public:
     SfJournalBook() = default;
@@ -21,5 +25,13 @@ public:
     bool open(string path);
     void sort(int32_t type);
     bool save();
+
+    size_t size();
+    shared_ptr<Journal> at(size_t pos);
+    shared_ptr<Journal> operator [](size_t pos);
+    bool insert(size_t pos, shared_ptr<Journal> journal);
+    void push_front(shared_ptr<Journal> journal);
+    void push_back(shared_ptr<Journal> journal);
+    bool swap(size_t pos1, size_t pos2);
 };
 #endif
