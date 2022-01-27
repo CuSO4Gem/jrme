@@ -123,7 +123,7 @@ bool configGetline(istringstream &configStream, string &key, string &value)
     return true;
 }
 
-time_t getStampFormConfig(string &config)
+time_t getStampFormConfig(const string &config)
 {
     string key, value;
     istringstream configStream = istringstream(config);

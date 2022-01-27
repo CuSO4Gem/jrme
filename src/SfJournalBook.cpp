@@ -1,4 +1,15 @@
+#include <algorithm> 
+#include <vector>
+
 #include "SfJournalBook.h"
+#include "utils.h"
+
+struct fastSortData
+{
+    time_t stamp;
+    size_t order;
+};
+
 
 bool SfJournalBook::open(string path)
 {
@@ -16,14 +27,41 @@ bool SfJournalBook::open(string path)
     return true;
 }
 
-void journalDataCmp(shared_ptr<Journal> j1, shared_ptr<Journal> j2)
+static bool fastSortDataCmp(const fastSortData &d1,const fastSortData &d2)
 {
-    
+    return d1.stamp<d2.stamp;
 }
 
-void SfJournalBook::sort()
+void SfJournalBook::order()
 {
-    ;
+    //todo : more flexable sort
+    AutoLock aLock = AutoLock(mJournalListLock);
+    vector<fastSortData> fsdVector = vector<fastSortData>(mJournalList.size());
+
+    size_t pos = 0;
+    for (auto &it:mJournalList)
+    {
+        fsdVector[pos].order = pos;
+        fsdVector[pos].stamp = getStampFormConfig(it->getConfig());
+        pos++;
+    }
+    sort(fsdVector.begin(), fsdVector.end(), fastSortDataCmp);
+
+    list<shared_ptr<Journal>> jTmpList = list<shared_ptr<Journal>>(mJournalList);
+    list<shared_ptr<Journal>>::iterator jListIt = mJournalList.begin();
+    for (pos=0; pos<fsdVector.size(); pos++)
+    {
+        list<shared_ptr<Journal>>::iterator jTmpIt = jTmpList.begin();
+        for (size_t i = 0; i < fsdVector[pos].order; i++)
+        {
+            jTmpIt++;
+        }
+        *jListIt = *jTmpIt;
+
+        // 最后一次不自增，防止野指针
+        if (jListIt != mJournalList.end())
+            jListIt++;
+    }
 }
 
 bool SfJournalBook::save()
