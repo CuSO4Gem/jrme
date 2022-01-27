@@ -23,7 +23,7 @@ public:
     ~SfJournalBook();
 
     bool open(string path);
-    void sort(int32_t type);
+    void sort();
     bool save();
 
     size_t size();

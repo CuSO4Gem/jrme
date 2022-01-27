@@ -16,13 +16,29 @@ bool SfJournalBook::open(string path)
     return true;
 }
 
-void SfJournalBook::sort(int32_t type)
+void journalDataCmp(shared_ptr<Journal> j1, shared_ptr<Journal> j2)
+{
+    
+}
+
+void SfJournalBook::sort()
 {
     ;
 }
 
 bool SfJournalBook::save()
 {
+    AutoLock aLock = AutoLock(mJournalListLock);
+    if (!mJournalIO->setWriteMode())
+        return false;
+
+    for (auto &it:mJournalList)
+    {
+        if (!mJournalIO->writeJournal(it))
+        {
+            return false;
+        }
+    }
     return true;
 }
 
