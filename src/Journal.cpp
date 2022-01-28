@@ -27,7 +27,7 @@ string Journal::getTitle()
     return mTitle;
 }
 
-string Journal::getConfig()
+string& Journal::getConfig()
 {
     return mConfig;
 }

@@ -41,27 +41,6 @@ void jumpNumChar(size_t *pos, const string &inStr)
     }
 }
 
-void removeMultipleSpaces(string &str){
-    uint32_t i=0;
-    uint32_t gotSpace=0;
-    while (i<str.length())
-    {
-        if (str[i]==' ')
-            gotSpace++;
-        else
-            gotSpace=0;
-        
-        if (gotSpace>1)
-        {
-            str.erase(i,1);
-        }
-        else
-        {
-            i++;
-        }
-    }
-}
-
 void tabToSpace(string &str)
 {
     size_t pos;
@@ -120,6 +99,75 @@ bool configGetline(istringstream &configStream, string &key, string &value)
     {
         value.erase(value.length()-1);
     }
+    return true;
+}
+
+
+void removeMultipleSpaces(string &str){
+    uint32_t i=0;
+    uint32_t gotSpace=0;
+    while (i<str.length())
+    {
+        if (str[i]==' ')
+            gotSpace++;
+        else
+            gotSpace=0;
+        
+        if (gotSpace>1)
+        {
+            str.erase(i,1);
+        }
+        else
+        {
+            i++;
+        }
+    }
+}
+
+bool getValueFromConfig(const string &config, const string &key, string value)
+{
+    string keyBuffer, valueBuffer;
+    istringstream configStream = istringstream(config);
+    
+    bool finded = false;
+    while(configGetline(configStream, keyBuffer, valueBuffer))
+    {
+        if (keyBuffer==key)
+        {
+            value = valueBuffer;
+            finded = true;
+            break;
+        }
+    }
+    return finded;
+}
+
+bool setValueToConfig(string &config, const string &key,const string value)
+{
+    string keyBuffer, valueBuffer, lineBuffer;
+    istringstream configStream = istringstream(config);
+    
+    bool finded = false;
+    size_t keyBeginPos = configStream.tellg();
+    while(configGetline(configStream, keyBuffer, valueBuffer))
+    {
+        if (keyBuffer==key)
+        {
+            finded = true;
+            break;
+        }
+        keyBeginPos = configStream.tellg();
+    }
+    if (!finded)
+        return false;
+    
+    configStream.seekg(keyBeginPos);
+    getline(configStream, lineBuffer);
+    size_t len = lineBuffer.length();
+    config.erase(keyBeginPos, len);
+    string insertString = key+"="+value;
+    config.insert(keyBeginPos, insertString);
+
     return true;
 }
 
