@@ -9,6 +9,7 @@ class JournalBookBase
 public:
     virtual ~JournalBookBase() = default;
 
+    virtual void setKey(uint8_t key[32]) = 0;
     virtual bool open(string path) = 0;
     virtual void close() = 0;
     virtual void order() = 0;

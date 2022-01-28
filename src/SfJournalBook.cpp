@@ -10,6 +10,10 @@ struct fastSortData
     size_t order;
 };
 
+void SfJournalBook::setKey(uint8_t key[32])
+{
+    ;
+}
 
 bool SfJournalBook::open(string path)
 {
