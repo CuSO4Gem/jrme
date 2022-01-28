@@ -434,9 +434,9 @@ Date Parser::parseVM(vector<vmInst_t> &vmInst, uint32_t *resultFlag, int32_t *es
                 tmpDate.setYear(nowDate.year());
             else if (0==it.number)
                 tmpDate.setYear(nowDate.year());
-            else if (it.number<0 && tmpDate.year()+it.number>1900)
+            else if (it.number<0 && tmpDate.year()+it.number>1970)
                 tmpDate.addYear(it.number);
-            else if (it.number>1900)
+            else if (it.number>1970)
                 tmpDate.setYear(it.number);
             else
             {
@@ -680,7 +680,7 @@ Date Parser::parseVM(vector<vmInst_t> &vmInst, uint32_t *resultFlag, int32_t *es
         }
     }
 
-    if (resultDate.year()<1900)
+    if (resultDate.year()<1970)
     {
         *estimation = min(TIME_PARSE_LITTLE_SUCCESS, *estimation);
     }
@@ -976,7 +976,7 @@ void Parser::parseFormat(string &words, vector<vmInst_t> &instVector)
     //YYY-MM-DD
     regex pattern = regex("(\\d{4})[^:]{1,1}(\\d{1,2})[^:]{1,1}(\\d{1,2})");
     if (regex_search(words, regexResult, pattern) &&
-        atoi(regexResult.str(1).c_str())>=1900 &&
+        atoi(regexResult.str(1).c_str())>=1970 &&
         atoi(regexResult.str(2).c_str())<=12 &&
         atoi(regexResult.str(3).c_str())<=31)
     {
@@ -991,7 +991,7 @@ void Parser::parseFormat(string &words, vector<vmInst_t> &instVector)
     if (regex_search(words, regexResult, pattern) &&
         atoi(regexResult.str(1).c_str())<=31 &&
         atoi(regexResult.str(2).c_str())<=12 &&
-        atoi(regexResult.str(3).c_str())>=1900)
+        atoi(regexResult.str(3).c_str())>=1970)
     {
         DEBUGP("DD-MM-YYYY\n");
         instVector.push_back(vmInst_t {{'m', 'd'}, true, atoi(regexResult.str(1).c_str())});

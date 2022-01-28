@@ -207,7 +207,7 @@ time_t getStampFormConfig(const string &config)
     if (numberlist.size()==0)
         return 0;
     
-    Date date = Date(1900, 01, 01, 9, 00, 00);
+    Date date = Date(1970, 01, 01, 9, 00, 00);
     uint32_t numberOder=0;
     for (auto &it:numberlist)
     {
@@ -216,7 +216,7 @@ time_t getStampFormConfig(const string &config)
         {
         case 0:
             year = it;
-            if (year<1900 || year>9999)
+            if (year<1970 || year>9999)
                 return 0;
             else
                 date.setYear(year);

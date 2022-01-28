@@ -1,6 +1,6 @@
 #选择想要编译测试模块
 #select test modules which want to compile
-MODULES+=plugin txtJournalIO sfJournalBook
+MODULES+=plugin txtJournalIO sfJournalBook configNode
 
 #依次编译所有的测试模组
 #build every test modules one by one
