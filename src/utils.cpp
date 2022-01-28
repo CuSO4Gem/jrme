@@ -37,7 +37,7 @@ void jumpNumChar(size_t *pos, const string &inStr)
         if (*pos>=inStr.length() || !isNumChar(inStr[*pos]))
             break;
         else
-            *pos++;
+            *pos += 1;
     }
 }
 

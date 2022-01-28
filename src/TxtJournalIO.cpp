@@ -164,6 +164,12 @@ bool TxtJournalIO::open(string path)
     return true;
 }
 
+void TxtJournalIO::close()
+{
+    mjournal.close();
+    mState = UNINITED;
+}
+
 shared_ptr<Journal> TxtJournalIO::readJournal()
 {
     if (!mjournal.is_open() || mState!=READ)

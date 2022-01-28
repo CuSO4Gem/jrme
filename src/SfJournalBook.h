@@ -23,6 +23,7 @@ public:
     ~SfJournalBook() = default;
 
     bool open(string path);
+    void close();
     void order();
     bool save();
 

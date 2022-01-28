@@ -28,6 +28,13 @@ bool SfJournalBook::open(string path)
     return true;
 }
 
+void SfJournalBook::close()
+{
+    AutoLock aLock = AutoLock(mJournalListLock);
+    mJournalIO->close();
+    mJournalList.clear();
+}
+
 static bool fastSortDataCmp(const fastSortData &d1,const fastSortData &d2)
 {
     return d1.stamp<d2.stamp;
@@ -38,7 +45,6 @@ void SfJournalBook::order()
     //todo : more flexable sort
     AutoLock aLock = AutoLock(mJournalListLock);
     vector<fastSortData> fsdVector = vector<fastSortData>(mJournalList.size());
-
     size_t pos = 0;
     for (auto &it:mJournalList)
     {
@@ -47,7 +53,6 @@ void SfJournalBook::order()
         pos++;
     }
     sort(fsdVector.begin(), fsdVector.end(), fastSortDataCmp);
-
     list<shared_ptr<Journal>> jTmpList = list<shared_ptr<Journal>>(mJournalList);
     list<shared_ptr<Journal>>::iterator jListIt = mJournalList.begin();
     for (pos=0; pos<fsdVector.size(); pos++)
@@ -63,6 +68,9 @@ void SfJournalBook::order()
         if (jListIt != mJournalList.end())
             jListIt++;
     }
+
+    /*verfy*/
+    
 }
 
 bool SfJournalBook::save()
