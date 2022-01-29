@@ -1,6 +1,8 @@
 #选择想要编译测试模块
 #select test modules which want to compile
-MODULES+=plugin txtJournalIO sfJournalBook configNode
+MODULES+=txtJournalIO sfJournalBook configNode
+
+TOOL_CHAIN?=gcc
 
 #依次编译所有的测试模组
 #build every test modules one by one
@@ -8,6 +10,12 @@ all:
 	@ for i in $(MODULES); \
 	do \
 	$(MAKE) -C $$i TOOL_CHAIN=$(TOOL_CHAIN) CODE_DIR=$(shell pwd); \
+	done
+
+test: 
+	@ for i in $(MODULES); \
+	do \
+	cd $(shell pwd)/$$i && ./main.elf;\
 	done
 
 .PHONY: clean

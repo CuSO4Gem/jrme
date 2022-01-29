@@ -10,7 +10,7 @@ level=10
 ==========content==========
 hello world!
 the second line.
-===========================
+###########################
 
 ========== journal ==========
 have space in spliter
@@ -20,7 +20,7 @@ tag=first;second;
 level=10
 ========== content ==========
 hello world!
-===========================
+###########################
 
 ========== journal ==========
 with null line in content
@@ -33,4 +33,4 @@ level=10
 	
 ========== content ==========
 hello world!
-===========================
+###########################

@@ -348,7 +348,7 @@ shared_ptr<Journal> strToJournal(const string &inStr)
     while (getline(strStream, lineBuffer))
     {
         size_t prLen=0;
-        if (regex_search(lineBuffer, regexResult, regex("^={4,}[ ,\t,\r,\n]{0,}$")))
+        if (regex_search(lineBuffer, regexResult, regex("^#{4,}[ ,\t,\r,\n]{0,}$")))
         {
             break;
         }
