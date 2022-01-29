@@ -48,7 +48,7 @@ void writeJournal(string bookPath, string timeDescription, string title)
     strBuffer.append(" \n");
     strBuffer.append("==========config==========\n");
     strBuffer.append(journal->getConfig());
-    strBuffer.append("==========content==========\n  ");
+    strBuffer.append("==========content==========");
 
     TxtEditor editor;
     editor.setInitStr(strBuffer);
