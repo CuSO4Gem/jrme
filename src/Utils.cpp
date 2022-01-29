@@ -2,7 +2,7 @@
 #include <list>
 #include <sstream>
 
-#include "utils.h"
+#include "Utils.h"
 
 inline bool isNumChar(const char ch)
 {
@@ -124,7 +124,7 @@ void removeMultipleSpaces(string &str){
     }
 }
 
-bool getValueFromConfig(const string &config, const string &key, string value)
+bool getValueFromConfig(const string &config, const string &key, string &value)
 {
     string keyBuffer, valueBuffer;
     istringstream configStream = istringstream(config);

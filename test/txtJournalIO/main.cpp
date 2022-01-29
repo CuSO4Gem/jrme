@@ -22,7 +22,7 @@ TEST(TxtJournalIO, read)
     for (size_t i = 0; i < 3; i++)
     {
         shared_ptr<Journal> journal = journalIO.readJournal();
-        ASSERT_TRUE(journal!=nullptr) << "journalIO read faild";
+        ASSERT_TRUE(journal!=nullptr) << "journalIO read fail";
         
         string lineBuffer;
         Journal jStandard;
@@ -69,7 +69,7 @@ TEST(TxtJournalIO, write)
     for (size_t i = 0; i < 3; i++)
     {
         shared_ptr<Journal> journal = journalIO.readJournal();
-        ASSERT_TRUE(journal!=nullptr) << "journalIO read faild when verfy write";
+        ASSERT_TRUE(journal!=nullptr) << "journalIO read fail when verfy write";
         
         string lineBuffer;
         Journal jStandard;

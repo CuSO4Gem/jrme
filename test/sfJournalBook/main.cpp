@@ -10,7 +10,7 @@ using namespace std;
 
 
 #include "SfJournalBook.h"
-#include "utils.h"
+#include "Utils.h"
 
 TEST(SFJournalBook, total)
 {
@@ -35,7 +35,7 @@ TEST(SFJournalBook, total)
     ASSERT_EQ(journalBook.size(), 4) << "journal on SfJournalBook not eq 4 after insert";
 
     journalBook.order();
-    ASSERT_TRUE(journalBook.save()) << "journal book save faild";
+    ASSERT_TRUE(journalBook.save()) << "journal book save fail";
     journalBook.close();
     
     //verfy

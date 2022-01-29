@@ -1,7 +1,7 @@
 #include "JrmeInstall.h"
 
 #include "iniparser.hpp"
-#include "utils.h"
+#include "Utils.h"
 
 #include <iostream>
 #include <sys/stat.h>
