@@ -1,4 +1,17 @@
 #include "ConfigNodeMaster.h"
+#include "DateConfigNode.h"
+#include "LevelConfigNode.h"
+#include "TagConfigNode.h"
+/*
+class PluginNode : public ConfigNodeBase
+{
+private:
+public:
+    PluginNode();
+    ~PluginNode();
+
+    bool loadPlugin(string path);
+};*/
 
 ConfigNodeMaster::ConfigNodeMaster()
 {

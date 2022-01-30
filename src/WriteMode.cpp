@@ -3,8 +3,11 @@
 #include <sys/stat.h>
 
 #include "ConfigNodeMaster.h"
+#include "DateConfigNode.h"
 #include "date.h"
+#include "TagConfigNode.h"
 #include "KiloEditor.h"
+#include "LevelConfigNode.h"
 #include "SfJournalBook.h"
 #include "WriteMode.h"
 

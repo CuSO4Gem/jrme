@@ -7,10 +7,31 @@
 
 using namespace std;
 
+/**
+ * @brief Get the Config Root dirstory
+ * 
+ * @return string 
+ */
 string getConfigRootDir();
 
-string getConfigPath();
+/**
+ * @brief Get the Config Path of jrme
+ * 
+ * @return string 
+ */
+string getConfigFilePath();
 
+/**
+ * @brief 
+ * 
+ */
+
+/**
+ * @brief install to init jrme, if need
+ * 
+ * @return true install success or not need to install
+ * @return false install fail
+ */
 bool installIfNeed();
 
 #endif
