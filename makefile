@@ -9,7 +9,7 @@ TEMP_FILES:=src/*.o lib/*.o
 
 TOOL_CHAIN?=gcc
 
-STATIC:=-static				
+STATIC:=		
 CFLAGS:= -I./src -I./include -I./lib -I./plugin/timeparser/include -Llib -lc -lstdc++ -ldl
 
 #传参决定是否需要调试，如果DEBUG=exclusive，则调试的时候会删除release版本
@@ -102,6 +102,8 @@ build_prepare:
 .PHONY: clean
 clean:
 	rm -rf $(CLEAN_TARGET)
+ifeq ($(PLUGIN),y)
 	$(MAKE) -C ./plugin clean
+endif
 	$(MAKE) -C ./test clean
 	$(MAKE) -C ./editor clean

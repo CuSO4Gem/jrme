@@ -41,14 +41,14 @@ SaveDate::~SaveDate()
     return;
 }
 
-void SaveDate::preprocess(const struct journalIn_s *refJournal, struct journal_s *retJournal)
+void SaveDate::preprocess(const struct journal_cs *refJournal, struct journal_s *retJournal)
 {
     *retJournal = mPreRetJournal;
     return;
 }
 
-void SaveDate::postprocess(const struct journalIn_s *refJournal, struct journal_s *retJournal)
-{
+void SaveDate::postprocess(const struct journal_cs *refJournal, struct journal_s *retJournal)
+{/*
     if (refJournal->config==NULL)
         return;
     
@@ -57,13 +57,36 @@ void SaveDate::postprocess(const struct journalIn_s *refJournal, struct journal_
     
     string config = string(refJournal->config);
     setValueToConfig(config, "save date", Time().toDate().toString());
-    mPostRetJournal.config = (char*)malloc(config.length()+1);
+    printf("debug setValueToConfig end\n");
+    if (!mPostRetJournal.config)
+    {
+        printf("debug malloc\n");
+        mPostRetJournal.config = (char*)malloc(config.length()+1);
+    }
+    else
+    {
+        printf("debug realloc\n");
+        mPostRetJournal.config = (char*)realloc(mPostRetJournal.config, config.length()+1);
+    }
+    
+    printf("debug befor memcpy\n");
     memcpy(mPostRetJournal.config, config.c_str(), config.length());
     mPostRetJournal.config[config.length()] = '\0';
-
-    *retJournal = mPostRetJournal;
+    retJournal->config = mPostRetJournal.config;
+    */
+    // retJournal->config = mPostRetJournal.config;
+    char *tmp = (char *)malloc(10);
+    // mPostRetJournal.config = (char *)malloc(10);
+    // printf("mPostRetJournal.config 1=%d", mPostRetJournal.config);
+    // mPostRetJournal.config = NULL;
+    printf("mPostRetJournal.config 2=%d\n", mPostRetJournal.config);
+    // retJournal->config = tmp;
     return;
 }
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 bool allocate_instance(void *handle)
 {
@@ -76,17 +99,22 @@ bool release_instance(void *handle)
     if (handle==NULL)
         return false;
 
-    // delete const_cast<SaveDate*>(handle);
+    delete (SaveDate*)handle;
+    handle = NULL;
     return true;
 }
 
-void preprocess(void *handle, const struct journalIn_s *refJournal, struct journal_s *retJournal)
+void preprocess(void *handle, const struct journal_cs *refJournal, struct journal_s *retJournal)
 {
     return;
 }
 
-void postprocess(void *handle, const struct journalIn_s *refJournal, struct journal_s *retJournal)
+void postprocess(void *handle, const struct journal_cs *refJournal, struct journal_s *retJournal)
 {
     SaveDate *inst = (SaveDate*)handle;
     inst->postprocess(refJournal, retJournal);
 }
+
+#ifdef __cplusplus
+}
+#endif

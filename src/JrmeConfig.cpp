@@ -14,15 +14,22 @@ using namespace std;
 string getConfigRootDir()
 {
     char const* home = getenv("HOME");
-    string homeDir = string(home)+string("/.jrme/");
-    return homeDir;
+    string dir = string(home)+string("/.jrme/");
+    return dir;
 }
 
 string getConfigFilePath()
 {
     char const* home = getenv("HOME");
-    string homeDir = string(home)+string("/.jrme/config.ini");
-    return homeDir;
+    string dir = string(home)+string("/.jrme/config.ini");
+    return dir;
+}
+
+string getPluginDir()
+{
+    char const* home = getenv("HOME");
+    string dir = string(home)+string("/.jrme/plugin/");
+    return dir;
 }
 
 /**
@@ -94,7 +101,7 @@ bool installIfNeed()
     }
 
     /*plugin dir*/
-    target = path+string("plugin/");
+    target = getPluginDir();
     if (access(target.c_str(), F_OK) != 0)
     {
         if (mkdir(target.c_str(), 0700) != 0)

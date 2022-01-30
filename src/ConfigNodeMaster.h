@@ -10,15 +10,22 @@ class ConfigNodeMaster
 {
 private:
     list<shared_ptr<ConfigNodeBase>> mNodeList;
-    string mConfig;
 
 public:
     ConfigNodeMaster();
     ~ConfigNodeMaster() = default;
 
     size_t nodeSize();
-    bool loadPlugin(string name) {return true;};
-    bool loadPlagin(list<string> nameList) {return true;};
+
+    /**
+     * @brief add plug in node to ConfigNodeMaster
+     * 
+     * @param name plugin node
+     * @return true load plugin success
+     * @return false load plugin faild
+     */
+    bool addPluginNode(string name);
+    bool addPluginNode(list<string> nameList) {return true;};
 
     string genConfig();
     void preprocess(shared_ptr<Journal> journal);

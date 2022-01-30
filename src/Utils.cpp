@@ -48,6 +48,7 @@ void tabToSpace(string &str)
     while (pos<str.length())
     {
         if (str[pos] == '\t')
+            str[pos] = ' ';
         pos++;
     }
 }
