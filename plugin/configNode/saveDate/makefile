@@ -1,22 +1,24 @@
-#插件名，timeparser插件要求插件名的前缀必须是“timeparser”
-#the name of plugin.The prefix of the timeparser plugin must be timeparser
-PLAGING_NAME:=timeparser_en
 
+PLAGING_NAME:=save_date_node
+
+JRME_PLUGIN?=~/.jrme/plugin/
+TOOL_CHAIN?=gcc
 #需要清除的临时文件
 #The tempory files which need to be clear
-CLEAN_TARGET:=./*.o ../lib/*.o
 
 OUT_FILE:=$(PLAGING_NAME).so
 
+CLEAN_TARGET:=*.o $(JRME_PLUGIN)$(OUT_FILE)
+
 #头文件目录
 #include directories
-INCLUDE_DIR:=-I$(shell pwd)/../include -I$(shell pwd)/../../include -I$(shell pwd)/../lib
+INCLUDE_DIR:=-I$(shell pwd)/../../include -I$(shell pwd)/../lib
 
 
 #寻找所有.cpp 和.c文件的路径
 #find all path of .cpp and .c
-SRC_CPP:=$(wildcard  ./*.cpp  ../lib/*.cpp)
-SRC_C:=$(wildcard  ./*.c ../lib/*.c)
+SRC_CPP:=$(wildcard  ./*.cpp ../lib/*.cpp)
+SRC_C:=$(wildcard  ./*.c)
 
 #把.cpp和c 换成.o
 #replace .cpp or .c with .o
