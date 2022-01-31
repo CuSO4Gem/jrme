@@ -37,13 +37,9 @@ void writeJournal(string bookPath, string timeDescription, string title)
     ConfigNodeMaster configMaster = ConfigNodeMaster();
     Date date = Time().toDate();
     configMaster.setDate(date.stamp());
-    // load config node plugin
 
-    if (!configMaster.addPluginNode("save_date.so"))
-    {
-        printf("load plug faild!!\n");
-        return ;
-    }
+    // load config node plugin
+    configMaster.addPluginNode("save_date.so");
 
     string config = configMaster.genConfig();
     
@@ -66,11 +62,11 @@ void writeJournal(string bookPath, string timeDescription, string title)
     if (!editor.getTextFromEditor(gotStr))
         return ;
     
+    journal = strToJournal(gotStr);
     configMaster.postprocess(journal);
     
-    journal = strToJournal(gotStr);
     journalBook->push_back(journal);
     journalBook->order();
     journalBook->save();
-    // system("clear");
+    system("clear");
 }
