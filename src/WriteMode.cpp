@@ -5,6 +5,7 @@
 #include "ConfigNodeMaster.h"
 #include "DateConfigNode.h"
 #include "date.h"
+#include "EnTimeParser.h"
 #include "iniparser.hpp"
 #include "JrmeConfig.h"
 #include "TagConfigNode.h"
@@ -35,9 +36,22 @@ void writeJournal(string bookPath, string timeDescription, string title)
         return;
     }
 
-    // todo : time parse from timeDescription
+    // todo : more type of time parse from timeDescription
     ConfigNodeMaster configMaster = ConfigNodeMaster();
-    Date date = Time().toDate();
+    Date date;
+    if (timeDescription.length()==0)
+        date = Time().toDate();
+    else
+    {
+        EnTimeParser parser;
+        timeParserRet timeRet = parser.parse(timeDescription);
+        date.setYear(timeRet.year);
+        date.setMonth(timeRet.month);
+        date.setDay(timeRet.day);
+        date.setHour(timeRet.hour);
+        date.setMinute(timeRet.minute);
+        date.setSecond(timeRet.second);
+    }
     configMaster.setDate(date.stamp());
 
     // load config node plugin
