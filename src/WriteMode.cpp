@@ -5,6 +5,8 @@
 #include "ConfigNodeMaster.h"
 #include "DateConfigNode.h"
 #include "date.h"
+#include "iniparser.hpp"
+#include "JrmeConfig.h"
 #include "TagConfigNode.h"
 #include "KiloEditor.h"
 #include "LevelConfigNode.h"
@@ -39,7 +41,14 @@ void writeJournal(string bookPath, string timeDescription, string title)
     configMaster.setDate(date.stamp());
 
     // load config node plugin
-    configMaster.addPluginNode("save_date.so");
+    INI::File configFile = INI::File(getConfigFilePath());
+    string plugNames = configFile.GetSection("plugin")->GetValue("config node").AsString();
+    istringstream plugNameStream = istringstream(plugNames);
+    string pluginName;
+    while (getline(plugNameStream, pluginName, ','))
+    {
+        configMaster.addPluginNode(pluginName);
+    }
 
     string config = configMaster.genConfig();
     
