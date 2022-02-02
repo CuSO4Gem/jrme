@@ -9,26 +9,34 @@
 using namespace std;
 using namespace ec;
 
+struct save_date_s
+{
+    char *config_malloc;
+};
+
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-struct allocate_ret allocate_instance(void *handle)
+void *allocate_instance()
 {
-    struct allocate_ret ret;
-    ret.allocated = true;
-    ret.pre_title_need_more = -1;
-    ret.post_title_need_more = -1;
-    ret.pre_config_need_more = -1;
-    ret.post_config_need_more = 50;
-    ret.pre_content_need_more = -1;
-    ret.post_content_need_more = -1;
-    return ret;
+    struct save_date_s *save_data = (struct save_date_s *)malloc(sizeof(struct save_date_s));
+    save_data->config_malloc = NULL;
+    return save_data;
 }
 
-bool release_instance(void *handle)
+void release_instance(void *handle)
 {
-    return true;
+    struct save_date_s *save_data = (struct save_date_s *)handle;
+    if (!save_data)
+        return;
+
+    if (save_data->config_malloc)
+    {
+        free(save_data->config_malloc);
+    }
+    free(save_data);
 }
 
 void preprocess(void *handle, const struct journal_cs *refJournal, struct journal_s *retJournal)
@@ -37,23 +45,18 @@ void preprocess(void *handle, const struct journal_cs *refJournal, struct journa
 }
 
 void postprocess(void *handle, const struct journal_cs *refJournal, struct journal_s *retJournal)
-{    
-    if (refJournal->config==NULL)
-        return;
-    
-    if (strstr(refJournal->config, "save date")==NULL)
-        return;
-    
-    if (retJournal->config == NULL || retJournal->config_size<=0);
+{
+    struct save_date_s *save_data = (struct save_date_s *)handle;
 
     string config = string(refJournal->config);
     setValueToConfig(config, "save date", Time().toDate().toString());
-
-    if (retJournal->config_size<config.length())
-        return;
-    
+    retJournal->config = (char *)malloc(config.length()+1);
     memcpy(retJournal->config, config.c_str(), config.length());
-    retJournal->config[config.length()] = '\0';
+    (retJournal->config)[config.length()] = '\0';
+    if (save_data->config_malloc)
+        free(save_data->config_malloc);
+    
+    save_data->config_malloc = retJournal->config;
 }
 
 #ifdef __cplusplus

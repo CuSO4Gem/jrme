@@ -13,8 +13,8 @@ extern const uint32_t api_version = 1;
 extern const char key[] = "save date";
 extern const char default_value[] = "auto_fill";
 
-struct allocate_ret allocate_instance(void *handle);
-bool release_instance(void *handle);
+void *allocate_instance();
+void release_instance(void *handle);
 void preprocess(void *handle, const struct journal_cs *refJournal, struct journal_s *retJournal);
 void postprocess(void *handle, const struct journal_cs *refJournal, struct journal_s *retJournal);
 
