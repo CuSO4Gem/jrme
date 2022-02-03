@@ -93,7 +93,7 @@ pParseTime parseFunction;
 TEST(parse, sp)
 {
     timeDetail detail = {
-        string("today"),
+        string("2021-1 today"),
         0, 0, 0, 0, 0, 0,
         0,
     };
