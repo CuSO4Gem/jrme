@@ -1,5 +1,6 @@
 #include <iostream>
 #include <list>
+#include <regex>
 #include <sstream>
 
 #include "Utils.h"
@@ -271,4 +272,90 @@ time_t getStampFormConfig(const string &config)
     }
     
     return date.stamp();
+}
+
+shared_ptr<Journal> strToJournal(const string &inStr)
+{
+    istringstream strStream = istringstream(inStr);
+    shared_ptr<Journal> journl = make_shared<Journal>();
+    string readBuffer;
+    string lineBuffer;
+    smatch regexResult;
+    bool finded;
+    finded = false;
+
+    while (getline(strStream, lineBuffer))
+    {
+        size_t prLen=0;
+        if (regex_search(lineBuffer, regexResult, regex("^={2,}[ ]{0,}journal[ ]{0,}={2,}")))
+        {
+            finded = true;
+            break;
+        }
+    }
+    if (!finded)
+    {
+        return nullptr;
+    }
+
+    readBuffer.clear();
+    while (getline(strStream, lineBuffer))
+    {
+        size_t prLen=0;
+        if (regex_search(lineBuffer, regexResult, regex("^={2,}[ ]{0,}config[ ]{0,}={2,}")))
+        {
+            break;
+        }
+        else
+            readBuffer.append(lineBuffer + string("\n"));
+    }
+    journl->setTitle(readBuffer);
+    if (strStream.eof())
+        return journl;
+
+
+    readBuffer.clear();
+    while (getline(strStream, lineBuffer))
+    {
+        size_t prLen=0;
+        if (regex_search(lineBuffer, regexResult, regex("^={2,}[ ]{0,}content[ ]{0,}={2,}")))
+        {
+            break;
+        }
+        
+        /* ignore the line wich without any content*/
+        bool haveContent = false;
+        for (size_t i = 0; i < lineBuffer.length(); i++)
+        {
+            if (lineBuffer[i] != ' ' &&
+                lineBuffer[i] != '\t' &&
+                lineBuffer[i] != '\r' &&
+                lineBuffer[i] != '\n')
+            {
+                haveContent = true;
+                break;
+            }
+        }
+        
+        if (haveContent)
+            readBuffer.append(lineBuffer + string("\n"));
+    }
+    journl->setConfig(readBuffer);
+    if (strStream.eof())
+        return journl;
+
+    readBuffer.clear();
+    while (getline(strStream, lineBuffer))
+    {
+        size_t prLen=0;
+        if (regex_search(lineBuffer, regexResult, regex("^={4,}[ ,\t,\r,\n]{0,}$")))
+        {
+            break;
+        }
+        else
+            readBuffer.append(lineBuffer + string("\n"));
+    }
+    journl->setContent(readBuffer);
+
+    return journl;
 }

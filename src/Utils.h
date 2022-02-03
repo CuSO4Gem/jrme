@@ -1,6 +1,8 @@
 #ifndef UTILS_H
 #define UTILS_H
 
+#include <memory>
+
 #include "date.h"
 #include "Journal.h"
 
@@ -44,4 +46,11 @@ bool setValueToConfig(string &config, const string &key,const string value);
  */
 time_t getStampFormConfig(const string &config);
 
+/**
+ * @brief parse string to journal
+ * 
+ * @param inStr 
+ * @return shared_ptr<Journal> 
+ */
+shared_ptr<Journal> strToJournal(const string &inStr);
 #endif

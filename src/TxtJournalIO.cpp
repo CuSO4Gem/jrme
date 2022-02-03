@@ -80,12 +80,12 @@ bool TxtJournalIO::open(string path)
     if (!mjournal)
     {
         /*maybe file no exist, try too create one*/
-        mjournal.open(mJournalPath, ios::out);
-        if (!mjournal)
+        string cmd = string("touch ")+path;
+        int ret = system(cmd.c_str());
+        if (ret!=0)
             return false;
         else
         {
-            mjournal.close();
             mState = INITED;
             return true;
         }
@@ -178,7 +178,7 @@ shared_ptr<Journal> TxtJournalIO::readJournal()
     if (mjournal.tellg() == 0)
         mjournal.seekg(mJournalStart);
     
-    shared_ptr<Journal> journl = shared_ptr<Journal>(new Journal);
+    shared_ptr<Journal> journl = make_shared<Journal>();
     string lineBuffer;
     string readBuffer;
     smatch regexResult;

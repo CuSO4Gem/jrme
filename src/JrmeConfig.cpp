@@ -1,6 +1,5 @@
-#include "JrmeInstall.h"
+#include "JrmeConfig.h"
 
-#include "iniparser.hpp"
 #include "Utils.h"
 
 #include <iostream>
@@ -12,10 +11,17 @@
 using namespace std;
 
 
-string getConfigDir()
+string getConfigRootDir()
 {
     char const* home = getenv("HOME");
     string homeDir = string(home)+string("/.config/");
+    return homeDir;
+}
+
+string getConfigPath()
+{
+    char const* home = getenv("HOME");
+    string homeDir = string(home)+string("/.config/jrme/config.ini");
     return homeDir;
 }
 
@@ -75,7 +81,7 @@ string getDefaultJournalPath()
 bool installIfNeed()
 {
     bool ret;
-    string path = getConfigDir();
+    string path = getConfigRootDir();
     string target = path;
 
     if (access(path.c_str(), F_OK) != 0)

@@ -6,16 +6,24 @@
 
 using namespace std;
 
-#include "TxtJournalIO.h"
-#include "KiloEditor.h"
-#include "JournalIOBase.h"
-#include "JrmeInstall.h"
+#include "WriteMode.h"
+#include "JrmeConfig.h"
 
 int main(int argc, char* argv[]) {
     bool ret;
     ret = installIfNeed();
-    printf("installIfNeed ret=%d\n", ret);
 
-    shared_ptr<JournalIOBase> jIO(new TxtJournalIO());
+    INI::File configFile = INI::File(getConfigPath());
+    string journalBookPath = configFile.GetSection("journal books")->GetValue("default").AsString();
+    string title;
+    for (size_t i = 1; i < argc; i++)
+    {
+        if (i>1)
+            title.append(string(" ") + argv[i]);
+        else
+            title.append(argv[i]);
+    }
+    writeJournal(journalBookPath, string(""), title);
+    
     return 0;
 }
