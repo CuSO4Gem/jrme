@@ -363,7 +363,7 @@ int32_t Parser::parseSampleUnit(const string words, string &instructions)
         }
     }
 
-    if (unit.find("hours"))
+    if (unit.find("hour"))
     {
         instructions.append("|hh");
         instructions.append(std::to_string(number));
