@@ -65,7 +65,7 @@ endif
 
 #------------------------------remove files-------------------------------#
 CLEAN_TARGET:=$(BUILD_DIR)* $(OUT_DIR)* 
-ifeq ($(PLUGIN),Y)
+ifeq ($(PLUGIN),y)
 	CLEAN_TARGET+=$(NOTE_IT_PLUGIN)*
 endif
 
