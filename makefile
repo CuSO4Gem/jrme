@@ -7,9 +7,9 @@ else
 endif
 					
 ifeq ($(OS),LINUX)							#根据不同的平台，选择不同的链接库 
-	CFLAGS=-I./include -I./lib -L./lib -lc -lstdc++ -ldl -static 
+	CFLAGS:=-I./include -I./lib -L./lib -lc -lstdc++ -ldl -static 
 else
-	CFLAGS=-I./include -I./lib -L./lib -lstdc++ -ldl -static -DWINDOWS
+	CFLAGS:=-I./include -I./lib -L./lib -lstdc++ -ldl -static -DWINDOWS
 endif
 
 #传参觉得是否需要调试，如果DEBUG=exclusive，则调试的时候会删除release版本
@@ -18,11 +18,11 @@ ifdef DEBUG
 endif	
 
 #寻找所有.c和.cpp文件的路径
-SRC=$(wildcard  ./src/*.c  ./src/*.cpp  ./lib/*.c ./lib/*.cpp)
+SRC:=$(wildcard  ./src/*.c  ./src/*.cpp  ./lib/*.c ./lib/*.cpp)
 #指定中间文件存放位置
-DIR=./build/
+DIR:=./build/
 #指定输出目录
-OUT_DIR=`
+OUT_DIR=./bin/
 #指定可执行文件位置与名字
 ifeq ($(OS),LINUX)							#根据不同的平台，选择不同的链接库 
 	OUT_FILE?=main.elf
@@ -58,7 +58,9 @@ endif
 $(OBJ_SRC) : %.o:%.cpp
 	$(TOOL) $< -o $(DIR)$(notdir $@) -c  $(CFLAGS)
 
+plugin:
+
 #清除可执行文件，重新编译
 clean:
-	rm -f $(DIR)* $(OUT_DIR)*
+	rm -f $(DIR)* $(OUT_DIR)* $(NOTE_IT_PLUGIN)*
 .PHONY: clean
