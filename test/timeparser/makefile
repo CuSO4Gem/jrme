@@ -11,11 +11,11 @@ CLEAN_TARGET:=*.o *.elf *.exe
 SRC_CPP:=$(wildcard  $(shell pwd)/*.cpp)
 SRC_C:=$(wildcard  $(shell pwd)*.c)
 #指定可执行文件位置与名字
-OUT_FILE?=timeparser_test.elf
+OUT_FILE?=main.elf
 OUT_TARGET:=$(OUT_FILE)
 #调试版本的文件名
 #the file name of debug version
-DOUT_FILE?=timeparser_test_debug.elf
+DOUT_FILE?=main.elf
 DOUT_TARGET:=$(DOUT_FILE)
 
 #把.cpp和c 换成.o
