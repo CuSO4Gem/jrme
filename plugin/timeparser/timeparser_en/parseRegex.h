@@ -5,7 +5,7 @@
 extern "C" {
 #endif
 
-int32_t parseRegex_normalDescribe(ptm);
+int32_t parseRegex(char*, uint32_t, ptm);
 
 #ifdef __cplusplus
 }

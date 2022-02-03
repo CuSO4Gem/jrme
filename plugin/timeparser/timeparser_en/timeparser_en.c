@@ -9,6 +9,6 @@ NOIT_IT_API int32_t parseTime(const char *str, uint32_t len, ptm ptime, uint32_t
     }
     
     ptime->tm_sec = 12;
-    parseRegex_normalDescribe(ptime);
+    parseRegex("", 1,ptime);
     return TIME_PARSE_LITTLE_SUCCESS;
 }
