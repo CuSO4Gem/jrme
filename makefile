@@ -7,18 +7,10 @@ PLUGIN?=n
 #The tempory files which need to be clear
 TEMP_FILES:=src/*.o lib/*.o
 
-ifeq ($(OS),LINUX)
-	TOOL_CHAIN?=gcc
-else 
-	TOOL_CHAIN?=x86_64-w64-mingw32-gcc
-endif
+TOOL_CHAIN?=gcc
 
 STATIC:=-static				
-ifeq ($(OS),LINUX)							#根据不同的平台，选择不同的链接库 
-	CFLAGS:= -I./src -I./include -I./lib -I./plugin/timeparser/include -Llib -lc -lstdc++ -ldl
-else
-	CFLAGS:= -I./src -I./include -I./lib -L./lib -lstdc++ -ldl -DWINDOWS
-endif
+CFLAGS:= -I./src -I./include -I./lib -I./plugin/timeparser/include -Llib -lc -lstdc++ -ldl
 
 #传参决定是否需要调试，如果DEBUG=exclusive，则调试的时候会删除release版本
 #debug or not. if DEBUG=exclusive, release version will be delate after build
@@ -37,11 +29,8 @@ BUILD_DIR:=$(shell pwd)/build/
 #choose a directory to build out jrme
 OUT_DIR:=$(shell pwd)/bin/
 #指定可执行文件位置与名字
-ifeq ($(OS),LINUX)
-	OUT_FILE?=jrme.elf
-else
-	OUT_FILE?=jrme.exe
-endif
+OUT_FILE?=jrme.elf
+OUT_FILE?=jrme.exe
 OUT_TARGET:=$(OUT_DIR)$(OUT_FILE)
 #调试版本的文件名
 #the file name of debug version
@@ -94,15 +83,15 @@ $(OBJ_SRC_C) : %.o:%.c
 #compile test code
 .PHONY: test
 test: $(MODULES)
-	$(MAKE) -C ./test  TOOL_CHAIN=$(TOOL_CHAIN) OS=$(OS) CODE_DIR=$(shell pwd)/
+	$(MAKE) -C ./test  TOOL_CHAIN=$(TOOL_CHAIN) CODE_DIR=$(shell pwd)/
 
 .PHONY: plugin
 plugin:
-	$(MAKE) -C ./plugin TOOL_CHAIN=$(TOOL_CHAIN) OS=$(OS)
+	$(MAKE) -C ./plugin TOOL_CHAIN=$(TOOL_CHAIN)
 
 .PHONY: editor
 editor:
-	$(MAKE) -C ./editor TOOL_CHAIN=$(TOOL_CHAIN) OS=$(OS)
+	$(MAKE) -C ./editor TOOL_CHAIN=$(TOOL_CHAIN)
 
 .PHONY: build_prepare
 build_prepare:

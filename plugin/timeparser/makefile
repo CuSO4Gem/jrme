@@ -7,7 +7,7 @@ PLUGINS+=timeparser_en
 all:
 	@ for i in $(PLUGINS); \
 	do \
-	$(MAKE) -C $$i TOOL_CHAIN=$(TOOL_CHAIN) OS=$(OS); \
+	$(MAKE) -C $$i TOOL_CHAIN=$(TOOL_CHAIN); \
 	done
 
 .PHONY: clean

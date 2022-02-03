@@ -5,17 +5,9 @@ OS?=LINUX
 #The tempory files which need to be clear
 TEMP_FILES=src/*.o lib/*.o
 
-ifeq ($(OS),LINUX)
-	TOOL_CHAIN?=gcc
-else 
-	TOOL_CHAIN?=x86_64-w64-mingw32-gcc
-endif
-					
-ifeq ($(OS),LINUX)							#根据不同的平台，选择不同的链接库 
-	CFLAGS:= -I./src -I./include -I./lib -L./lib -lc
-else
-	CFLAGS:= -I./src -I./include -I./lib -L./lib -lc -DWINDOWS
-endif
+TOOL_CHAIN?=gcc
+
+CFLAGS:= -I./src -I./include -I./lib -L./lib -lc
 
 #传参决定是否需要调试，如果DEBUG=exclusive，则调试的时候会删除release版本
 #debug or not. if DEBUG=exclusive, release version will be delate after build

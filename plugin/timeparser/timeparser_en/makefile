@@ -12,12 +12,6 @@ OUT_FILE:=$(PLAGING_NAME).so
 #include directories
 INCLUDE_DIR:=-I$(shell pwd)/../include -I$(shell pwd)/../../include -I$(shell pwd)/../lib
 
-ifeq ($(OS),LINUX)							#根据不同的平台，选择不同的链接库 
-	CFLAGS:=
-else
-	CFLAGS:= -DWINDOWS
-endif
-
 
 #寻找所有.cpp 和.c文件的路径
 #find all path of .cpp and .c

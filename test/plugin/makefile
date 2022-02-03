@@ -8,7 +8,7 @@ MODULES+=timeparser
 all:
 	@ for i in $(MODULES); \
 	do \
-	$(MAKE) -C $$i TOOL_CHAIN=$(TOOL_CHAIN) OS=$(OS) CODE_DIR=$(shell pwd); \
+	$(MAKE) -C $$i TOOL_CHAIN=$(TOOL_CHAIN) CODE_DIR=$(shell pwd); \
 	done
 
 .PHONY: clean
