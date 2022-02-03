@@ -416,11 +416,11 @@ int Date::timeZone() const
 #ifdef PLATFORM_WINDOWS
 	return _isUTC ? 0 : Date::localTimeZone();
 #else
-# ifdef __USE_MISC 
+# if defined(__USE_BSD) || defined(__USE_MISC)
 	return static_cast<int>(_tm.tm_gmtoff / 3600);
 # else
 	return static_cast<int>(_tm.__tm_gmtoff / 3600);
-# endif//__USE_MISC 
+# endif//__USE_BSD __USE_MISC 
 #endif // PLATFORM_WINDOWS
 }
 

@@ -12,12 +12,12 @@ struct pluginVersion {
 
 NOIT_IT_API const static struct pluginVersion  API_VERSION = {0 ,1};
 
-#define YEAR_FLAG   (1<<5)
-#define MONTH_FLGA  (1<<4)
-#define DAY_FLAG    (1<<3)
-#define HOUR_FLAG   (1<<2)
-#define MINUTE_FLAG (1<<1)
-#define SECOND_FLAG (1<<0)
+#define YEAR_FLAG   (1<<6)
+#define MONTH_FLGA  (1<<5)
+#define DAY_FLAG    (1<<4)
+#define HOUR_FLAG   (1<<3)
+#define MINUTE_FLAG (1<<2)
+#define SECOND_FLAG (1<<1)
 
 #define TIME_PARSE_FULLY_SUCCESS    4
 #define TIME_PARSE_ALMOST_SUCCESS   3

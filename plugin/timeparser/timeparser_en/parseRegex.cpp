@@ -87,7 +87,7 @@ inline uint32_t lastBitOrder(uint32_t b)
     else
     {
         i=0;
-        while (b&0x1!=0x1)
+        while ((b&0x1)==0)
         {
             b=b>>1;
             i++;
@@ -384,7 +384,6 @@ Date Parser::parseVM(vector<vmInst_t> &vmInst, uint32_t *resultFlag, int32_t *es
     uint32_t flagOut = 0, flagWeekOut = 0;
     bool pm = false;
     
-    DEBUGP("parseVM now is %s\n", resultDate.format().c_str());
     for (auto &it:vmInst)
     {
         Date tmpDate = resultDate;
@@ -434,13 +433,11 @@ Date Parser::parseVM(vector<vmInst_t> &vmInst, uint32_t *resultFlag, int32_t *es
                 break;
             }
             
-            DEBUGP("yy: befor %s <= %s\n", resultDate.format().c_str(), tmpDate.format().c_str());
             flag = YEAR_FLAG;
             if (setDateForce(resultDate, &flagOut, tmpDate, &flag))
             {
                 *estimation = min(TIME_PARSE_PARTLY_SUCCESS, *estimation);
             }
-            DEBUGP("yy: end %s <= %s\n", resultDate.format().c_str(), tmpDate.format().c_str());
             flagOut |= flag;
             break;
         
@@ -466,18 +463,15 @@ Date Parser::parseVM(vector<vmInst_t> &vmInst, uint32_t *resultFlag, int32_t *es
                 break;
             }
 
-            DEBUGP("mo: befor %s <= %s\n", resultDate.format().c_str(), tmpDate.format().c_str());
             if (setDateForce(resultDate, &flagOut, tmpDate, &flag))
             {
                 *estimation = min(TIME_PARSE_PARTLY_SUCCESS, *estimation);
             }
             flagOut |= flag;
             
-            DEBUGP("mo: end %s <= %s\n", resultDate.format().c_str(), tmpDate.format().c_str());
             break;
         
         case TWOCC("mn"):
-            tmpDate = resultDate;
             
             if (!it.haveNumber)
                 ;
@@ -523,6 +517,7 @@ Date Parser::parseVM(vector<vmInst_t> &vmInst, uint32_t *resultFlag, int32_t *es
                 *estimation = min(TIME_PARSE_PARTLY_SUCCESS, *estimation);
             }
             flagOut |= flag;
+            
             break;
         
         case TWOCC("ww"):
@@ -689,14 +684,13 @@ Date Parser::parseVM(vector<vmInst_t> &vmInst, uint32_t *resultFlag, int32_t *es
     {
         dayChange = false;
     }
-    if (dayChange && (*resultFlag&(HOUR_FLAG|MINUTE_FLAG|SECOND_FLAG))!=0)
+    if (dayChange && (*resultFlag&(HOUR_FLAG|MINUTE_FLAG|SECOND_FLAG))==0)
     {
         resultDate.setHour(9);
         resultDate.setMinute(0);
         resultDate.setSecond(0);
     }
     
-    DEBUGP("parse vm end time is %s\n", resultDate.format().c_str());
     return resultDate;
 }
 
@@ -1084,38 +1078,37 @@ bool Parser::setDateForce(Date &dst, uint32_t *dstFlag, Date &src, const uint32_
 {
     bool conflict = false;
     
-    if (lastBitOrder(*srcFlag)>=lastBitOrder(YEAR_FLAG))
+    if (lastBitOrder(*srcFlag)<=lastBitOrder(YEAR_FLAG))
     {
         if ((*dstFlag&YEAR_FLAG) && dst.year()!=src.year())
             conflict = true;
         dst.setYear(src.year());
-        DEBUGP("year set to %d\n", src.year());
     }
-    if (lastBitOrder(*srcFlag)>=lastBitOrder(MONTH_FLGA))
+    if (lastBitOrder(*srcFlag)<=lastBitOrder(MONTH_FLGA))
     {
         if ((*dstFlag&MONTH_FLGA) && dst.month()!=src.month())
             conflict = true;
         dst.setMonth(src.month());
     }
-    if (lastBitOrder(*srcFlag)>=lastBitOrder(DAY_FLAG))
+    if (lastBitOrder(*srcFlag)<=lastBitOrder(DAY_FLAG))
     {
         if ((*dstFlag&DAY_FLAG) && dst.day()!=src.day())
             conflict = true;
         dst.setDay(src.day());
     }
-    if (lastBitOrder(*srcFlag)>=lastBitOrder(HOUR_FLAG))
+    if (lastBitOrder(*srcFlag)<=lastBitOrder(HOUR_FLAG))
     {
         if ((*dstFlag&HOUR_FLAG) && dst.hour()!=src.hour())
             conflict = true;
         dst.setHour(src.hour());
     }
-    if (lastBitOrder(*srcFlag)>=lastBitOrder(MINUTE_FLAG))
+    if (lastBitOrder(*srcFlag)<=lastBitOrder(MINUTE_FLAG))
     {
         if ((*dstFlag&MINUTE_FLAG) && dst.minute()!=src.minute())
             conflict = true;
         dst.setMinute(src.minute());
     }
-    if (lastBitOrder(*srcFlag)>=lastBitOrder(SECOND_FLAG))
+    if (lastBitOrder(*srcFlag)<=lastBitOrder(SECOND_FLAG))
     {
         if ((*dstFlag&SECOND_FLAG) && dst.second()!=src.second())
             conflict = true;
@@ -1178,6 +1171,5 @@ int32_t parseRegex(const char *str, uint32_t len ,ptm ptime, uint32_t *flag)
     
     Parser timeParser(str);
     int32_t estimation = timeParser.getTime(ptime, flag);
-    printf("hello how is:%d-%d-%d %d:%d:%d",ptime->tm_year+1900, ptime->tm_mon, ptime->tm_mday, ptime->tm_hour, ptime->tm_min, ptime->tm_sec);
     return estimation;
 }
