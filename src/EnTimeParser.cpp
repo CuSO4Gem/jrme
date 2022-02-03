@@ -272,7 +272,7 @@ timeParserRet Parser::getTime()
         }
         if (word==string("ago") && !instHolder.empty())
         {
-            vector<vmInst_t> lastInst = *instHolder.end();
+            vector<vmInst_t> &lastInst = *(prev(instHolder.end()));
             size_t i=0;
             for (auto &it:lastInst)
             {
