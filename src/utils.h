@@ -14,6 +14,6 @@ using namespace::ec;
  */
 void removeMultipleSpaces(string &str);
 
-Date getJournalFormConfig(string &config);
+time_t getStampFormConfig(const string &config);
 
 #endif
