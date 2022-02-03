@@ -2,7 +2,9 @@
 #define TXT_JOURNAL_IO_H
 
 #include <fstream>
+#include <memory>
 
+#include "Journal.h"
 #include "JournalIOBase.h"
 
 enum processState {
@@ -29,8 +31,8 @@ public:
     bool setReadMod();
     bool setWriteMode();
     bool openJournal(string path);
-    bool readJournal(string &title, string &config, string &content);
-    bool writeJournal(const string &title, const string &config, const string &content);
+    shared_ptr<Journal> readJournal();
+    bool writeJournal(shared_ptr<Journal> journal);
 };
 
 #endif

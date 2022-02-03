@@ -146,15 +146,17 @@ bool TxtJournalIO::openJournal(string path)
     return true;
 }
 
-bool TxtJournalIO::readJournal(string &title, string &config, string &content)
+shared_ptr<Journal> TxtJournalIO::readJournal()
 {
     if (!mJrounal.is_open() || mState!=READ)
-        return false;
+        return shared_ptr<Journal>(nullptr);
     
     if (mJrounal.tellg() == 0)
         mJrounal.seekg(mJournalStart);
     
+    shared_ptr<Journal> journl = shared_ptr<Journal>(new Journal);
     string lineBuffer;
+    string readBuffer;
     smatch regexResult;
     bool finded;
     finded = false;
@@ -172,11 +174,11 @@ bool TxtJournalIO::readJournal(string &title, string &config, string &content)
     {
         mJrounal.close();
         mState = INITED;
-        return false;
+        return shared_ptr<Journal>(nullptr);
     }
 
     finded = false;
-    title.clear();
+    readBuffer.clear();
     while (getline(mJrounal, lineBuffer))
     {
         size_t prLen=0;
@@ -186,17 +188,18 @@ bool TxtJournalIO::readJournal(string &title, string &config, string &content)
             break;
         }
         else
-            title.append(lineBuffer + string("\n"));
+            readBuffer.append(lineBuffer + string("\n"));
     }
     if (!finded)
     {
         mJrounal.close();
         mState = INITED;
-        return false;
+        return shared_ptr<Journal>(nullptr);
     }
+    journl->setTitle(readBuffer);
 
     finded = false;
-    config.clear();
+    readBuffer.clear();
     while (getline(mJrounal, lineBuffer))
     {
         size_t prLen=0;
@@ -206,17 +209,18 @@ bool TxtJournalIO::readJournal(string &title, string &config, string &content)
             break;
         }
         else
-            config.append(lineBuffer + string("\n"));
+            readBuffer.append(lineBuffer + string("\n"));
     }
     if (!finded)
     {
         mJrounal.close();
         mState = INITED;
-        return false;
+        return shared_ptr<Journal>(nullptr);
     }
+    journl->setConfig(readBuffer);
 
     finded = false;
-    content.clear();
+    readBuffer.clear();
     while (getline(mJrounal, lineBuffer))
     {
         size_t prLen=0;
@@ -226,34 +230,38 @@ bool TxtJournalIO::readJournal(string &title, string &config, string &content)
             break;
         }
         else
-            content.append(lineBuffer + string("\n"));
+            readBuffer.append(lineBuffer + string("\n"));
     }
     if (!finded)
     {
         mJrounal.close();
         mState = INITED;
     }
+    journl->setContent(readBuffer);
 
-    return true;
+    return journl;
 }
 
-bool TxtJournalIO::writeJournal(const string &title, const string &config, const string &content)
+bool TxtJournalIO::writeJournal(shared_ptr<Journal> journal)
 {
     if (!mJrounal.is_open() || mState!=WRITE)
         return false;
 
     string lineBuffer = string("==========journal==========\n");
+    string title = journal->getTitle();
     mJrounal.write(lineBuffer.c_str(), lineBuffer.length());
     mJrounal.write(title.c_str(), title.length());
     if (title[title.length()-1]!='\n')
         mJrounal.write("\n", 1);
 
+    string config = journal->getConfig();
     lineBuffer = string("==========config==========\n");
     mJrounal.write(lineBuffer.c_str(), lineBuffer.length());
     mJrounal.write(config.c_str(), config.length());
     if (config[config.length()-1]!='\n')
         mJrounal.write("\n", 1);
 
+    string content = journal->getContent();
     lineBuffer = string("==========content==========\n");
     mJrounal.write(lineBuffer.c_str(), lineBuffer.length());
     mJrounal.write(content.c_str(), content.length());

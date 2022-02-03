@@ -6,6 +6,7 @@
 
 using namespace std;
 
+#include "Journal.h"
 #include "TxtJournalIO.h"
 #include "JournalIOBase.h"
 
