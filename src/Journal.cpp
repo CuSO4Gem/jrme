@@ -66,3 +66,13 @@ string Journal::toString()
 
     return out;
 }
+
+bool Journal::operator ==(Journal &anotherJournal)
+{
+    if (this->mTitle == anotherJournal.mTitle &&
+        this->mConfig == anotherJournal.mConfig &&
+        this->mContent == anotherJournal.mContent)
+        return true;
+    
+    return false;
+}

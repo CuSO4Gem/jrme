@@ -26,6 +26,8 @@ public:
 
     void clear();
     string toString();
+
+    bool operator ==(Journal &anotherJournal);
 };
 
 #endif

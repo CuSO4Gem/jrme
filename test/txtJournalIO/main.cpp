@@ -1,3 +1,4 @@
+#include <gtest/gtest.h>
 #include <memory>
 #include <stdio.h>
 #include <stdint.h>
