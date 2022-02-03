@@ -12,7 +12,7 @@ all:
 	$(MAKE) -C $$i TOOL_CHAIN=$(TOOL_CHAIN) CODE_DIR=$(shell pwd); \
 	done
 
-test: 
+test: all
 	@ for i in $(MODULES); \
 	do \
 	cd $(shell pwd)/$$i && ./main.elf;\

@@ -17,6 +17,7 @@ private:
     release_instance_fnc  p_release = NULL;
     preprocess_fnc  p_preprocess = NULL;
     postprocess_fnc  p_postprocess = NULL;
+    struct allocate_ret mPlugInfo;
     uint32_t mApiVersion;
     const char *mKey = NULL;
     const char *mDefaultValue = NULL;
@@ -81,7 +82,8 @@ bool PluginNode::loadPlugin(string name)
     p_preprocess = (preprocess_fnc)dlsym(mDlHandle, "preprocess");
     p_postprocess = (postprocess_fnc)dlsym(mDlHandle, "postprocess");
 
-    if (!p_allocate(mNodeHandle))
+    mPlugInfo = p_allocate(mNodeHandle);
+    if (!mPlugInfo.allocated)
     {
         dlclose(mDlHandle);
         return false;
@@ -112,8 +114,51 @@ string PluginNode::getDefaultValue()
 
 void PluginNode::preprocess(shared_ptr<Journal> journal)
 {
-    struct journal_cs constJournalRef;
+    struct journal_cs constJournal;
+    constJournal.title = journal->getTitle().c_str();
+    constJournal.config = journal->getConfig().c_str();
+    constJournal.content = journal->getContent().c_str();
     
+    string title = journal->getTitle();
+    string config = journal->getConfig();
+    string content = journal->getContent();
+    struct journal_s retJournal = {NULL, NULL, NULL, 0, 0, 0};
+    if (mPlugInfo.pre_title_need_more >= 0)
+    {
+
+        retJournal.title = (char *)malloc(title.length()+mPlugInfo.pre_title_need_more);
+        retJournal.title_size = title.length()+mPlugInfo.pre_title_need_more;
+        retJournal.title[0] = '\n';
+    }
+    if (mPlugInfo.pre_config_need_more >= 0)
+    {
+        retJournal.config = (char *)malloc(config.length()+mPlugInfo.pre_config_need_more);
+        retJournal.config_size = config.length()+mPlugInfo.pre_config_need_more;
+        retJournal.config[0] = '\n';
+    }
+    if (mPlugInfo.pre_content_need_more >= 0)
+    {
+        retJournal.content = (char *)malloc(content.length()+mPlugInfo.pre_content_need_more);
+        retJournal.content_size = content.length()+mPlugInfo.pre_content_need_more;
+        retJournal.content[0] = '\n';
+    }
+
+    p_preprocess(mNodeHandle, &constJournal, &retJournal);
+    if (retJournal.title!=NULL)
+        journal->setTitle(string(retJournal.title));
+    
+    if (retJournal.config!=NULL)
+        journal->setConfig(string(retJournal.config));
+
+    if (retJournal.content!=NULL)
+        journal->setContent(string(retJournal.content));
+    
+    if (retJournal.title)
+        free(retJournal.title);
+    if (retJournal.config)
+        free(retJournal.config);
+    if (retJournal.content)
+        free(retJournal.content);
 }
 
 void PluginNode::postprocess(shared_ptr<Journal> journal)
@@ -123,8 +168,30 @@ void PluginNode::postprocess(shared_ptr<Journal> journal)
     constJournal.config = journal->getConfig().c_str();
     constJournal.content = journal->getContent().c_str();
     
-    struct journal_s retJournal;
-    
+    string title = journal->getTitle();
+    string config = journal->getConfig();
+    string content = journal->getContent();
+    struct journal_s retJournal = {NULL, NULL, NULL, 0, 0, 0};
+    if (mPlugInfo.post_title_need_more >= 0)
+    {
+
+        retJournal.title = (char *)malloc(title.length()+mPlugInfo.post_title_need_more);
+        retJournal.title_size = title.length()+mPlugInfo.post_title_need_more;
+        retJournal.title[0] = '\n';
+    }
+    if (mPlugInfo.post_config_need_more >= 0)
+    {
+        retJournal.config = (char *)malloc(config.length()+mPlugInfo.post_config_need_more);
+        retJournal.config_size = config.length()+mPlugInfo.post_config_need_more;
+        retJournal.config[0] = '\n';
+    }
+    if (mPlugInfo.post_content_need_more >= 0)
+    {
+        retJournal.content = (char *)malloc(content.length()+mPlugInfo.post_content_need_more);
+        retJournal.content_size = content.length()+mPlugInfo.post_content_need_more;
+        retJournal.content[0] = '\n';
+    }
+
     p_postprocess(mNodeHandle, &constJournal, &retJournal);
     if (retJournal.title!=NULL)
         journal->setTitle(string(retJournal.title));
@@ -134,6 +201,13 @@ void PluginNode::postprocess(shared_ptr<Journal> journal)
 
     if (retJournal.content!=NULL)
         journal->setContent(string(retJournal.content));
+    
+    if (retJournal.title)
+        free(retJournal.title);
+    if (retJournal.config)
+        free(retJournal.config);
+    if (retJournal.content)
+        free(retJournal.content);
 
     return;
 }
