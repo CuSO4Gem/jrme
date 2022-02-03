@@ -183,7 +183,7 @@ void eraseWrod(string &str)
 
 void printVmInst(vector<vmInst_t> &instVector)
 {
-    for (auto it:instVector)
+    for (auto &it:instVector)
     {
         printf("|%c%c", it.cmd[0], it.cmd[1]);
         if (it.haveNumber)
@@ -347,7 +347,7 @@ int Parser::getTime(ptm timeGot, uint32_t *flag)
                 if (wordLastFlag)
                 {
                     wordLastFlag = false;
-                    for (auto it:instVector)
+                    for (auto &it:instVector)
                     {
                         if (it.haveNumber)
                             it.number = -abs(it.number);
