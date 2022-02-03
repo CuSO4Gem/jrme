@@ -22,6 +22,7 @@ public:
     SfJournalBook() = default;
     ~SfJournalBook() = default;
 
+    void setKey(uint8_t key[32]);
     bool open(string path);
     void close();
     void order();
