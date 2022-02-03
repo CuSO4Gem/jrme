@@ -184,13 +184,13 @@ private:
     uint32_t mParseFlag;
     
     void instSrot(vector<vmInst_t> &instVector);
-    void parseVM(string &instructions);
+    uint32_t parseVM(vector<vmInst_t> &vmInst);
     void prepare();
     void parseAmPm(string &words);
     size_t parseSampleUnit(string &words, vector<vmInst_t> &instVector);
     void parseFormat(string &words, vector<vmInst_t> &instVector);
     void parsePhrase(string &words, vector<vmInst_t> &instVector);
-
+    bool setDateConflict(Date &dst, uint32_t *dstFlag, Date &src, const uint32_t *srcFlag);
     void removeMultipleSpaces(string &str);
 };
 
@@ -309,7 +309,7 @@ int Parser::getTime(ptm timeGot)
             eraseWrod(mRemainStr);
             continue;
         }
-        if(!haveLetter && haveNumber && !haveOtherChar)
+        if(!haveOtherChar)
         {
             vector<vmInst_t> instVector; 
             size_t readSize = parseSampleUnit(mRemainStr, instVector);
@@ -351,27 +351,169 @@ int Parser::getTime(ptm timeGot)
     return mEstimation;
 }
 
-void Parser::parseVM(string &instructions)
+void Parser::parseVM(vector<vmInst_t> &vmInst)
 {
-    // ec::Time now; 
-    // while (true)
-    // {
-    //     vmInst_t cmd = readVMCmd();
-    //     if (cmd.cmd[0]==0 && cmd.cmd[1]==1)
-    //     {
-    //         break;
-    //     }
-    // }
+    Time ecTime;
+    Date nowDate = ecTime.toDate();
+    Date resultDate = ecTime.toDate();
+    bool am=false;
+    
+    for (auto &it:vmInst)
+    {
+        
+        switch (TWOCC(it.cmd))
+        {
+        case TWOCC("am"):
+            am=true;
+            break;
+
+        case TWOCC("pm"):
+            break;
+
+        case TWOCC("dd"):
+            Date tmpDate = resultDate;
+            tmpDate.setDate(nowDate.year(), nowDate.month(), nowDate.day(), 9, 0, 0);
+            if (it.haveNumber && it.number<=0)
+                tmpDate = tmpDate.toTime().addDay(it.number);
+            else if (it.haveNumber && it.number>0)
+            {
+                mEstimation = min(TIME_PARSE_PARTLY_SUCCESS, mEstimation);
+                break;
+            }
+
+            uint32_t flag = YEAR_FLAG|MONTH_FLGA|DAY_FLAG;
+            if (setDateConflict(resultDate, &mParseFlag, tmpDate, &flag))
+            {
+                mEstimation = min(TIME_PARSE_PARTLY_SUCCESS, mEstimation);
+            }
+            break;
+
+        case TWOCC("yy"):
+            Date tmpDate = resultDate;
+            if (!it.haveNumber)
+                tmpDate.setYear(nowDate.year());
+            else if (0==it.number)
+                tmpDate.setYear(nowDate.year());
+            else if (it.number<0 && tmpDate.year()+it.number>1900)
+                tmpDate.addYear(it.number);
+            else if (it.number>1900)
+                tmpDate.setYear(it.number);
+            else
+            {
+                mEstimation = min(TIME_PARSE_PARTLY_SUCCESS, mEstimation);
+                break;
+            }
+            
+            uint32_t flag = YEAR_FLAG;
+            if (setDateConflict(resultDate, &mParseFlag, tmpDate, &flag))
+            {
+                mEstimation = min(TIME_PARSE_PARTLY_SUCCESS, mEstimation);
+            }
+            break;
+        
+        case TWOCC("mo"):
+            Date tmpDate = resultDate;
+            uint32_t flag = MONTH_FLGA;
+            if (!it.haveNumber)
+                tmpDate.setMonth(nowDate.month());
+            else if (it.haveNumber==0)
+                tmpDate.setMonth(nowDate.month());
+            else if (1<=it.number && it.number<=12)
+                tmpDate.setMonth(it.number);
+            else if (-12<=it.number && it.number<=-1)
+            {
+                /*mo < 0 means that last xxx, sach as, "last may"*/
+                tmpDate.setMonth(abs(it.number));
+                tmpDate.setYear(resultDate.year()-1);
+                flag |= YEAR_FLAG;
+            }
+            else
+            {
+                mEstimation = min(TIME_PARSE_PARTLY_SUCCESS, mEstimation);
+                break;
+            }
+
+            if (setDateConflict(resultDate, &mParseFlag, tmpDate, &flag))
+            {
+                mEstimation = min(TIME_PARSE_PARTLY_SUCCESS, mEstimation);
+            }
+            break;
+        
+        case WOCC("mo"):
+            Date tmpDate = resultDate;
+            
+            if (!it.haveNumber)
+                ;
+            else if (it.number=0)
+                ;
+            else if (it.number<0)
+                tmpDate.addMonth(it.number);
+            else
+            {
+                mEstimation = min(TIME_PARSE_PARTLY_SUCCESS, mEstimation);
+                break;
+            }
+            
+            uint32_t flag = YEAR_FLAG|MONTH_FLGA;
+            if (setDateConflict(resultDate, &mParseFlag, tmpDate, &flag))
+            {
+                mEstimation = min(TIME_PARSE_PARTLY_SUCCESS, mEstimation);
+            }
+            break;
+
+        case WOCC("md"):
+            Date tmpDate = resultDate;
+
+            if(it.haveNumber && 1<=it.number && it.number<=31)
+            {                
+                tmpDate.setDay(it.number);
+                if (tmpDate.month() != resultDate.month())
+                {
+                    mEstimation = min(TIME_PARSE_PARTLY_SUCCESS, mEstimation);
+                    break;
+                }
+            }
+            else
+            {
+                mEstimation = min(TIME_PARSE_PARTLY_SUCCESS, mEstimation);
+                break;
+            }
+
+            uint32_t flag = DAY_FLAG;
+            if (setDateConflict(resultDate, &mParseFlag, tmpDate, &flag))
+            {
+                mEstimation = min(TIME_PARSE_PARTLY_SUCCESS, mEstimation);
+            }
+            break;
+        
+        case WOCC("ww"):
+            Date tmpDate = resultDate;
+            uint32_t flag = DAY_FLAG;
+
+            
+            break;
+
+        default:
+            break;
+        }
+    }
+
+    if (resultDate.year()<1900)
+    {
+        mEstimation = min(TIME_PARSE_LITTLE_SUCCESS, mEstimation);
+    }
+    
+    
     
     /*
     instructions
     am:
     pm:
+    dd: day
     yy:year
     mo:month order
     mn: monther and number
     md:day of month
-    dd: day
     ww:week
     wd:day of month
     wn: week end
@@ -414,6 +556,7 @@ void Parser::instSrot(vector<vmInst_t> &instVector)
 /*
     字符预处理
     in,on,at -> in
+    删除多余的空格
 */
 void Parser::prepare()
 {
@@ -482,6 +625,13 @@ void Parser::parseAmPm(string &words)
     removeMultipleSpaces(words);
 }
 
+/**
+ * @brief 尝试解析简单带单位时间表示
+ * 
+ * @param words 
+ * @param instVector 返回的命令
+ * @return size_t 读取长度
+ */
 size_t Parser::parseSampleUnit(string &words, vector<vmInst_t> &instVector)
 {
     if (words.length()==0)
@@ -493,7 +643,8 @@ size_t Parser::parseSampleUnit(string &words, vector<vmInst_t> &instVector)
     if (unit.length()==0)
         return -1;
     
-    while (!isLetterOnly(unit))
+    /*如果第一个单词不是纯字母，考虑看看第二个，因为前一个可能是数字*/
+    if (!isLetterOnly(unit))
     {
         unitBegin = nextWord(words, unitBegin);
         if (unitBegin == string::npos)
@@ -502,6 +653,11 @@ size_t Parser::parseSampleUnit(string &words, vector<vmInst_t> &instVector)
         if (unit.length()==0)
             return -1;
     }
+    if (!isLetterOnly(unit))
+    {
+        return -1;
+    }
+
     size_t unitEnd=unitBegin;
     while(unitEnd < words.length())
     {
@@ -617,6 +773,12 @@ size_t Parser::parseSampleUnit(string &words, vector<vmInst_t> &instVector)
     return unitEnd;
 }
 
+/**
+ * @brief 解析常见的格式化时间表达，并在原文中擦除
+ * 
+ * @param words 
+ * @param instVector 输出的命令
+ */
 void Parser::parseFormat(string &words, vector<vmInst_t> &instVector)
 {
     if (words.length()==0)
@@ -678,6 +840,12 @@ void Parser::parseFormat(string &words, vector<vmInst_t> &instVector)
     removeMultipleSpaces(words);
 }
 
+/**
+ * @brief 在words中找到常见词组，解析成命令并将解析过的词组擦除。
+ * 
+ * @param words 
+ * @param instVector 输出的命令
+ */
 void Parser::parsePhrase(string &words, vector<vmInst_t> &instVector)
 {
     string strFind;
@@ -725,6 +893,48 @@ void Parser::removeMultipleSpaces(string &str){
             i++;
         }
     }
+}
+
+bool Parser::setDateConflict(Date &dst, uint32_t *dstFlag, Date &src, const uint32_t *srcFlag)
+{
+    bool conflict = false;
+    if (*srcFlag&YEAR_FLAG)
+    {
+        if ((*dstFlag&YEAR_FLAG) && dst.year()!=src.year())
+            conflict = true;
+        dst.setYear(src.year());
+    }
+    if (*srcFlag&MONTH_FLGA)
+    {
+        if ((*dstFlag&MONTH_FLGA) && dst.month()!=src.month())
+            conflict = true;
+        dst.setMonth(src.month());
+    }
+    if (*srcFlag&DAY_FLAG)
+    {
+        if ((*dstFlag&DAY_FLAG) && dst.day()!=src.day())
+            conflict = true;
+        dst.setDay(src.day());
+    }
+    if (*srcFlag&HOUR_FLAG)
+    {
+        if ((*dstFlag&HOUR_FLAG) && dst.hour()!=src.hour())
+            conflict = true;
+        dst.setHour(src.hour());
+    }
+    if (*srcFlag&MINUTE_FLAG)
+    {
+        if ((*dstFlag&MINUTE_FLAG) && dst.minute()!=src.minute())
+            conflict = true;
+        dst.setMinute(src.minute());
+    }
+    if (*srcFlag&SECOND_FLAG)
+    {
+        if ((*dstFlag&SECOND_FLAG) && dst.second()!=src.second())
+            conflict = true;
+        dst.setSecond(src.second());
+    }
+    return conflict;
 }
 
 int32_t parseRegex(const char *str, uint32_t len ,ptm ptime)
