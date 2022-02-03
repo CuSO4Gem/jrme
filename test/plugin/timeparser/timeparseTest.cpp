@@ -13,6 +13,12 @@ using namespace std;
 #define PLAG_NAME "timeparser_en"
 #define PLAG_SUBFIX "so"
 
+/**
+ * @brief 
+ * 
+ * @note 注意：月份是0~11
+ * 
+ */
 struct timeDetail
 {
     string sentence;
@@ -25,9 +31,16 @@ struct timeDetail
     uint32_t flag;
 };
 
+/**
+ * @brief 
+ * 
+ * @note 注意：月份是0~11
+ * 
+ */
 vector<timeDetail> formateTestCase = {
-    {string("2021-2-1"), 2021, 2, 1, 9, 0, 0, YEAR_FLAG|MONTH_FLGA|DAY_FLAG},
-    {string("1/1/2021"), 2021, 1, 1, 9, 0, 0, YEAR_FLAG|MONTH_FLGA|DAY_FLAG},
+    {string("2021-2-1"), 2021, 1, 1, 9, 0, 0, YEAR_FLAG|MONTH_FLGA|DAY_FLAG},
+    {string("2021-2-1"), 2021, 1, 1, 9, 0, 0, YEAR_FLAG|MONTH_FLGA|DAY_FLAG},
+    {string("1/1/2021"), 2021, 0, 1, 9, 0, 0, YEAR_FLAG|MONTH_FLGA|DAY_FLAG},
 
     {string("8:33"), 0, 0, 0, 8, 33, 0, HOUR_FLAG|MINUTE_FLAG},
     {string("8:11 am"), 0, 0, 0, 8, 11, 0, HOUR_FLAG|MINUTE_FLAG},
@@ -45,53 +58,53 @@ bool timePareCmp(ptm pTime,uint32_t parseFlag, timeDetail *detail)
     nowTime = localtime(&tt);
     if ((detail->flag&parseFlag)!=detail->flag)
     {
-        printf("timePareCmp flag error %X VS %X\n", detail->flag, parseFlag);
+        printf("error timePareCmp flag %X VS %X\n", detail->flag, parseFlag);
         return false;
     }
 
-    if ((detail->flag|YEAR_FLAG) && (pTime->tm_year+1900)!=detail->year)
+    if ((detail->flag&YEAR_FLAG) && (pTime->tm_year+1900)!=detail->year)
     {
         printf("error year %d should be %d\n", pTime->tm_year+1900, detail->year);
         return false;
-    } else if (!(detail->flag|YEAR_FLAG) && pTime->tm_year!=nowTime->tm_year)
+    } else if (!(detail->flag&YEAR_FLAG) && pTime->tm_year!=nowTime->tm_year)
     {
         printf("erro year should be now");
         return false;
     }
 
-    if ((detail->flag|MONTH_FLGA) && pTime->tm_mon!=detail->month)
+    if ((detail->flag&MONTH_FLGA) && pTime->tm_mon!=detail->month)
     {
-        printf("error %d should be %d\n", pTime->tm_mon, detail->month);
+        printf("error month %d should be %d\n", pTime->tm_mon, detail->month);
         return false;
-    } else if (!(detail->flag|MONTH_FLGA) && pTime->tm_mon!=nowTime->tm_mon)
+    } else if (!(detail->flag&MONTH_FLGA) && pTime->tm_mon!=nowTime->tm_mon)
     {
-        printf("error month should be now");
+        printf("error month should be now (is %d)", nowTime->tm_mon);
         return false;
     }
-    if ((detail->flag|DAY_FLAG) && pTime->tm_mday!=detail->day)
+    if ((detail->flag&DAY_FLAG) && pTime->tm_mday!=detail->day)
     {
         printf("error day %d should be %d\n", pTime->tm_mday, detail->day);
         return false;
-    } else if (!(detail->flag|DAY_FLAG) && pTime->tm_mday!=nowTime->tm_mday)
+    } else if (!(detail->flag&DAY_FLAG) && pTime->tm_mday!=nowTime->tm_mday)
     {
         printf("error day should be now");
         return false;
     }
 
-    if ((detail->flag|HOUR_FLAG) && pTime->tm_hour!=detail->hour)
+    if ((detail->flag&HOUR_FLAG) && pTime->tm_hour!=detail->hour)
     {
         printf("error hour %d should be %d\n", pTime->tm_hour, detail->hour);
-        false;
+        return false;
     }
-    if ((detail->flag|MINUTE_FLAG) && pTime->tm_min!=detail->minute)
+    if ((detail->flag&MINUTE_FLAG) && pTime->tm_min!=detail->minute)
     {
         printf("error minute %d should be %d\n", pTime->tm_min, detail->minute);
-        false;
+        return false;
     }
-    if ((detail->flag|SECOND_FLAG) && pTime->tm_sec!=detail->second)
+    if ((detail->flag&SECOND_FLAG) && pTime->tm_sec!=detail->second)
     {
         printf("error second %d should be %d\n", pTime->tm_sec, detail->second);
-        false;
+        return false;
     }
 
     return true;
