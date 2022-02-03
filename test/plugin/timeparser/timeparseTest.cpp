@@ -37,7 +37,7 @@ struct timeDetail
  * @note 注意：月份是0~11
  * 
  */
-vector<timeDetail> formateTestCase = {
+vector<timeDetail> formateTestCaseSuit = {
     {string("2021-2-1"), 2021, 1, 1, 9, 0, 0, YEAR_FLAG|MONTH_FLGA|DAY_FLAG},
     {string("2021-2-1"), 2021, 1, 1, 9, 0, 0, YEAR_FLAG|MONTH_FLGA|DAY_FLAG},
     {string("1/1/2021"), 2021, 0, 1, 9, 0, 0, YEAR_FLAG|MONTH_FLGA|DAY_FLAG},
@@ -48,6 +48,15 @@ vector<timeDetail> formateTestCase = {
     {string("18:12"), 0, 0, 0, 18, 12, 0, HOUR_FLAG|MINUTE_FLAG},
     {string("18:23 pm"), 0, 0, 0, 18, 23, 0, HOUR_FLAG|MINUTE_FLAG},
     {string("18:58 am"), 0, 0, 0, 18, 58, 0, HOUR_FLAG|MINUTE_FLAG}
+};
+
+vector<timeDetail> describeTestCaseSuit = {
+    {string("April 5th"), 0, 3, 5, 9, 0, 0, MONTH_FLGA|DAY_FLAG},
+    {string("April 5th"), 0, 3, 5, 9, 0, 0, MONTH_FLGA|DAY_FLAG},
+
+    {string("2018 January 1st"), 2018, 0, 1, 9, 0, 0, YEAR_FLAG|MONTH_FLGA|DAY_FLAG},
+    {string("Jan. 2nd 2020"), 2020, 0, 2, 9, 0, 0, YEAR_FLAG|MONTH_FLGA|DAY_FLAG},
+    {string("2019 March 3rd"), 2019, 2, 3, 9, 0, 0, YEAR_FLAG|MONTH_FLGA|DAY_FLAG}
 };
 
 bool timePareCmp(ptm pTime,uint32_t parseFlag, timeDetail *detail)
@@ -131,7 +140,23 @@ TEST(parse, formate)
     int32_t ret;
     uint32_t flag = 0;
 
-    for (auto &it:formateTestCase)
+    for (auto &it:formateTestCaseSuit)
+    {
+        printf("send to parse:%s\r\n", it.sentence.c_str());
+        struct tm timeGot;
+        flag = 0;
+        ret = parseFunction(it.sentence.c_str(), (uint32_t)it.sentence.length(), &timeGot, &flag);
+        ASSERT_GE(ret, 1) ;
+        ASSERT_TRUE(timePareCmp(&timeGot, flag, &it));
+    }
+}
+
+TEST(parse, describe)
+{
+    int32_t ret;
+    uint32_t flag = 0;
+
+    for (auto &it:describeTestCaseSuit)
     {
         printf("send to parse:%s\r\n", it.sentence.c_str());
         struct tm timeGot;

@@ -10,11 +10,11 @@
 using namespace ec;
 using namespace std;
 
-#define DEBUG
+// #define DEBUG
 #ifdef DEBUG
 #define DEBUGP(...) (printf(__VA_ARGS__))
 #else
-#define DEBUGP(info)
+#define DEBUGP(...) ;
 #endif
 
 #define ALL_SHORT_MONTH_REGEX "(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)"
@@ -68,15 +68,21 @@ inline bool isLetter(const char ch)
 inline bool isLetterOnly(const string &str)
 {
     size_t i;
+    if (str.length()==0)
+        return false;
+    
     for (i = 0; i < str.length(); i++)
     {
         if(!isLetter(str[i]))
             break;
     }
-    if (i<str.length())
-        return false;
-    else
+    if (i==str.length())
         return true;
+    //some word may have '.', such as, Feb.
+    else if (i==str.length()-1 && str[i-1]=='.')
+        return true;
+    else
+        return false;
 }
 
 inline uint32_t lastBitOrder(uint32_t b)
@@ -277,7 +283,7 @@ int Parser::getTime(ptm timeGot, uint32_t *flag)
             
         }
         /* 4 number, maybe year*/
-        if (haveLetter && haveNumber && !haveOtherChar && word.length()==4)
+        if (!haveLetter && haveNumber && !haveOtherChar && word.length()==4)
         {
             /* can not "last yyyy" in sentence*/
             if (wordLastFlag)
@@ -319,7 +325,7 @@ int Parser::getTime(ptm timeGot, uint32_t *flag)
             eraseWrod(mRemainStr);
             continue;
         }
-        if(regex_search(word, regexResult, regex("(\\d{1,2})(st|nd|th)")))
+        if(regex_search(word, regexResult, regex("(\\d{1,2})(st|nd|rd|th)")))
         {
             vector<vmInst_t> instVector; 
             instVector.push_back(vmInst_t{'m', 'd', true, std::atoi(word.c_str())});
@@ -327,7 +333,7 @@ int Parser::getTime(ptm timeGot, uint32_t *flag)
             eraseWrod(mRemainStr);
             continue;
         }
-        if(!haveOtherChar)
+        if(true)
         {
             vector<vmInst_t> instVector; 
             size_t readSize = parseSampleUnit(mRemainStr, instVector);
@@ -359,7 +365,6 @@ int Parser::getTime(ptm timeGot, uint32_t *flag)
             mVmInst.push_back(it);
         }
     }
-    printVmInst(mVmInst);
     instSrot(mVmInst);
     #ifdef DEBUG
     DEBUGP("instructions srot:");
@@ -874,7 +879,7 @@ size_t Parser::parseSampleUnit(string &words, vector<vmInst_t> &instVector)
     {
         if (unit.find(monthShortName[i])!=string::npos)
         {
-            instVector.push_back(vmInst_t {{'m', 'o'}, true, i});
+            instVector.push_back(vmInst_t {{'m', 'o'}, true, i+1});
             if (number>0)
             {
                 instVector.push_back(vmInst_t {{'m', 'd'}, true, number});
@@ -898,7 +903,7 @@ size_t Parser::parseSampleUnit(string &words, vector<vmInst_t> &instVector)
     {
         if (unit.find(weekShortName[i])!=string::npos)
         {
-            instVector.push_back(vmInst_t {{'w', 'd'}, true, i});
+            instVector.push_back(vmInst_t {{'w', 'd'}, true, i+1});
             return unitEnd;
         }
     }
