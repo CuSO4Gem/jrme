@@ -16,23 +16,25 @@ public:
     struct journal_s mPreRetJournal;
     struct journal_s mPostRetJournal;
 
-    void preprocess(const struct journalIn_s *refJournal, struct journal_s *retJournal);
-    void postprocess(const struct journalIn_s *refJournal, struct journal_s *retJournal);
+    void preprocess(const struct journal_cs *refJournal, struct journal_s *retJournal);
+    void postprocess(const struct journal_cs *refJournal, struct journal_s *retJournal);
 };
 
 #ifdef __cplusplus
 extern "C" {
 #endif
+#pragma GCC visibility push(default)
 
-JRME_PLUGIN_API const uint32_t api_version = 1;
-JRME_PLUGIN_API const char s_key[] = "save date";
-JRME_PLUGIN_API const char s_default_value[] = "auto_fill";
+extern const uint32_t api_version = 1;
+extern const char key[] = "save date";
+extern const char default_value[] = "auto_fill";
 
-JRME_PLUGIN_API bool allocate_instance(void *handle);
-JRME_PLUGIN_API bool release_instance(void *handle);
-JRME_PLUGIN_API void preprocess(void *handle, const struct journalIn_s *refJournal, struct journal_s *retJournal);
-JRME_PLUGIN_API void postprocess(void *handle, const struct journalIn_s *refJournal, struct journal_s *retJournal);
+bool allocate_instance(void *handle);
+bool release_instance(void *handle);
+void preprocess(void *handle, const struct journal_cs *refJournal, struct journal_s *retJournal);
+void postprocess(void *handle, const struct journal_cs *refJournal, struct journal_s *retJournal);
 
+#pragma GCC visibility pop
 #ifdef __cplusplus
 }
 #endif

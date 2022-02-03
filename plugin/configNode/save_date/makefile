@@ -1,5 +1,5 @@
 
-PLAGING_NAME:=save_date_node
+PLAGING_NAME:=save_date
 
 JRME_PLUGIN?=~/.jrme/plugin/
 TOOL_CHAIN?=gcc

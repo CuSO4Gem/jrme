@@ -22,9 +22,11 @@ string getConfigRootDir();
 string getConfigFilePath();
 
 /**
- * @brief 
+ * @brief Get the dir for save plugin
  * 
+ * @return string 
  */
+string getPluginDir();
 
 /**
  * @brief install to init jrme, if need

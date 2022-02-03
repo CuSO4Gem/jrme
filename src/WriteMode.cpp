@@ -34,10 +34,17 @@ void writeJournal(string bookPath, string timeDescription, string title)
     }
 
     // todo : time parse from timeDescription
-    Date date = Time().toDate();
-
     ConfigNodeMaster configMaster = ConfigNodeMaster();
+    Date date = Time().toDate();
     configMaster.setDate(date.stamp());
+    // load config node plugin
+
+    if (!configMaster.addPluginNode("save_date.so"))
+    {
+        printf("load plug faild!!\n");
+        return ;
+    }
+
     string config = configMaster.genConfig();
     
     shared_ptr<Journal> journal = make_shared<Journal>();
@@ -59,9 +66,11 @@ void writeJournal(string bookPath, string timeDescription, string title)
     if (!editor.getTextFromEditor(gotStr))
         return ;
     
+    configMaster.postprocess(journal);
+    
     journal = strToJournal(gotStr);
     journalBook->push_back(journal);
     journalBook->order();
     journalBook->save();
-    system("clear");
+    // system("clear");
 }
