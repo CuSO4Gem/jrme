@@ -19,7 +19,7 @@ TEST(TxtJournalIO, read)
     journalStore.open("read1Store.txt");
     ASSERT_TRUE(journalStore.is_open()) << "read1Store.txt open failed";
     TxtJournalIO journalIO;
-    ASSERT_TRUE(journalIO.openJournal("read1.txt")) << "TxtJournalIO open failed";
+    ASSERT_TRUE(journalIO.open("read1.txt")) << "TxtJournalIO open failed";
     journalIO.setReadMod();
     for (size_t i = 0; i < 3; i++)
     {
@@ -47,7 +47,7 @@ TEST(TxtJournalIO, write)
     
     TxtJournalIO journalIO;
     string fileToWrite = string("test.txt");
-    ASSERT_TRUE(journalIO.openJournal(fileToWrite)) << "TxtJournalIO open failed";
+    ASSERT_TRUE(journalIO.open(fileToWrite)) << "TxtJournalIO open failed";
     bool ret = journalIO.setWriteMode();
     for (size_t i = 0; i < 3; i++)
     {
