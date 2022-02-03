@@ -5,3 +5,5 @@
 *.o
 *.elf
 *.exe
+
+*.log

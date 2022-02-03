@@ -30,7 +30,7 @@ int main(int argc, char* argv[]) {
     std::string time_str = "today";
     struct tm timeOut;
     memset(&timeOut, 0, sizeof(timeOut));
-    ret = parse(time_str.c_str(), time_str.length(), &timeOut, &flag);
+    ret = parse(time_str.c_str(), (uint32_t)time_str.length(), &timeOut, &flag);
     printf("timeOut.sec = %d\n", timeOut.tm_sec);
     dlclose(tpHandle);
     return 0;
