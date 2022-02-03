@@ -18,7 +18,6 @@ int main(int argc, char* argv[]) {
     INI::File configFile = INI::File(getConfigFilePath());
     string journalBookPath = configFile.GetSection("journal books")->GetValue("default").AsString();
     string inStr;
-    uint32_t part = 0;
     for (size_t i = 1; i < argc; i++)
     {
        if (inStr.length()>0)
@@ -27,26 +26,35 @@ int main(int argc, char* argv[]) {
             inStr.append(argv[i]);  
     }
 
-    if (inStr.find(":")==string::npos)
+    int32_t dividePos;
+    for (int32_t i = inStr.length()-1; i >=0  ; i--)
+    {
+        if (inStr[i]==':')
+        {
+            dividePos = i;
+            break;
+        }
+    }
+    
+    if (dividePos<0)
     {
         writeJournal(journalBookPath, string(""), inStr);
     }
-    else if (inStr.find(":")==0)
+    else if (dividePos==0)
     {
         inStr.erase(0 ,1);
         writeJournal(journalBookPath, string(""), inStr);
     }
-    else if (inStr.find(":")==inStr.length()-1)
+    else if (0==inStr.length()-1)
     {
         inStr.erase(inStr.length()-1, 1);
         writeJournal(journalBookPath, inStr, string(""));
     }
     else
     {
-        string timeStr = inStr.substr(0, inStr.find(":"));
-        string titleStr = inStr.substr(inStr.find(":")+1, inStr.length() - inStr.find(":") - 1);
-        // printf("timeStr:%s\ntitleStr:%s", timeStr.c_str(), titleStr.c_str());
-        writeJournal(journalBookPath, timeStr, titleStr);
+        string timeStr = inStr.substr(0, dividePos);
+        string titleStr = inStr.substr(dividePos+1, inStr.length() - dividePos - 1);
+        writeJournal(journalBookPath, timeStr, titleStr);   
     }
     
     return 0;
