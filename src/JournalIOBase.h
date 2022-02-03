@@ -59,6 +59,12 @@ public:
     virtual bool open(string path) = 0;
 
     /**
+     * @brief close IO file
+     * 
+     */
+    virtual void close() = 0;
+
+    /**
      * @brief set read mod, it can read journal
      * 
      * @return true 

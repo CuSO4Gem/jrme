@@ -35,6 +35,7 @@ public:
     bool setReadMod();
     bool setWriteMode();
     bool open(string path);
+    void close();
     shared_ptr<Journal> readJournal();
     bool writeJournal(shared_ptr<Journal> journal);
 };

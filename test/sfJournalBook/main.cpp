@@ -10,6 +10,7 @@ using namespace std;
 
 
 #include "SfJournalBook.h"
+#include "utils.h"
 
 TEST(SFJournalBook, total)
 {
@@ -19,6 +20,7 @@ TEST(SFJournalBook, total)
     system("cp loop1.txt test.txt");
     SfJournalBook journalBook;
     ASSERT_TRUE(journalBook.open("test.txt")) << "journal book open filed";
+    ASSERT_EQ(journalBook.size(), 3) << "journal on journal book test.txt not eq 3";
 
     string lineBuffer;
     shared_ptr<Journal> jInsert = shared_ptr<Journal>(new Journal);
@@ -30,8 +32,31 @@ TEST(SFJournalBook, total)
     jInsert->setContent(lineBuffer);
 
     journalBook.push_back(jInsert);
+    ASSERT_EQ(journalBook.size(), 4) << "journal on SfJournalBook not eq 4 after insert";
+
     journalBook.order();
-    journalBook.save();
+    ASSERT_TRUE(journalBook.save()) << "journal book save faild";
+    journalBook.close();
+    
+    //verfy
+    SfJournalBook journalBookV;
+    ASSERT_TRUE(journalBookV.open("test.txt"))  << "journal book open filed while verfy";
+    ASSERT_EQ(journalBookV.size(), 4) << "journal on journal book test.txt not eq 4 while verfy";
+    bool inorder = true;
+    size_t loopCount = journalBookV.size();
+    time_t stampBefor = getStampFormConfig(journalBookV.at(0)->getConfig());
+    time_t stampNow;
+    for (size_t i = 1; i < loopCount; i++)
+    {
+        stampNow = getStampFormConfig(journalBookV.at(i)->getConfig());
+        if (stampBefor>stampNow)
+        {
+            inorder = false;
+            break;
+        }
+        stampBefor = stampNow;
+    }
+    ASSERT_TRUE(inorder) << "journal no in order";
 }
 
 

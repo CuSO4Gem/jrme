@@ -10,6 +10,7 @@ public:
     virtual ~JournalBookBase() = default;
 
     virtual bool open(string path) = 0;
+    virtual void close() = 0;
     virtual void order() = 0;
     virtual bool save() = 0;
     
