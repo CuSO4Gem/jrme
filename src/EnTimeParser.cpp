@@ -346,7 +346,13 @@ timeParserRet Parser::getTime()
                     wordLastFlag = false;
                     for (auto &it:instVector)
                     {
-                        if (it.haveNumber)
+                        /**
+                         * 在单词last后面时，haveNumber==fale也是可以的，
+                         * 如:last year。这个时候，parseSampleUnit接续出来
+                         * number应该是1
+                         */
+                        it.haveNumber = true;
+                        if (it.number>0)
                             it.number = -abs(it.number);
                     }
                 }
@@ -868,13 +874,13 @@ size_t Parser::parseSampleUnit(string &words, vector<vmInst_t> &instVector)
     
     if (unit==string("year") || unit==string("years"))
     {
-        instVector.push_back(vmInst_t {{'y', 'y'}, number>=0, number>=0 ? number : 0});
+        instVector.push_back(vmInst_t {{'y', 'y'}, number>-1, number>-1 ? number : 1});
         return unitEnd;
     }
     
     if (unit==string("month") || unit==string("month"))
     {
-        instVector.push_back(vmInst_t {{'m', 'n'}, number>=0, number>=0 ? number : 0});
+        instVector.push_back(vmInst_t {{'m', 'n'}, number>-1, number>-1 ? number : 1});
         return unitEnd;
     }
     for (int32_t i = 0; i < 12; i++)
@@ -892,13 +898,13 @@ size_t Parser::parseSampleUnit(string &words, vector<vmInst_t> &instVector)
 
     if (unit==string("weekend"))
     {
-        instVector.push_back(vmInst_t {{'w', 'n'}, false, 0});
+        instVector.push_back(vmInst_t {{'w', 'n'}, false, 1});
         return unitEnd;
     }
     
     if (unit==string("week"))
     {
-        instVector.push_back(vmInst_t {{'w', 'w'}, number>=0, number>=0 ? number : 0});
+        instVector.push_back(vmInst_t {{'w', 'w'}, number>-1, number>-1 ? number : 1});
         return unitEnd;
     }
     for (int32_t i = 0; i < 7; i++)
@@ -911,7 +917,7 @@ size_t Parser::parseSampleUnit(string &words, vector<vmInst_t> &instVector)
     }
     if (unit==string("day") || unit==string("days"))
     {
-        instVector.push_back(vmInst_t {{'d', 'd'}, number>=0, number>=0 ? number : 0});
+        instVector.push_back(vmInst_t {{'d', 'd'}, number>-1, number>-1 ? number : 1});
         return unitEnd;
     }
     if (unit==string("morning"))
@@ -941,18 +947,18 @@ size_t Parser::parseSampleUnit(string &words, vector<vmInst_t> &instVector)
     }
     if (unit==string("hour") || unit==string("hours"))
     {
-        instVector.push_back(vmInst_t {{'h', 'h'}, number>=0, number>=0 ? number : 0});
+        instVector.push_back(vmInst_t {{'h', 'h'}, number>-1, number>-1 ? number : 1});
         return unitEnd;
     }
     if (unit==string("minute") || unit==string("minutes"))
     {
-        instVector.push_back(vmInst_t {{'m', 'i'}, number>=0, number>=0 ? number : 0});
+        instVector.push_back(vmInst_t {{'m', 'i'}, number>-1, number>-1 ? number : 1});
         return unitEnd;
     }
 
     if (unit==string("second") || unit==string("seconds"))
     {
-        instVector.push_back(vmInst_t {{'s', 'i'}, number>=0, number>=0 ? number : 0});
+        instVector.push_back(vmInst_t {{'s', 'i'}, number>-1, number>-1 ? number : 1});
         return unitEnd;
     }
     
