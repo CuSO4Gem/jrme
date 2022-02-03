@@ -21,7 +21,7 @@ public:
     void setConfig(const string &config);
     void setContent(const string &content);
     string getTitle();
-    string getConfig();
+    string &getConfig();
     string getContent();
 
     void clear();
