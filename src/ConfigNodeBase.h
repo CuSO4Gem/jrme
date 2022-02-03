@@ -21,8 +21,8 @@ public:
 
     virtual string getKey() = 0;
     virtual string getDefaultValue() = 0;
-    virtual void beforeInput(shared_ptr<Journal> journal) = 0;
-    virtual void afterInput(shared_ptr<Journal> journal) = 0;
+    virtual void preprocess(shared_ptr<Journal> journal) = 0;
+    virtual void postprocess(shared_ptr<Journal> journal) = 0;
 
     virtual int32_t innerConfigType()  {return 0;};
     virtual void setDate(time_t stamp) {};

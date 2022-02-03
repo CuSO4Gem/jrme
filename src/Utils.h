@@ -23,7 +23,7 @@ void removeMultipleSpaces(string &str);
  * @return true find
  * @return false not find
  */
-bool getValueFromConfig(const string &config, const string &key, string value);
+bool getValueFromConfig(const string &config, const string &key, string &value);
 
 /**
  * @brief Set the Value To Config object
