@@ -4,18 +4,13 @@
 #include <memory>
 #include "Journal.h"
 
-enum journanlStoreType {
-    STORE_BY_DATE_UP,
-    STORE_BY_DATE_DOWN
-};
-
 class JournalBookBase
 {
 public:
     virtual ~JournalBookBase() = default;
 
     virtual bool open(string path) = 0;
-    virtual void sort(int32_t type) = 0;
+    virtual void sort() = 0;
     virtual bool save() = 0;
     
     virtual size_t size() = 0;
