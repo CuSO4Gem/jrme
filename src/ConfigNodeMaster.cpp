@@ -230,7 +230,7 @@ bool ConfigNodeMaster::addPluginNode(string name)
     shared_ptr<PluginNode> node = make_shared<PluginNode>();
     if (!node->loadPlugin(name))
     {
-        printf("error: loadPlugin %s fail", name.c_str());
+        printf("error: loadPlugin %s fail\n", name.c_str());
         return false;
     }
     mNodeList.push_back(node);
