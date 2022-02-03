@@ -4,9 +4,9 @@ else
 	CFLAGS:= -I./ -L./lib -lstdc++ -ldl -DWINDOWS
 endif
 
-#指定中间文件存放位置
-#choose a directory to save .o
-BUILD_DIR:=$(UPPER_BUILD_DIR)timeparser/
+#需要清除的临时文件
+#The tempory files which need to be clear
+CLEAN_TARGET:=./*.o
 
 #寻找所有.cpp 和.c文件的路径
 #find all path of .cpp and .c
@@ -24,21 +24,13 @@ OUT_TARGET:=$(OUT_DIR)$(OUT_FILE)
 DOUT_FILE?=timeparser_test_debug.elf
 DOUT_TARGET:=$(OUT_DIR)$(DOUT_FILE)
 
-#所有的.cpp和.c文件的文件名
-#the file name of all .cpp and .c
-CPP_FILE:=$(notdir $(SRC_CPP))
-C_FILE:=$(notdir $(SRC_C))
 #把.cpp和c 换成.o
 #replace .cpp or .c with .o
 OBJ_SRC_CPP:=$(patsubst %.cpp, %.o, $(SRC_CPP))
 OBJ_SRC_C:=$(patsubst %.c, %.o, $(SRC_C))
-#.o文件的输出路径
-#the output path of .o files
-OBJ_CPP:=$(patsubst %.cpp, $(BUILD_DIR)%.o, $(CPP_FILE))
-OBJ_C:=$(patsubst %.c, $(BUILD_DIR)%.o, $(C_FILE))
 #所有的.o文件
 #all .o files
-OBJ:=$(OBJ_CPP) $(OBJ_C)
+OBJ:=$(OBJ_SRC_CPP) $(OBJ_SRC_C)
 
 #----------------------------------build----------------------------------#
 #如果定义互斥(DEBUG=exclusive)，则调试的时候会删除发行版
@@ -46,27 +38,31 @@ OBJ:=$(OBJ_CPP) $(OBJ_C)
 ifeq ($(DEBUG),exclusive)
 #编译调试版本
 #bild debug version
-all:$(MODULES) $(OBJ_SRC_CPP) $(OBJ_SRC_C)
+all:build_prepare $(MODULES) $(OBJ)
 	$(TOOL_CHAIN) $(OBJ) -o $(DOUT_TARGET) $(CFLAGS)
 	rm -f $(OUT_TARGET)
 
 else
 #编译release版本
 #build
-all:build_prepare $(MODULES) $(OBJ_SRC_CPP) $(OBJ_SRC_C)
+all:build_prepare $(MODULES) $(OBJ)
 	$(TOOL_CHAIN) $(OBJ) -o $(OUT_TARGET) $(CFLAGS)
 endif
 
 #将.cpp和.c编译为.o
 #compile .cpp and .c to .o
 $(OBJ_SRC_CPP) : %.o:%.cpp
-	$(TOOL_CHAIN) $< -o $(BUILD_DIR)$(notdir $@) -c  $(CFLAGS)
+	$(TOOL_CHAIN) $< -o $@ -c  $(CFLAGS)
 
 $(OBJ_SRC_C) : %.o:%.c
-	$(TOOL_CHAIN) $< -o $(BUILD_DIR)$(notdir $@) -c  $(CFLAGS)
+	$(TOOL_CHAIN) $< -o $@ -c  $(CFLAGS)
 
 #创建生产.o文件的目录
 #make directory of saving .o files
 .PHONY: build_prepare
 build_prepare:
-	mkdir -p $(BUILD_DIR)
+	mkdir -p $(OUT_DIR)
+
+.PHONY: clean
+clean:
+	rm -f $(CLEAN_TARGET)
