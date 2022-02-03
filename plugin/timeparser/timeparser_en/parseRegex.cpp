@@ -184,7 +184,6 @@ int Parser::getTime(ptm timeGot)
     instructionsList.push_back(instructions);
     parsePhrase(mRemainStr, instructions);
     instructionsList.push_back(instructions);
-
         
     return 0;
 }
@@ -484,6 +483,7 @@ void Parser::parseFormat(string &words, string &instructions)
         instructions.append(regexResult[2]);
         regex_replace(words, pattern, "");
     }
+    removeMultipleSpaces(words);
 }
 
 void Parser::parsePhrase(string &words, string &instructions)
@@ -500,16 +500,17 @@ void Parser::parsePhrase(string &words, string &instructions)
     if(words.find(strFind)!=string::npos)
     {
         words.replace(words.find(strFind), strFind.length(), "");
-        instructions.append(string("|mo1-"));
+        instructions.append(string("|mo2-"));
     }
 
     strFind = string("the day before yesterday");
     if(words.find(strFind)!=string::npos)
     {
         words.replace(words.find(strFind), strFind.length(), "");
-        instructions.append(string("|md1-"));
+        instructions.append(string("|md2-"));
     }
 
+    removeMultipleSpaces(words);
     return;
 }
 
