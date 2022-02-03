@@ -27,7 +27,7 @@ int main(int argc, char* argv[]) {
     pParseTime parse = (pParseTime)dlsym(tpHandle, "parseTime");
     int32_t ret;
     uint32_t flag = 0;
-    std::string time_str = "in   today  \ton thO At am11 am ammm";
+    std::string time_str = "in   today  \ton thO At am11 am ammm but 2021-1-11";
     printf("send to parse:%s\r\n",time_str.c_str());
     struct tm timeGot;
     memset(&timeGot, 0, sizeof(timeGot));
