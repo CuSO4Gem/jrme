@@ -14,14 +14,14 @@ using namespace std;
 string getConfigRootDir()
 {
     char const* home = getenv("HOME");
-    string homeDir = string(home)+string("/.config/");
+    string homeDir = string(home)+string("/.jrme/");
     return homeDir;
 }
 
-string getConfigPath()
+string getConfigFilePath()
 {
     char const* home = getenv("HOME");
-    string homeDir = string(home)+string("/.config/jrme/config.ini");
+    string homeDir = string(home)+string("/.jrme/config.ini");
     return homeDir;
 }
 
@@ -75,7 +75,7 @@ string getDefaultJournalPath()
 {
     char const* home = getenv("HOME");
     string homeDir = string(home)+string("/");
-    return homeDir + string(".local/share/jrnl/journal.txt");
+    return homeDir + string(".local/share/jrm/journal.txt");
 }
 
 bool installIfNeed()
@@ -86,34 +86,34 @@ bool installIfNeed()
 
     if (access(path.c_str(), F_OK) != 0)
     {
-        printf("error: can not access config file:%s\n", path.c_str());
-        return false;
-    }
-
-    path += string("jrme/");
-    if (access(path.c_str(), F_OK) != 0)
-    {
-        if(mkdir(path.c_str(), 0700) != 0)
+        if (mkdir(path.c_str(), 0700) != 0)
         {
             printf("error: can not mkdir config dir:%s\n", path.c_str());
             return false;
         }
-        
+    }
+
+    /*plugin dir*/
+    target = path+string("plugin/");
+    if (access(target.c_str(), F_OK) != 0)
+    {
+        if (mkdir(target.c_str(), 0700) != 0)
+        {
+            printf("error: can not mkdir config dir:%s\n", target.c_str());
+            return false;
+        }
     }
     
+
     target = path+string("config.ini");
     if (access(target.c_str(), R_OK|W_OK) != 0)
     {
-        FILE *fp = NULL;
-        fp = fopen(target.c_str(), "w+");
-        if (!fp)
-        {
-            printf("error: conn't create config file:%s\n", target.c_str());
+        string cmd = string("touch ") + target;
+        int ret = system(cmd.c_str());
+        if (system(cmd.c_str()) != 0)
             return false;
-        }
-        fclose(fp);
     }
-
+    
     INI::File config = INI::File(target);
     string jrounBook = config.GetSection("journal books")->GetValue("default").AsString();
     if (jrounBook.empty())

@@ -12,8 +12,10 @@ using namespace std;
 int main(int argc, char* argv[]) {
     bool ret;
     ret = installIfNeed();
+    if (ret=false)
+        printf("error: install jrme fail!!\n");
 
-    INI::File configFile = INI::File(getConfigPath());
+    INI::File configFile = INI::File(getConfigFilePath());
     string journalBookPath = configFile.GetSection("journal books")->GetValue("default").AsString();
     string title;
     for (size_t i = 1; i < argc; i++)

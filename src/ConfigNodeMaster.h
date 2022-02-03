@@ -5,9 +5,6 @@
 #include <memory>
 
 #include "ConfigNodeBase.h"
-#include "DateConfigNode.h"
-#include "LevelConfigNode.h"
-#include "TagConfigNode.h"
 
 class ConfigNodeMaster
 {
