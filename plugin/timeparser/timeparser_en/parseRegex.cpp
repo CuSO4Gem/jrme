@@ -190,18 +190,18 @@ class Parser
 {
 public:
     Parser(const char *intStr);
-    int getTime(ptm timeGot);
+    int getTime(ptm timeGot, uint32_t *flag);
 
 private:
     int32_t mEstimation;
     string mInStr;
     string mRemainStr;
     vector<vmInst_t> mVmInst;
-    Date mTargetTime;
+    Date mParseResult;
     uint32_t mParseFlag;
     
     void instSrot(vector<vmInst_t> &instVector);
-    void parseVM(vector<vmInst_t> &vmInst, uint32_t *resultFlag, int32_t *estimation);
+    Date parseVM(vector<vmInst_t> &vmInst, uint32_t *resultFlag, int32_t *estimation);
     void prepare();
     void parseAmPm(string &words);
     size_t parseSampleUnit(string &words, vector<vmInst_t> &instVector);
@@ -221,7 +221,7 @@ Parser::Parser(const char *intStr)
 }
 
 
-int Parser::getTime(ptm timeGot)
+int Parser::getTime(ptm timeGot, uint32_t *flag)
 {
     if (timeGot==NULL || mInStr.length()==0)
     {
@@ -359,17 +359,24 @@ int Parser::getTime(ptm timeGot)
             mVmInst.push_back(it);
         }
     }
-    printf("instructions lenght is %ld\n", mVmInst.size());
-    printf("instructions:");
     printVmInst(mVmInst);
     instSrot(mVmInst);
     printf("instructions srot:");
     printVmInst(mVmInst);
     
+    mParseResult = parseVM(mVmInst, &mParseFlag, &mEstimation);
+    DEBUGP("after parse time is %s\n", mParseResult.format().c_str());
+    timeGot->tm_year = mParseResult.year()-1900;
+    timeGot->tm_mon = mParseResult.month();
+    timeGot->tm_mday = mParseResult.day();
+    timeGot->tm_hour = mParseResult.hour();
+    timeGot->tm_min = mParseResult.minute();
+    timeGot->tm_sec = mParseResult.second();
+    *flag = mParseFlag;
     return mEstimation;
 }
 
-void Parser::parseVM(vector<vmInst_t> &vmInst, uint32_t *resultFlag, int32_t *estimation)
+Date Parser::parseVM(vector<vmInst_t> &vmInst, uint32_t *resultFlag, int32_t *estimation)
 {
     Time ecTime;
     Date nowDate = ecTime.toDate();
@@ -377,6 +384,7 @@ void Parser::parseVM(vector<vmInst_t> &vmInst, uint32_t *resultFlag, int32_t *es
     uint32_t flagOut = 0, flagWeekOut = 0;
     bool pm = false;
     
+    DEBUGP("parseVM now is %s\n", resultDate.format().c_str());
     for (auto &it:vmInst)
     {
         Date tmpDate = resultDate;
@@ -426,11 +434,13 @@ void Parser::parseVM(vector<vmInst_t> &vmInst, uint32_t *resultFlag, int32_t *es
                 break;
             }
             
+            DEBUGP("yy: befor %s <= %s\n", resultDate.format().c_str(), tmpDate.format().c_str());
             flag = YEAR_FLAG;
             if (setDateForce(resultDate, &flagOut, tmpDate, &flag))
             {
                 *estimation = min(TIME_PARSE_PARTLY_SUCCESS, *estimation);
             }
+            DEBUGP("yy: end %s <= %s\n", resultDate.format().c_str(), tmpDate.format().c_str());
             flagOut |= flag;
             break;
         
@@ -456,11 +466,14 @@ void Parser::parseVM(vector<vmInst_t> &vmInst, uint32_t *resultFlag, int32_t *es
                 break;
             }
 
+            DEBUGP("mo: befor %s <= %s\n", resultDate.format().c_str(), tmpDate.format().c_str());
             if (setDateForce(resultDate, &flagOut, tmpDate, &flag))
             {
                 *estimation = min(TIME_PARSE_PARTLY_SUCCESS, *estimation);
             }
-            flagOut= flag;
+            flagOut |= flag;
+            
+            DEBUGP("mo: end %s <= %s\n", resultDate.format().c_str(), tmpDate.format().c_str());
             break;
         
         case TWOCC("mn"):
@@ -667,7 +680,24 @@ void Parser::parseVM(vector<vmInst_t> &vmInst, uint32_t *resultFlag, int32_t *es
     }
     
     *resultFlag = flagOut|flagWeekOut;
-    return ;
+
+    /*如果日期不是今天了，且没有设置 时分秒，那么就设置在早上9点*/
+    bool dayChange = true;
+    if (nowDate.year()==resultDate.year() &&
+        nowDate.month()==resultDate.month() &&
+        nowDate.day()==resultDate.day())
+    {
+        dayChange = false;
+    }
+    if (dayChange && (*resultFlag&(HOUR_FLAG|MINUTE_FLAG|SECOND_FLAG))!=0)
+    {
+        resultDate.setHour(9);
+        resultDate.setMinute(0);
+        resultDate.setSecond(0);
+    }
+    
+    DEBUGP("parse vm end time is %s\n", resultDate.format().c_str());
+    return resultDate;
 }
 
 void Parser::instSrot(vector<vmInst_t> &instVector)
@@ -1053,37 +1083,39 @@ void Parser::removeMultipleSpaces(string &str){
 bool Parser::setDateForce(Date &dst, uint32_t *dstFlag, Date &src, const uint32_t *srcFlag)
 {
     bool conflict = false;
-    if (lastBitOrder(*srcFlag)>=YEAR_FLAG)
+    
+    if (lastBitOrder(*srcFlag)>=lastBitOrder(YEAR_FLAG))
     {
         if ((*dstFlag&YEAR_FLAG) && dst.year()!=src.year())
             conflict = true;
         dst.setYear(src.year());
+        DEBUGP("year set to %d\n", src.year());
     }
-    if (lastBitOrder(*srcFlag)>=MONTH_FLGA)
+    if (lastBitOrder(*srcFlag)>=lastBitOrder(MONTH_FLGA))
     {
         if ((*dstFlag&MONTH_FLGA) && dst.month()!=src.month())
             conflict = true;
         dst.setMonth(src.month());
     }
-    if (lastBitOrder(*srcFlag)>=DAY_FLAG)
+    if (lastBitOrder(*srcFlag)>=lastBitOrder(DAY_FLAG))
     {
         if ((*dstFlag&DAY_FLAG) && dst.day()!=src.day())
             conflict = true;
         dst.setDay(src.day());
     }
-    if (lastBitOrder(*srcFlag)>=HOUR_FLAG)
+    if (lastBitOrder(*srcFlag)>=lastBitOrder(HOUR_FLAG))
     {
         if ((*dstFlag&HOUR_FLAG) && dst.hour()!=src.hour())
             conflict = true;
         dst.setHour(src.hour());
     }
-    if (lastBitOrder(*srcFlag)>=MINUTE_FLAG)
+    if (lastBitOrder(*srcFlag)>=lastBitOrder(MINUTE_FLAG))
     {
         if ((*dstFlag&MINUTE_FLAG) && dst.minute()!=src.minute())
             conflict = true;
         dst.setMinute(src.minute());
     }
-    if (lastBitOrder(*srcFlag)>=SECOND_FLAG)
+    if (lastBitOrder(*srcFlag)>=lastBitOrder(SECOND_FLAG))
     {
         if ((*dstFlag&SECOND_FLAG) && dst.second()!=src.second())
             conflict = true;
@@ -1140,19 +1172,12 @@ bool Parser::setDateWeek(Date &dst, uint32_t *dstFlag, Date &src, const uint32_t
     return conflict;
 }
 
-int32_t parseRegex(const char *str, uint32_t len ,ptm ptime)
+int32_t parseRegex(const char *str, uint32_t len ,ptm ptime, uint32_t *flag)
 {
     Time nowTime;
-    Date date = nowTime.toDate();
-    date.setMonth(2);
     
-    ptime->tm_year = date.year()-1900;
-    ptime->tm_mon = date.month();
-    ptime->tm_mday = date.day();
-    
-    struct tm timeGoten;
     Parser timeParser(str);
-    timeParser.getTime(&timeGoten);
-    
-    return 4;
+    int32_t estimation = timeParser.getTime(ptime, flag);
+    printf("hello how is:%d-%d-%d %d:%d:%d",ptime->tm_year+1900, ptime->tm_mon, ptime->tm_mday, ptime->tm_hour, ptime->tm_min, ptime->tm_sec);
+    return estimation;
 }
