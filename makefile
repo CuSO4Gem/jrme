@@ -5,7 +5,7 @@ PLUGIN?=n
 
 #需要清除的临时文件
 #The tempory files which need to be clear
-TEMP_FILES=src/*.o lib/*.o
+TEMP_FILES:=src/*.o lib/*.o
 
 ifeq ($(OS),LINUX)
 	TOOL_CHAIN?=gcc

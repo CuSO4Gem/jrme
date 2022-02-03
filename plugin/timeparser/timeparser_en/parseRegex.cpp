@@ -790,7 +790,7 @@ void Parser::parseAmPm(string &words)
         {
             vmInst_t inst = {{'a', 'm'}, false, 0};
             mVmInst.push_back(inst);
-            words = words.replace(pos, 2, " ");
+            words.replace(pos, 2, " ");
         }
         else
             pos++;
@@ -805,7 +805,7 @@ void Parser::parseAmPm(string &words)
         {
             vmInst_t inst = {{'p', 'm'}, false, 0};
             mVmInst.push_back(inst);
-            words = words.replace(pos, 2, " ");
+            words.replace(pos, 2, " ");
         }
         else
             pos++;
