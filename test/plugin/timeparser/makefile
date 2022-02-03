@@ -1,5 +1,5 @@
 ifeq ($(OS),LINUX)							#根据不同的平台，选择不同的链接库 
-	CFLAGS:= -I./ -L./lib -lc -lstdc++ -ldl
+	CFLAGS:= -I./ -L./lib -lc -lstdc++ -ldl -lgtest -lm -pthread
 else
 	CFLAGS:= -I./ -L./lib -lstdc++ -ldl -DWINDOWS
 endif
