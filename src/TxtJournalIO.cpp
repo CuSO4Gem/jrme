@@ -25,6 +25,21 @@ list<string> TxtJournalIO::formateSupport()
     return formates;
 }
 
+bool TxtJournalIO::isSupportAes256()
+{
+    return false;
+}
+
+void TxtJournalIO::setKey(uint8_t key[32])
+{
+    return;
+}
+
+void TxtJournalIO::clearKey()
+{
+    return;
+}
+
 bool TxtJournalIO::setReadMod()
 {
     if(mState==UNINITED)
