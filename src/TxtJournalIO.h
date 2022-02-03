@@ -1,5 +1,5 @@
-#ifndef TXT_JOURNAL_IO
-#define TXT_JOURNAL_IO
+#ifndef TXT_JOURNAL_IO_H
+#define TXT_JOURNAL_IO_H
 
 #include <fstream>
 
@@ -12,7 +12,7 @@ enum processState {
     WRITE
 };
 
-class TxtJournalIO : JournalIOBase
+class TxtJournalIO : public JournalIOBase
 {
 private:
     fstream mJrounal;

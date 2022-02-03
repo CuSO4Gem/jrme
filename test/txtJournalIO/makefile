@@ -38,14 +38,14 @@ OBJ:=$(OBJ_SRC_CPP) $(OBJ_SRC_C)
 ifeq ($(DEBUG),exclusive)
 #编译调试版本
 #bild debug version
-all:$(MODULES) $(OBJ)
+all: build_prepare $(MODULES) $(OBJ)
 	$(TOOL_CHAIN) $(OBJ) -o $(DOUT_TARGET) $(CFLAGS)
 	rm -f $(OUT_TARGET)
 
 else
 #编译release版本
 #build
-all:$(MODULES) $(OBJ)
+all: build_prepare $(MODULES) $(OBJ)
 	$(TOOL_CHAIN) $(OBJ) -o $(OUT_TARGET) $(CFLAGS)
 endif
 
@@ -56,6 +56,10 @@ $(OBJ_SRC_CPP) : %.o:%.cpp
 
 $(OBJ_SRC_C) : %.o:%.c
 	$(TOOL_CHAIN) $< -o $@ -c  $(CFLAGS)
+
+.PHONY: build_prepare
+build_prepare:
+	cp journal.txt test.txt
 
 .PHONY: clean
 clean:

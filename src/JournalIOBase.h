@@ -1,5 +1,5 @@
-#ifndef JOURNAL_IO_BASE
-#define JOURNAL_IO_BASE
+#ifndef JOURNAL_IO_BASE_H
+#define JOURNAL_IO_BASE_H
 
 #include <list>
 #include <string>
