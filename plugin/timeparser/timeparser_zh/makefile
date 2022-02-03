@@ -14,9 +14,9 @@ BUILD_DIR:=$(UPPER_BUILD_DIR)$(PLAGING_NAME)/
 INCLUDE_DIR:=-I$(shell pwd)/../include -I$(shell pwd)/../../include 
 
 ifeq ($(OS),LINUX)							#根据不同的平台，选择不同的链接库 
-	CFLAGS:=-lc 
+	CFLAGS:=
 else
-	CFLAGS:=-lc  -DWINDOWS
+	CFLAGS:= -DWINDOWS
 endif
 
 
