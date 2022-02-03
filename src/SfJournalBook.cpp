@@ -18,6 +18,7 @@ bool SfJournalBook::open(string path)
     if (!mJournalIO->open(path))
         return false;
     
+    mJournalIO->setReadMod();
     shared_ptr<Journal> journal;
     while ((journal=mJournalIO->readJournal()) != nullptr)
     {

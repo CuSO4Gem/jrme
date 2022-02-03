@@ -1,0 +1,36 @@
+
+error content
+
+==========journal==========
+My first journal
+==========config==========
+date=2021-02-08 11:33:00
+tag=first;second;
+level=10
+==========content==========
+hello world!
+the second line.
+===========================
+
+========== journal ==========
+have space in spliter
+========== config ==========
+date=2022-01-01 10:13:00
+tag=first;second;
+level=10
+========== content ==========
+hello world!
+===========================
+
+========== journal ==========
+with null line in content
+========== config ==========
+date=2019-12-12 09:08:00
+tag=first;second;
+level=10
+
+
+	
+========== content ==========
+hello world!
+===========================

@@ -20,7 +20,7 @@ private:
 
 public:
     SfJournalBook() = default;
-    ~SfJournalBook();
+    ~SfJournalBook() = default;
 
     bool open(string path);
     void order();

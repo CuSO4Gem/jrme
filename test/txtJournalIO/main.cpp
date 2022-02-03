@@ -7,8 +7,6 @@
 
 using namespace std;
 
-#include <syscall.h>
-
 #include "Journal.h"
 #include "TxtJournalIO.h"
 #include "JournalIOBase.h"
