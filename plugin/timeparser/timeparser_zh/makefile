@@ -29,7 +29,7 @@ OBJ=$(patsubst %.c, $(BUILD_DIR)%.o, $(C_FILE))
 
 
 all:build_prepare $(OBJ_SRC)
-	$(TOOL_CHAIN) $(OBJ) -o $(NOTE_IT_PLUGIN)$(OUT_FILE) -shared $(CFLAGS)
+	$(TOOL_CHAIN) $(OBJ) -o $(JRME_PLUGIN)$(OUT_FILE) -shared $(CFLAGS)
 
 #将.c编译为.o
 #compile .c files to .o
@@ -41,3 +41,4 @@ $(OBJ_SRC) : %.o:%.c
 .PHONY: build_prepare
 build_prepare:
 	mkdir -p $(BUILD_DIR)
+	mkdir -p $(JRME_PLUGIN)

@@ -28,19 +28,19 @@ SRC_C:=$(wildcard  ./src/*.c ./lib/*.c)
 #指定中间文件存放位置
 #choose a directory to save .o
 BUILD_DIR:=$(shell pwd)/build/
-#指定note-it的输出
-#choose a directory to build out note-it
+#指定jrme的输出
+#choose a directory to build out jrme
 OUT_DIR:=$(shell pwd)/bin/
 #指定可执行文件位置与名字
 ifeq ($(OS),LINUX)
-	OUT_FILE?=note-it.elf
+	OUT_FILE?=jrme.elf
 else
-	OUT_FILE?=note-it.exe
+	OUT_FILE?=jrme.exe
 endif
 OUT_TARGET:=$(OUT_DIR)$(OUT_FILE)
 #调试版本的文件名
 #the file name of debug version
-DOUT_FILE?=note-it_debug.elf
+DOUT_FILE?=jrme_debug.elf
 DOUT_TARGET:=$(OUT_DIR)$(DOUT_FILE)
 
 #所有的.cpp和.c文件的文件名
@@ -66,7 +66,7 @@ endif
 #------------------------------remove files-------------------------------#
 CLEAN_TARGET:=$(BUILD_DIR)* $(OUT_DIR)* 
 ifeq ($(PLUGIN),y)
-	CLEAN_TARGET+=$(NOTE_IT_PLUGIN)*
+	CLEAN_TARGET+=$(JRME_PLUGIN)*
 endif
 
 #----------------------------------build----------------------------------#
