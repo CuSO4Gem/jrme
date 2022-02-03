@@ -7,9 +7,9 @@ else
 endif
 					
 ifeq ($(OS),LINUX)							#根据不同的平台，选择不同的链接库 
-	CFLAGS=-I./include -I./lib -L./lib -static -lc
+	CFLAGS=-I./include -I./lib -L./lib -lc -lstdc++ -ldl -static 
 else
-	CFLAGS=-I./include -I./lib -L./lib -static -DWINDOWS
+	CFLAGS=-I./include -I./lib -L./lib -lstdc++ -ldl -static -DWINDOWS
 endif
 
 #传参觉得是否需要调试，如果DEBUG=exclusive，则调试的时候会删除release版本
@@ -22,7 +22,7 @@ SRC=$(wildcard  ./src/*.c  ./src/*.cpp  ./lib/*.c ./lib/*.cpp)
 #指定中间文件存放位置
 DIR=./build/
 #指定输出目录
-OUT_DIR=./bin/
+OUT_DIR=`
 #指定可执行文件位置与名字
 ifeq ($(OS),LINUX)							#根据不同的平台，选择不同的链接库 
 	OUT_FILE?=main.elf

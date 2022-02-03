@@ -18,8 +18,8 @@
 
 typedef struct tm* ptm;
 
-int32_t parseTime(char *str, int32_t len, ptm ptime, uint32_t *flag);
+int32_t parseTime(const char *str, int32_t len, ptm ptime, uint32_t *flag);
 
-typedef int32_t (*pParseTime)(char *, int32_t, ptm, uint32_t *);
+typedef int32_t (*pParseTime)(const char *, int32_t, ptm, uint32_t *);
 
 #endif
