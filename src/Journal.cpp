@@ -62,7 +62,7 @@ string Journal::toString()
     if (mContent[mContent.length()-1] != '\n')
         out.append("\n");
     
-    out.append("===========================\n");
+    out.append("###########################\n");
 
     return out;
 }

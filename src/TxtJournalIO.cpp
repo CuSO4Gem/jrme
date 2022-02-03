@@ -263,7 +263,7 @@ shared_ptr<Journal> TxtJournalIO::readJournal()
     while (getline(mjournal, lineBuffer))
     {
         size_t prLen=0;
-        if (regex_search(lineBuffer, regexResult, regex("^={4,}[ ,\t,\r,\n]{0,}$")))
+        if (regex_search(lineBuffer, regexResult, regex("^#{4,}[ ,\t,\r,\n]{0,}$")))
         {
             finded = true;
             break;
@@ -307,7 +307,7 @@ bool TxtJournalIO::writeJournal(shared_ptr<Journal> journal)
     if (content[content.length()-1]!='\n')
         mjournal.write("\n", 1);
 
-    lineBuffer = string("===========================\n\n");
+    lineBuffer = string("###########################\n\n");
     mjournal.write(lineBuffer.c_str(), lineBuffer.length());
 
     return true;
