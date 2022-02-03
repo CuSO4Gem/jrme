@@ -14,14 +14,14 @@ SRC_CPP:=$(wildcard  $(shell pwd)/*.cpp)
 SRC_C:=$(wildcard  $(shell pwd)*.c)
 #指定可执行文件位置与名字
 ifeq ($(OS),LINUX)
-	OUT_FILE?=timeparser_test.elf
+	OUT_FILE?=main.elf
 else
-	OUT_FILE?=timeparser_test.exe
+	OUT_FILE?=main.exe
 endif
 OUT_TARGET:=$(OUT_FILE)
 #调试版本的文件名
 #the file name of debug version
-DOUT_FILE?=timeparser_test_debug.elf
+DOUT_FILE?=main.elf
 DOUT_TARGET:=$(DOUT_FILE)
 
 #把.cpp和c 换成.o
@@ -38,14 +38,14 @@ OBJ:=$(OBJ_SRC_CPP) $(OBJ_SRC_C)
 ifeq ($(DEBUG),exclusive)
 #编译调试版本
 #bild debug version
-all: build_prepare $(MODULES) $(OBJ)
+all: $(MODULES) $(OBJ)
 	$(TOOL_CHAIN) $(OBJ) -o $(DOUT_TARGET) $(CFLAGS)
 	rm -f $(OUT_TARGET)
 
 else
 #编译release版本
 #build
-all: build_prepare $(MODULES) $(OBJ)
+all:  $(MODULES) $(OBJ)
 	$(TOOL_CHAIN) $(OBJ) -o $(OUT_TARGET) $(CFLAGS)
 endif
 
@@ -57,9 +57,6 @@ $(OBJ_SRC_CPP) : %.o:%.cpp
 $(OBJ_SRC_C) : %.o:%.c
 	$(TOOL_CHAIN) $< -o $@ -c  $(CFLAGS)
 
-.PHONY: build_prepare
-build_prepare:
-	cp journal.txt test.txt
 
 .PHONY: clean
 clean:
