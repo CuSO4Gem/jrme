@@ -14,9 +14,9 @@ else
 endif
 					
 ifeq ($(OS),LINUX)							#根据不同的平台，选择不同的链接库 
-	CFLAGS:= -I./src -I./include -I./lib -I./plugin/timeparser/include -L./lib -lc -lstdc++ -ldl -static
+	CFLAGS:= -I./src -I./include -I./lib -I./plugin/timeparser/include -Llib -lc -lstdc++ -ldl
 else
-	CFLAGS:= -I./src -I./include -I./lib -L./lib -lstdc++ -ldl  -static -DWINDOWS
+	CFLAGS:= -I./src -I./include -I./lib -L./lib -lstdc++ -ldl -DWINDOWS
 endif
 
 #传参决定是否需要调试，如果DEBUG=exclusive，则调试的时候会删除release版本
@@ -70,15 +70,15 @@ endif
 ifeq ($(DEBUG),exclusive)
 #编译调试版本
 #bild debug version
-all:build_prepare $(MODULES) $(OBJ_SRC_CPP) $(OBJ_SRC_C)
-	$(TOOL_CHAIN) $(OBJ) -o $(DOUT_TARGET) $(CFLAGS)
+all:build_prepare editor $(MODULES) $(OBJ_SRC_CPP) $(OBJ_SRC_C)
+	$(TOOL_CHAIN) $(OBJ) -o $(DOUT_TARGET) $(CFLAGS) -Leditor -leditor
 	rm -f $(OUT_TARGET)
 
 else
 #编译release版本
 #build
-all:build_prepare $(MODULES) $(OBJ_SRC_CPP) $(OBJ_SRC_C)
-	$(TOOL_CHAIN) $(OBJ) -o $(OUT_TARGET) $(CFLAGS)
+all:build_prepare editor $(MODULES) $(OBJ_SRC_CPP) $(OBJ_SRC_C)
+	$(TOOL_CHAIN) $(OBJ) -o $(OUT_TARGET) $(CFLAGS) -Leditor -leditor
 endif
 
 #将.cpp和.c编译为.o
@@ -99,6 +99,10 @@ test: $(MODULES)
 plugin:
 	$(MAKE) -C ./plugin TOOL_CHAIN=$(TOOL_CHAIN) OS=$(OS)
 
+.PHONY: editor
+editor:
+	$(MAKE) -C ./editor TOOL_CHAIN=$(TOOL_CHAIN) OS=$(OS)
+
 .PHONY: build_prepare
 build_prepare:
 	mkdir -p $(OUT_DIR)
@@ -110,3 +114,4 @@ clean:
 	rm -rf $(CLEAN_TARGET)
 	$(MAKE) -C ./plugin clean
 	$(MAKE) -C ./test clean
+	$(MAKE) -C ./editor clean
