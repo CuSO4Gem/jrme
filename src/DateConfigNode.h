@@ -18,7 +18,7 @@ public:
     string getKey();
     string getDefaultValue();
     void beforeInput(shared_ptr<Journal> journal);
-    void afterInput(shared_ptr<Journal> journal) {};
+    void afterInput(shared_ptr<Journal> journal);
 
     int32_t innerConfigType();
     void setDate(time_t stamp);

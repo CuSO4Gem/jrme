@@ -3,7 +3,7 @@
 
 DateConfigNode::DateConfigNode()
 {
-    mDate = Date(1900, 1, 1, 9, 0, 0);
+    mDate = Date(1970, 1, 1, 9, 0, 0);
 }
 
 uint32_t DateConfigNode::apiVersion()
@@ -21,10 +21,15 @@ string DateConfigNode::getDefaultValue()
     return string("");
 }
 
-string DateConfigNode::beforeInput(shared_ptr<Journal> journal)
+void DateConfigNode::beforeInput(shared_ptr<Journal> journal)
 {
     //todo : from timeparser
     setValueToConfig(journal->getConfig(), "date", mDate.toString());
+}
+
+void DateConfigNode::afterInput(shared_ptr<Journal> journal)
+{
+    return;
 }
 
 int32_t DateConfigNode::innerConfigType()
