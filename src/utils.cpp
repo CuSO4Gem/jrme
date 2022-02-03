@@ -90,8 +90,8 @@ Date getJournalFormConfig(string &config)
     string lineBuffer;
     istringstream configStream = istringstream(config);
     
-    while(getline(configStream, lineBuffer))
-    {
+    // while(getline(configStream, lineBuffer))
+    // {
 
-    }
+    // }
 }
