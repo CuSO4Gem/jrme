@@ -1,3 +1,5 @@
+
+TOOL_CHAIN?=gcc
 CFLAGS:= -I./ -L./lib -lc -lstdc++ -ldl -lgtest -lm -pthread
 
 #需要清除的临时文件
