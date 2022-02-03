@@ -1,13 +1,13 @@
 OS?=LINUX
 
 ifeq ($(OS),LINUX)								#选择gcc还是arm-linux-gccc
-	TOOL?=gcc
+	TOOL_CHAIN?=gcc
 else 
-	TOOL?=x86_64-w64-mingw32-gcc
+	TOOL_CHAIN?=x86_64-w64-mingw32-gcc
 endif
 					
 ifeq ($(OS),LINUX)							#根据不同的平台，选择不同的链接库 
-	CFLAGS:=-I./include -I./lib -L./lib -lc -lstdc++ -ldl -static 
+	CFLAGS:=-I./include -I./lib -I./plugin/timeparser/include -L./lib -lc -lstdc++ -ldl -static 
 else
 	CFLAGS:=-I./include -I./lib -L./lib -lstdc++ -ldl -static -DWINDOWS
 endif
@@ -20,7 +20,7 @@ endif
 #寻找所有.c和.cpp文件的路径
 SRC:=$(wildcard  ./src/*.c  ./src/*.cpp  ./lib/*.c ./lib/*.cpp)
 #指定中间文件存放位置
-DIR:=./build/
+BUILD_DIR:=$(shell pwd)/build/
 #指定输出目录
 OUT_DIR=./bin/
 #指定可执行文件位置与名字
@@ -36,31 +36,33 @@ DOUT_FILE?=main_debug.elf
 DOUT_TARGET:=$(OUT_DIR)$(DOUT_FILE)
 
 
-CFILE=$(notdir $(SRC))
+C_FILE=$(notdir $(SRC))
 #把.cpp 换成.o
 OBJ_SRC=$(patsubst %.cpp, %.o, $(SRC))
-OBJ=$(patsubst %.cpp, $(DIR)%.o, $(CFILE))
+OBJ=$(patsubst %.cpp, $(BUILD_DIR)%.o, $(C_FILE))
 
 
 #^:所有依赖-->OBJ ,@:生成目标放置地方，把.o放到OUT_TARGET中,CFLAGS:选择库
 #根据是否由如果定义互斥，则调试的时候会删除发行版
 ifeq ($(DEBUG),exclusive)
-all:$(OBJ_SRC)
-	$(TOOL) $(OBJ) -o $(DOUT_TARGET) $(CFLAGS)
+all:plugin $(OBJ_SRC)
+	$(TOOL_CHAIN) $(OBJ) -o $(DOUT_TARGET) $(CFLAGS)
 	rm -f $(OUT_TARGET)
 
 else
-all:$(OBJ_SRC)
-	$(TOOL) $(OBJ) -o $(OUT_TARGET) $(CFLAGS)
+all:plugin $(OBJ_SRC)
+	$(TOOL_CHAIN) $(OBJ) -o $(OUT_TARGET) $(CFLAGS)
 endif
 
 #^:由.o生成.c，CFLAGS:选择库
 $(OBJ_SRC) : %.o:%.cpp
-	$(TOOL) $< -o $(DIR)$(notdir $@) -c  $(CFLAGS)
+	$(TOOL_CHAIN) $< -o $(BUILD_DIR)$(notdir $@) -c  $(CFLAGS)
 
+.PHONY: plugin
 plugin:
+	$(MAKE) -C ./plugin UPPER_BUILD_DIR=$(BUILD_DIR) TOOL_CHAIN=$(TOOL_CHAIN) OS=$(OS)
 
 #清除可执行文件，重新编译
-clean:
-	rm -f $(DIR)* $(OUT_DIR)* $(NOTE_IT_PLUGIN)*
 .PHONY: clean
+clean:
+	rm -rf $(BUILD_DIR)* $(OUT_DIR)* $(NOTE_IT_PLUGIN)*
