@@ -1,5 +1,6 @@
 #include <fstream>
 #include <memory>
+#include <iostream>
 #include <sys/stat.h>
 
 #include "ConfigNodeMaster.h"
@@ -14,6 +15,7 @@
 #include "SfJournalBook.h"
 #include "WriteMode.h"
 
+using namespace std;
 using namespace ec;
 
 void journlWriteMode(string bookPath, string timeDescription, string title)
@@ -59,9 +61,19 @@ void journlWriteMode(string bookPath, string timeDescription, string title)
     string plugNames = configFile.GetSection("plugin")->GetValue("config node").AsString();
     istringstream plugNameStream = istringstream(plugNames);
     string pluginName;
+    bool load_fail = false;
     while (getline(plugNameStream, pluginName, ','))
     {
-        configMaster.addPluginNode(pluginName);
+        if (!configMaster.addPluginNode(pluginName))
+        {
+            printf("warning: plugin %s not find\n", pluginName.c_str());
+            load_fail = true;
+        }
+    }
+    if (load_fail)
+    {
+        string tmpStr;
+        getline(cin, tmpStr);
     }
 
     string config = configMaster.genConfig();
