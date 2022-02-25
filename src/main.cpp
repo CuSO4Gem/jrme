@@ -10,10 +10,11 @@ using namespace std;
 #include "JrmeConfig.h"
 
 int main(int argc, char* argv[]) {
-    bool ret;
-    ret = installIfNeed();
-    if (ret=false)
+    if (!installIfNeed())
+    {
         printf("error: install jrme fail!!\n");
+        return -1;
+    }
     
     INI::File configFile = INI::File(getConfigFilePath());
     string journalBookPath = configFile.GetSection("journal books")->GetValue("default").AsString();
@@ -38,23 +39,23 @@ int main(int argc, char* argv[]) {
     
     if (dividePos<0)
     {
-        writeJournal(journalBookPath, string(""), inStr);
+        journlWriteMode(journalBookPath, string(""), inStr);
     }
     else if (dividePos==0)
     {
         inStr.erase(0 ,1);
-        writeJournal(journalBookPath, string(""), inStr);
+        journlWriteMode(journalBookPath, string(""), inStr);
     }
     else if (0==inStr.length()-1)
     {
         inStr.erase(inStr.length()-1, 1);
-        writeJournal(journalBookPath, inStr, string(""));
+        journlWriteMode(journalBookPath, inStr, string(""));
     }
     else
     {
         string timeStr = inStr.substr(0, dividePos);
         string titleStr = inStr.substr(dividePos+1, inStr.length() - dividePos - 1);
-        writeJournal(journalBookPath, timeStr, titleStr);   
+        journlWriteMode(journalBookPath, timeStr, titleStr);   
     }
     
     return 0;

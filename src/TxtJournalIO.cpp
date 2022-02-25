@@ -81,7 +81,7 @@ bool TxtJournalIO::open(string path)
     {
         /*maybe file no exist, try too create one*/
         string cmd = string("touch ")+path;
-        printf("touch journal fil: %s\n",cmd.c_str());
+        printf("touch journal file: %s\n",cmd.c_str());
         int ret = system(cmd.c_str());
         if (ret!=0)
             return false;

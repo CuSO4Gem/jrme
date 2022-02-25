@@ -9,14 +9,14 @@
 #include "iniparser.hpp"
 #include "JrmeConfig.h"
 #include "TagConfigNode.h"
-#include "KiloEditor.h"
+#include "TxtEditor.h"
 #include "LevelConfigNode.h"
 #include "SfJournalBook.h"
 #include "WriteMode.h"
 
 using namespace ec;
 
-void writeJournal(string bookPath, string timeDescription, string title)
+void journlWriteMode(string bookPath, string timeDescription, string title)
 {
     shared_ptr<JournalBookBase> journalBook;
 
@@ -74,18 +74,22 @@ void writeJournal(string bookPath, string timeDescription, string title)
     string strBuffer;
     strBuffer.append("==========journal==========\n");
     strBuffer.append(journal->getTitle());
-    strBuffer.append(" \n");
+    strBuffer.append("\n");
     strBuffer.append("==========config==========\n");
     strBuffer.append(journal->getConfig());
-    strBuffer.append("==========content==========");
+    strBuffer.append("==========content==========\n");
 
     TxtEditor editor;
     editor.setInitStr(strBuffer);
     string gotStr;
-    if (!editor.getTextFromEditor(gotStr))
+    journal = nullptr;
+    journal = editor.getJournalFromEditor();
+    if (!journal)
+    {
+        printf("error: The input journal format error!!\n");
         return ;
+    }
     
-    journal = strToJournal(gotStr);
     configMaster.postprocess(journal);
     
     journalBook->push_back(journal);

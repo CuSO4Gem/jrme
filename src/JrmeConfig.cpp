@@ -32,6 +32,11 @@ string getPluginDir()
     return dir;
 }
 
+string getDefaultJournalPath()
+{
+    return getConfigRootDir() + string("journal.txt");
+}
+
 /**
  * @brief 
  * 
@@ -78,12 +83,6 @@ bool pathNormalize(string &rawPath, string &normalizedPath)
     return true;
 }
 
-string getDefaultJournalPath()
-{
-    char const* home = getenv("HOME");
-    string homeDir = string(home)+string("/");
-    return homeDir + string(".local/share/jrm/journal.txt");
-}
 
 bool installIfNeed()
 {
@@ -122,19 +121,20 @@ bool installIfNeed()
     }
     
     INI::File config = INI::File(target);
-    string jrounBook = config.GetSection("journal books")->GetValue("default").AsString();
-    if (jrounBook.empty())
+    string journBook = config.GetSection("journal books")->GetValue("default").AsString();
+    if (journBook.empty())
     {
         string dafaultJournal = getDefaultJournalPath();
         string gotPath;
         string savePath;
-        printf("Path to your journal file (leave blank for %s):", dafaultJournal.c_str());
+        printf("Path of your journal file (leave blank for %s):", dafaultJournal.c_str());
         getline(cin, gotPath);
-        if (!pathNormalize(gotPath, savePath))
+        if (!gotPath.empty() && !pathNormalize(gotPath, savePath))
             return false;
-
+        else if(gotPath.empty())
+            savePath = dafaultJournal;
         config.GetSection("journal books")->SetValue("default", savePath);
-        printf("jrounBook save to %s\n", savePath.c_str());
+        printf("journBook save to %s\n", savePath.c_str());
     }
     config.Save(target);
     return true;

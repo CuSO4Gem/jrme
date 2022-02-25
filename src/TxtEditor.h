@@ -1,4 +1,10 @@
+#ifndef TXT_EDITOR_H
+#define TXT_EDITOR_H
 #include <string>
+#include <memory>
+
+#include "Journal.h"
+
 using namespace std;
 
 class TxtEditor
@@ -9,7 +15,7 @@ private:
 public:
     TxtEditor() = default;
     TxtEditor(string initStr);
-    ~TxtEditor();
+    ~TxtEditor() = default;
 
     /**
      * @brief 设置editor初始的字符串
@@ -27,9 +33,9 @@ public:
     /**
      * @brief 让用户从editor输入日记
      * 
-     * @param strGot [out]: 返回用户的输入。如果用户不希望保存，则没有内容。 
-     * @return true 用户希望保存
-     * @return false 用户不希望保存
+     * @return nullptr 用户不希望保存
      */
-    bool getTextFromEditor(string &strGot);
+    shared_ptr<Journal> getJournalFromEditor();
 };
+
+#endif

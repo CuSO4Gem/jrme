@@ -60,15 +60,15 @@ endif
 ifeq ($(DEBUG),exclusive)
 #编译调试版本
 #bild debug version
-all:build_prepare editor $(MODULES) $(OBJ_SRC_CPP) $(OBJ_SRC_C)
-	$(TOOL_CHAIN) $(OBJ) -o $(DOUT_TARGET) $(CFLAGS) -Leditor -leditor $(STATIC)
+all:build_prepare  $(MODULES) $(OBJ_SRC_CPP) $(OBJ_SRC_C)
+	$(TOOL_CHAIN) $(OBJ) -o $(DOUT_TARGET) $(CFLAGS) $(STATIC)
 	rm -f $(OUT_TARGET)
 
 else
 #编译release版本
 #build
-all:build_prepare editor $(MODULES) $(OBJ_SRC_CPP) $(OBJ_SRC_C)
-	$(TOOL_CHAIN) $(OBJ) -o $(OUT_TARGET) $(CFLAGS) -Leditor -leditor $(STATIC)
+all:build_prepare $(MODULES) $(OBJ_SRC_CPP) $(OBJ_SRC_C)
+	$(TOOL_CHAIN) $(OBJ) -o $(OUT_TARGET) $(CFLAGS) $(STATIC)
 endif
 
 #将.cpp和.c编译为.o
@@ -89,10 +89,6 @@ test: $(MODULES)
 plugin:
 	$(MAKE) -C ./plugin TOOL_CHAIN=$(TOOL_CHAIN)
 
-.PHONY: editor
-editor:
-	$(MAKE) -C ./editor TOOL_CHAIN=$(TOOL_CHAIN)
-
 .PHONY: build_prepare
 build_prepare:
 	mkdir -p $(OUT_DIR)
@@ -106,4 +102,3 @@ ifeq ($(PLUGIN),y)
 	$(MAKE) -C ./plugin clean
 endif
 	$(MAKE) -C ./test clean
-	$(MAKE) -C ./editor clean

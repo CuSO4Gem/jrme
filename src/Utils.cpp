@@ -25,7 +25,7 @@ bool seekToNumChar(size_t *pos, const string &inStr)
             break;
         }
         else
-            *pos++;
+            *pos += 1;
     }
 
     return finded;
