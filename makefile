@@ -29,12 +29,11 @@ BUILD_DIR:=$(shell pwd)/build/
 #choose a directory to build out jrme
 OUT_DIR:=$(shell pwd)/bin/
 #指定可执行文件位置与名字
-OUT_FILE?=jrme.elf
-OUT_FILE?=jrme.exe
+OUT_FILE?=jrme
 OUT_TARGET:=$(OUT_DIR)$(OUT_FILE)
 #调试版本的文件名
 #the file name of debug version
-DOUT_FILE?=jrme_debug.elf
+DOUT_FILE?=jrme_debug
 DOUT_TARGET:=$(OUT_DIR)$(DOUT_FILE)
 
 #把.cpp和c 换成.o

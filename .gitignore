@@ -1,5 +1,4 @@
-./build/*
-./bin/*
+bin/*
 .vscode
 
 *.o
