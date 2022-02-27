@@ -1,5 +1,5 @@
-#ifndef TXT_JOURNAL_IO_H
-#define TXT_JOURNAL_IO_H
+#ifndef MD_JOURNAL_IO_H
+#define MD_JOURNAL_IO_H
 
 #include <fstream>
 #include <memory>
@@ -14,16 +14,17 @@ enum processState {
     WRITE
 };
 
-class TxtJournalIO : public JournalIOBase
+class MdJournalIO : public JournalIOBase
 {
 private:
     fstream mJournal;
     string mJournalPath;
+    size_t mFileSize;
     enum processState mState;
 
 public:
-    TxtJournalIO();
-    ~TxtJournalIO();
+    MdJournalIO();
+    ~MdJournalIO();
 
     uint32_t apiSupport();
     list<string> formateSupport();

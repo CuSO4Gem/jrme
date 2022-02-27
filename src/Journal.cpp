@@ -73,6 +73,5 @@ bool Journal::operator ==(Journal &anotherJournal)
         this->mConfig == anotherJournal.mConfig &&
         this->mContent == anotherJournal.mContent)
         return true;
-    
     return false;
 }

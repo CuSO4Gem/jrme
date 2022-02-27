@@ -8,16 +8,16 @@
 using namespace std;
 
 #include "Journal.h"
-#include "TxtJournalIO.h"
+#include "MdJournalIO.h"
 #include "JournalIOBase.h"
 
-TEST(TxtJournalIO, read)
+TEST(MdJournalIO, read)
 {
     ifstream journalStore;
     journalStore.open("read1Store.txt");
     ASSERT_TRUE(journalStore.is_open()) << "read1Store.txt open failed";
-    TxtJournalIO journalIO;
-    ASSERT_TRUE(journalIO.open("read1.txt")) << "TxtJournalIO open failed";
+    MdJournalIO journalIO;
+    ASSERT_TRUE(journalIO.open("read1.md")) << "MdJournalIO open failed";
     journalIO.setReadMod();
     for (size_t i = 0; i < 3; i++)
     {
@@ -32,20 +32,20 @@ TEST(TxtJournalIO, read)
         jStandard.setConfig(lineBuffer);
         getline(journalStore, lineBuffer, '#');
         jStandard.setContent(lineBuffer);
-        
-        ASSERT_TRUE(*journal == jStandard) << "fail in loop " << to_string(i);
+        ASSERT_TRUE(*journal == jStandard) << "fail in loop " << to_string(i) << "\n" << journal->toString() << jStandard.toString();
     }
 }
 
-TEST(TxtJournalIO, write)
+TEST(MdJournalIO, write)
 {
     ifstream journalStore;
     journalStore.open("read1Store.txt");
     ASSERT_TRUE(journalStore.is_open()) << "read1Store.txt open failed when verfy write";
     
-    TxtJournalIO journalIO;
+    MdJournalIO journalIO;
     string fileToWrite = string("test.txt");
-    ASSERT_TRUE(journalIO.open(fileToWrite)) << "TxtJournalIO open failed";
+    remove(fileToWrite.c_str());
+    ASSERT_TRUE(journalIO.open(fileToWrite)) << "MdJournalIO open failed";
     bool ret = journalIO.setWriteMode();
     for (size_t i = 0; i < 3; i++)
     {

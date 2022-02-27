@@ -25,7 +25,7 @@ OBJ_SRC_CPP:=$(patsubst %.cpp, %.o, $(SRC_CPP))
 OBJ_SRC_C:=$(patsubst %.c, %.o, $(SRC_C))
 #所有的.o文件
 #all .o files
-OBJ:=$(OBJ_SRC_CPP) $(OBJ_SRC_C)
+OBJ:=$(OBJ_SRC_C) $(OBJ_SRC_CPP)
 
 #----------------------------------build----------------------------------#
 #如果定义互斥(DEBUG=exclusive)，则调试的时候会删除发行版
