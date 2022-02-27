@@ -11,6 +11,11 @@
 using namespace::std;
 using namespace::ec;
 
+inline bool isNumChar(const char ch)
+{
+    return '0'<=ch && ch<='9';
+}
+
 /**
  * @brief remove multiple space from string
  */

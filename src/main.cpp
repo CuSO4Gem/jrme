@@ -8,6 +8,7 @@ using namespace std;
 
 #include "WriteMode.h"
 #include "JrmeConfig.h"
+#include "Utils.h"
 
 int main(int argc, char* argv[]) {
     if (!installIfNeed())
@@ -27,13 +28,16 @@ int main(int argc, char* argv[]) {
             inStr.append(argv[i]);  
     }
 
-    int32_t dividePos;
-    for (int32_t i = inStr.length()-1; i >=0  ; i--)
+    int32_t dividePos = -1;
+    for (size_t i = 0; i < inStr.length(); i++)
     {
         if (inStr[i]==':')
         {
-            dividePos = i;
-            break;
+            if (i==0 || i == inStr.length()-1 || 
+            !(isNumChar(inStr[i-1]) && isNumChar(inStr[i+1])))
+            {
+                dividePos = i;
+            }
         }
     }
     
@@ -45,11 +49,6 @@ int main(int argc, char* argv[]) {
     {
         inStr.erase(0 ,1);
         journlWriteMode(journalBookPath, string(""), inStr);
-    }
-    else if (0==inStr.length()-1)
-    {
-        inStr.erase(inStr.length()-1, 1);
-        journlWriteMode(journalBookPath, inStr, string(""));
     }
     else
     {

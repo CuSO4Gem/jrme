@@ -666,7 +666,7 @@ Date Parser::parseVM(vector<vmInst_t> &vmInst, uint32_t *resultFlag, int32_t *es
                 break;
             else if (it.haveNumber && it.number<=24)
             {
-                resultDate.setHour(it.haveNumber%24);
+                resultDate.setHour(it.number%24);
                 resultDate.setMinute(0);
                 resultDate.setSecond(0);
                 flagWeek |= HOUR_FLAG|MINUTE_FLAG|SECOND_FLAG;

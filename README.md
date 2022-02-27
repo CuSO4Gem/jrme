@@ -18,12 +18,14 @@ level=
 ```
 保存并退出后将会保存日记。
 ## 写日记的其他方式
-jrme [时间][:][标题{.}][正文]  
+jrme [时间][ :][标题{.}] 
 例如：
 ```
-jrme today:hello world.what a nice day.
-jrme today:
-jrme hello world. what a nice day.
+jrme today :hello world.
+jrme today :
+jrme last year :
+jrme last sunday :
+jrme this moning :
 jrme hello world.
 ```
 
