@@ -3,12 +3,8 @@
 #include <regex>
 #include <unistd.h>
 
-#define DEBUG
-#ifdef DEBUG
-#define DEBUGP(...) (printf(__VA_ARGS__))
-#else
-#define DEBUGP(...) ;
-#endif
+/*debug */
+#include "debug_print.h"
 
 TxtJournalIO::TxtJournalIO()
 {
@@ -88,7 +84,7 @@ bool TxtJournalIO::open(string path)
     {
         /*maybe file no exist, try too create one*/
         string cmd = string("touch ")+path;
-        printf("touch journal file: %s\n",cmd.c_str());
+        JLOGT("touch journal file: %s\n",cmd.c_str());
         int ret = system(cmd.c_str());
         if (ret!=0)
             return false;

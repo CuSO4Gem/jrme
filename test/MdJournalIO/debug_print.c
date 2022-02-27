@@ -9,6 +9,18 @@
 #include <stdio.h>
 
 #include <debug_print.h>
+/**
+ * @brief 
+ * 
+ * @param debugMessage message of debug
+ * @param length the lenght of the message
+ * @return int 
+ */
+int debug_print_callback(char* debugMessage, unsigned int length)
+{
+    printf("%s", debugMessage);
+    return 0;
+}
 
 int debug_printf_ln(const char *color, const char *fileName, const char *funcName, unsigned int lineNumber, const char *fmt, ...)
 {

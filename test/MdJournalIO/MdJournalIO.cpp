@@ -4,23 +4,38 @@
 #include <unistd.h>
 
 /*debug */
-#define DBG_PRINT_ENABLED (4)
 #include "debug_print.h"
-int debug_print_callback(char* debugMessage, unsigned int length)
-{
-    printf("%s", debugMessage);
-    return 0;
-}
-#include <iostream>
-using namespace std;
 
-void mdEnterConver(string &iStr)
+void md2txtEnter(string &iStr)
 {
+    if (iStr.length() == 0)
+        return;
+    if (iStr.length()>2 && iStr[iStr.length()-2]=='\r')
+        iStr.erase(iStr.length()-2, 1);
     if (iStr.length()>2 && iStr.substr(iStr.length()-2,2)=="  ")
         iStr = iStr.substr(0, iStr.length()-2) + string("\n"); 
-    else if (iStr.length()>3 && 
-    (iStr.substr(iStr.length()-4,3)=="  \r" || iStr.substr(iStr.length()-2,2)=="  "))
-        iStr = iStr.substr(0, iStr.length()-2) + string("\n"); 
+}
+
+void txt2mdEnter(string &iStr)
+{
+    if (iStr.length()>2 && iStr[iStr.length()-2]=='\r')
+        iStr.erase(iStr.length()-2, 1);
+    if (iStr.length() == 0)
+        return;
+    size_t i = 0;
+    while (i<iStr.length())
+    {
+        
+        if (iStr[i]=='\r')
+            iStr.erase(i, 1);
+        if (iStr[i]=='\n')
+        {
+            iStr.insert(i, "  ");
+            i += 3;
+        }
+        else
+            i++;    
+    }
 }
 
 MdJournalIO::MdJournalIO()
@@ -103,7 +118,7 @@ bool MdJournalIO::open(string path)
     {
         /*maybe file no exist, try too create one*/
         string cmd = string("touch ")+path;
-        printf("touch journal file: %s\n",cmd.c_str());
+        JLOGT("touch journal file: %s\n",cmd.c_str());
         int ret = system(cmd.c_str());
         if (ret!=0)
             return false;
@@ -235,7 +250,7 @@ shared_ptr<Journal> MdJournalIO::readJournal()
         }
         else
         {
-            mdEnterConver(lineBuffer);
+            md2txtEnter(lineBuffer);
             readBuffer.append(lineBuffer);
         }
     }
@@ -319,7 +334,7 @@ shared_ptr<Journal> MdJournalIO::readJournal()
         }
         else
         {
-            mdEnterConver(lineBuffer);
+            md2txtEnter(lineBuffer);
             readBuffer.append(lineBuffer);
         }
     }
@@ -357,7 +372,7 @@ bool MdJournalIO::writeJournal(shared_ptr<Journal> journal)
         else
             getSpace = 0;
 
-        if (getSpace>1 || title[i]=='\t')
+        if (getSpace>1 || title[i]=='\r')
             title.erase(i, 1);
         else
             i++;    
@@ -376,6 +391,7 @@ bool MdJournalIO::writeJournal(shared_ptr<Journal> journal)
     mJournal.write(lineBuffer.c_str(), lineBuffer.length());
 
     string content = journal->getContent();
+    txt2mdEnter(content);
     mJournal.write(content.c_str(), content.length());
     if (content[content.length()-1]!='\n')
         mJournal.write("\n", 1);

@@ -65,6 +65,7 @@ TEST(MdJournalIO, write)
     /* verfy writen file */
     journalStore.seekg(0, ios::beg);
     ASSERT_TRUE(journalStore.is_open()) << "read1Store.txt open failed when verfy write";
+    ASSERT_TRUE(journalIO.open(fileToWrite)) << "MdJournalIO open failed";
     journalIO.setReadMod();
     for (size_t i = 0; i < 3; i++)
     {
@@ -80,6 +81,11 @@ TEST(MdJournalIO, write)
         getline(journalStore, lineBuffer, '#');
         jStandard.setContent(lineBuffer);
         
+        if (!(*journal == jStandard))
+        {
+            printf("%s",journal->toString().c_str());
+            printf("%s",jStandard.toString().c_str());
+        }
         ASSERT_TRUE(*journal == jStandard) << " verfy write fail in loop " << to_string(i);
     }
 }
