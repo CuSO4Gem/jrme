@@ -47,7 +47,11 @@ config node = 插件，多个插件用,分割
 jrme项目为了向日记添加更多更灵活的附加功能，提供了关于日记中config章节的插件。每一项目的config都包含默认的key和value。在写日记前和完成日记书写的时候，插件都能读取到全部的日记文本，并且可以进行一定的修改。  
 ## save data插件
 当前工程自带一个key为"save date"的插件，可以记录保存日记的时间。运行：*make plugin*可以获得该插件，保存位置为：*~/.jrme/plugin/*。  
-注意：需要插件顺利加载，需要在配置文件中的config node加入该插件的文件名。
+注意：需要插件顺利加载，需要在配置文件中的config node加入该插件的文件名。如：
+```
+[plugin]
+config node = save_date.so
+```
 
 # 编译
 需求：gcc,g++,gtest(如果需要运行test)  
