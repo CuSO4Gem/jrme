@@ -12,7 +12,7 @@ CLEAN_TARGET:=*.o $(JRME_PLUGIN)$(OUT_FILE)
 
 #头文件目录
 #include directories
-INCLUDE_DIR:=-I$(shell pwd)/../../include -I$(shell pwd)/../lib
+INCLUDE_DIR:=-I$(shell pwd)/../../include -I$(shell pwd)/.
 
 
 #寻找所有.cpp 和.c文件的路径

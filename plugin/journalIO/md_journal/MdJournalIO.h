@@ -60,9 +60,9 @@ void clearKey(void *handle);
 
 bool setReadMod(void *handle);
 bool setWriteMode(void *handle);
-bool open(const char* path);
-void close(void *handle);
-struct journal_s* readJournal(void *handle);
+bool openIO(void *handle, const char* path);
+void closeIO(void *handle);
+bool readJournal(void *handle, struct journal_s* journal2R);
 bool writeJournal(void *handle, struct journal_s* journal2W);
 
 #pragma GCC visibility pop
