@@ -17,6 +17,7 @@ private:
     release_instance_fnc  p_release = NULL;
     preprocess_fnc  p_preprocess = NULL;
     postprocess_fnc  p_postprocess = NULL;
+    releaseJournal_fnc p_releaseJournal = NULL;
     uint32_t mApiVersion;
     const char *mKey = NULL;
     const char *mDefaultValue = NULL;
@@ -77,9 +78,31 @@ bool PluginNode::loadPlugin(string name)
         return false;
     }
     mDefaultValue = (char *)dlsym(mDlHandle, "default_value");
+    if (!mDefaultValue)
+    {
+        dlclose(mDlHandle);
+        return false;
+    }
     
     p_preprocess = (preprocess_fnc)dlsym(mDlHandle, "preprocess");
+    if (!p_preprocess)
+    {
+        dlclose(mDlHandle);
+        return false;
+    }
     p_postprocess = (postprocess_fnc)dlsym(mDlHandle, "postprocess");
+    if (!p_postprocess)
+    {
+        dlclose(mDlHandle);
+        return false;
+    }
+
+    p_releaseJournal = (releaseJournal_fnc)dlsym(mDlHandle, "releaseJournalStruct");
+    if (!p_releaseJournal)
+    {
+        dlclose(mDlHandle);
+        return false;
+    }
 
     mNodeHandle = p_allocate();
     if (!mNodeHandle)
@@ -111,18 +134,30 @@ string PluginNode::getDefaultValue()
     return string(mDefaultValue);
 }
 
+struct journal_s journal2S(shared_ptr<Journal> journal)
+{
+    struct journal_s journalRet;
+    string strBuffer =  journal->getTitle();
+    journalRet.title = (char*)malloc(strBuffer.length()+1);
+    memcpy(journalRet.title, strBuffer.c_str(), strBuffer.length()+1);
+    strBuffer = journal->getConfig();
+    journalRet.config = (char*)malloc(strBuffer.length()+1);
+    memcpy(journalRet.config, strBuffer.c_str(), strBuffer.length()+1);
+    strBuffer = journal->getContent();
+    journalRet.content = (char*)malloc(strBuffer.length()+1);
+    memcpy(journalRet.content, strBuffer.c_str(), strBuffer.length()+1);
+    return journalRet;
+}
+
 void PluginNode::preprocess(shared_ptr<Journal> journal)
 {
-    struct journal_cs constJournal;
-    constJournal.title = journal->getTitle().c_str();
-    constJournal.config = journal->getConfig().c_str();
-    constJournal.content = journal->getContent().c_str();
+    struct journal_s orgJournal = journal2S(journal);
     
     string title = journal->getTitle();
     string config = journal->getConfig();
     string content = journal->getContent();
     struct journal_s retJournal = {NULL, NULL, NULL};
-    p_preprocess(mNodeHandle, &constJournal, &retJournal);
+    p_preprocess(mNodeHandle, &orgJournal, &retJournal);
     if (retJournal.title != NULL)
     {
         string title = string(retJournal.title);
@@ -138,22 +173,20 @@ void PluginNode::preprocess(shared_ptr<Journal> journal)
         string content = string(retJournal.content);
         journal->setContent(content);
     }
-
+    releaseJournalStruct(orgJournal);
+    p_releaseJournal(retJournal);
     return;
 }
 
 void PluginNode::postprocess(shared_ptr<Journal> journal)
 {
-    struct journal_cs constJournal;
-    constJournal.title = journal->getTitle().c_str();
-    constJournal.config = journal->getConfig().c_str();
-    constJournal.content = journal->getContent().c_str();
+    struct journal_s orgJournal = journal2S(journal);
     
     string title = journal->getTitle();
     string config = journal->getConfig();
     string content = journal->getContent();
     struct journal_s retJournal = {NULL, NULL, NULL};
-    p_postprocess(mNodeHandle, &constJournal, &retJournal);
+    p_postprocess(mNodeHandle, &orgJournal, &retJournal);
     if (retJournal.title != NULL)
     {
         string title = string(retJournal.title);
@@ -170,6 +203,8 @@ void PluginNode::postprocess(shared_ptr<Journal> journal)
         journal->setContent(content);
     }
 
+    releaseJournalStruct(orgJournal);
+    p_releaseJournal(retJournal);
     return;
 }
 

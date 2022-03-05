@@ -11,7 +11,7 @@ using namespace ec;
 
 struct save_date_s
 {
-    char *config_malloc;
+    uint32_t node;
 };
 
 
@@ -22,7 +22,6 @@ extern "C" {
 void *allocate_instance()
 {
     struct save_date_s *save_data = (struct save_date_s *)malloc(sizeof(struct save_date_s));
-    save_data->config_malloc = NULL;
     return save_data;
 }
 
@@ -32,19 +31,15 @@ void release_instance(void *handle)
     if (!save_data)
         return;
 
-    if (save_data->config_malloc)
-    {
-        free(save_data->config_malloc);
-    }
     free(save_data);
 }
 
-void preprocess(void *handle, const struct journal_cs *refJournal, struct journal_s *retJournal)
+void preprocess(void *handle, const struct journal_s *refJournal, struct journal_s *retJournal)
 {
     return;
 }
 
-void postprocess(void *handle, const struct journal_cs *refJournal, struct journal_s *retJournal)
+void postprocess(void *handle, const struct journal_s *refJournal, struct journal_s *retJournal)
 {
     struct save_date_s *save_data = (struct save_date_s *)handle;
 
@@ -53,10 +48,7 @@ void postprocess(void *handle, const struct journal_cs *refJournal, struct journ
     retJournal->config = (char *)malloc(config.length()+1);
     memcpy(retJournal->config, config.c_str(), config.length());
     (retJournal->config)[config.length()] = '\0';
-    if (save_data->config_malloc)
-        free(save_data->config_malloc);
     
-    save_data->config_malloc = retJournal->config;
 }
 
 #ifdef __cplusplus

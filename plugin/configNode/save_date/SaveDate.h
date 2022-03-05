@@ -15,8 +15,14 @@ extern const char default_value[] = "auto_fill";
 
 void *allocate_instance();
 void release_instance(void *handle);
-void preprocess(void *handle, const struct journal_cs *refJournal, struct journal_s *retJournal);
-void postprocess(void *handle, const struct journal_cs *refJournal, struct journal_s *retJournal);
+/**
+ * @brief handle, input journal, journal after preprocess
+ */
+void preprocess(void *handle, const struct journal_s *refJournal, struct journal_s *retJournal);
+/**
+ * @brief handle, input journal, journal after postprocess
+ */
+void postprocess(void *handle, const struct journal_s *refJournal, struct journal_s *retJournal);
 
 #pragma GCC visibility pop
 #ifdef __cplusplus

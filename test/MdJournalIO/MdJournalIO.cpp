@@ -54,7 +54,7 @@ uint32_t MdJournalIO::apiSupport()
     return 1;
 }
 
-list<string> MdJournalIO::formateSupport()
+vector<string> MdJournalIO::formateSupport()
 {
     list<string> formates {string("txt")};
     return formates;

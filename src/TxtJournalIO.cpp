@@ -22,9 +22,9 @@ uint32_t TxtJournalIO::apiSupport()
     return 1;
 }
 
-list<string> TxtJournalIO::formateSupport()
+vector<string> TxtJournalIO::formateSupport()
 {
-    list<string> formates {string("txt")};
+    vector<string> formates {string("txt")};
     return formates;
 }
 

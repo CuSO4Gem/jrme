@@ -6,6 +6,7 @@
 
 #include "Journal.h"
 #include "JournalIOBase.h"
+#include "journal_io_api.h"
 
 enum processState {
     UNINITED,
@@ -39,5 +40,34 @@ public:
     shared_ptr<Journal> readJournal();
     bool writeJournal(shared_ptr<Journal> journal);
 };
+
+char formateList[1][FORMATE_TABLE_COLUM] = {"md"};
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+#pragma GCC visibility push(default)
+
+void *allocate_instance();
+void release_instance(void *handle);
+
+
+uint32_t apiSupport(void *handle);
+char* formateSupport(void *handle, size_t *line_num);
+bool isSupportAes256(void *handle);
+void setKey(void *handle, uint8_t key[32]);
+void clearKey(void *handle);
+
+bool setReadMod(void *handle);
+bool setWriteMode(void *handle);
+bool open(const char* path);
+void close(void *handle);
+struct journal_s* readJournal(void *handle);
+bool writeJournal(void *handle, struct journal_s* journal2W);
+
+#pragma GCC visibility pop
+#ifdef __cplusplus
+}
+#endif
 
 #endif

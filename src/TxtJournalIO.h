@@ -26,7 +26,7 @@ public:
     ~TxtJournalIO();
 
     uint32_t apiSupport();
-    list<string> formateSupport();
+    vector<string> formateSupport();
     bool isSupportAes256();
     void setKey(uint8_t key[32]);
     void clearKey();

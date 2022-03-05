@@ -54,9 +54,9 @@ uint32_t MdJournalIO::apiSupport()
     return 1;
 }
 
-list<string> MdJournalIO::formateSupport()
+vector<string> MdJournalIO::formateSupport()
 {
-    list<string> formates {string("txt")};
+    vector<string> formates {string("md")};
     return formates;
 }
 
@@ -399,3 +399,142 @@ bool MdJournalIO::writeJournal(shared_ptr<Journal> journal)
     mJournal.write(lineBuffer.c_str(), lineBuffer.length());
     return true;
 }
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+void *allocate_instance()
+{
+    return new MdJournalIO();
+}
+
+void release_instance(void *handle)
+{
+    if (!handle)
+        return;
+    
+    delete handle;
+}
+
+uint32_t apiSupport(void *handle)
+{
+    if (!handle)
+        return;
+    MdJournalIO &journalIO = (MdJournalIO *)handle;
+
+    return journalIO.apiSupport();
+}
+
+char* formateSupport(void *handle, size_t *line_num)
+{
+    if (!handle)
+        return;
+    MdJournalIO &journalIO = (MdJournalIO *)handle;
+    vector<string> fList = journalIO.formateSupport();
+    int32_t cpyLen = min(fList[0].length(), FORMATE_TABLE_COLUM-1);
+    memcpy(formateList[0], fList[0].c_str(), cpyLen);
+    formateList[0][cpyLen+1] = '\n';
+    *line_num = 0;
+}
+
+bool isSupportAes256(void *handle)
+{
+    if (!handle)
+        return false;
+    MdJournalIO &journalIO = (MdJournalIO *)handle;
+    return journalIO.isSupportAes256();
+}
+
+void setKey(void *handle, uint8_t key[32])
+{
+    if (!handle)
+        return ;
+    MdJournalIO &journalIO = (MdJournalIO *)handle;
+    journalIO.setKey(key);
+    return;
+}
+
+void clearKey(void *handle)
+{
+    if (!handle)
+        return ;
+    MdJournalIO &journalIO = (MdJournalIO *)handle;
+    journalIO.clearKey();
+}
+
+bool setReadMod(void *handle)
+{
+    if (!handle)
+        return false;
+    MdJournalIO &journalIO = (MdJournalIO *)handle;
+    return journalIO.setReadMod();
+}
+
+bool setWriteMode(void *handle)
+{
+    if (!handle)
+        return false;
+    MdJournalIO &journalIO = (MdJournalIO *)handle;
+    return journalIO.setWriteMode();
+}
+
+bool open(const char* path)
+{
+    if (!handle)
+        return false;
+    MdJournalIO &journalIO = (MdJournalIO *)handle;
+    journalIO.open(string(path));
+}
+
+void close(void *handle)
+{
+    if (!handle)
+        return ;
+    MdJournalIO &journalIO = (MdJournalIO *)handle;
+    journalIO.close();
+}
+
+struct journal_s* readJournal(void *handle)
+{
+    if (!handle)
+        return NULL;
+    MdJournalIO &journalIO = (MdJournalIO *)handle;
+    struct journal_s *journalRet;
+    journalRet = (struct journal_s *)malloc(sizeof(struct journal_s));
+    if (!journalRet)
+        return NULL;
+    shared_ptr<Journal> journal = journalIO.readJournal();
+    string strBuffer =  journal->getTitle();
+    journalRet->title = (char*)malloc(strBuffer.length()+1);
+    memcpy(journalRet->title, strBuffer.c_str(), strBuffer.length()+1);
+    strBuffer = journal->getConfig();
+    journalRet->config = (char*)malloc(strBuffer.length()+1);
+    memcpy(journalRet->config, strBuffer.c_str(), strBuffer.length()+1);
+    strBuffer = journal->getContent();
+    journalRet->content = (char*)malloc(strBuffer.length()+1);
+    memcpy(journalRet->content, strBuffer.c_str(), strBuffer.length()+1);
+    return journalRet;
+}
+
+bool writeJournal(void *handle, struct journal_s* journal2W)
+{
+    if (!handle)
+        return false;
+    MdJournalIO &journalIO = (MdJournalIO *)handle;
+    if (!journal2W->title || !journal2W->config || !journal2W->content)
+        return false;
+    
+    shared_ptr<Journal> journal = make_shared<Journal>();
+    string strBuffer = string(journal2W->title);
+    journal->setTitle(strBuffer);
+    strBuffer = string(journal2W->config);
+    journal->setConfig(strBuffer);
+    strBuffer = string(journal2W->content);
+    journal->setContent(strBuffer);
+    return journalIO.writeJournal(journal);
+}
+
+#ifdef __cplusplus
+}
+#endif

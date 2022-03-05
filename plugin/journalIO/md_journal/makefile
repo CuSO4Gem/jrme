@@ -1,5 +1,5 @@
 
-PLAGING_NAME:=save_date
+PLAGING_NAME:=md_journal
 
 JRME_PLUGIN?=~/.jrme/plugin/
 TOOL_CHAIN?=gcc
@@ -17,7 +17,7 @@ INCLUDE_DIR:=-I$(shell pwd)/../../include -I$(shell pwd)/../lib
 
 #寻找所有.cpp 和.c文件的路径
 #find all path of .cpp and .c
-SRC_CPP:=$(wildcard  ./*.cpp)
+SRC_CPP:=$(wildcard  ./*.cpp )
 SRC_C:=$(wildcard  ./*.c)
 
 #把.cpp和c 换成.o
@@ -25,7 +25,7 @@ SRC_C:=$(wildcard  ./*.c)
 OBJ_SRC_CPP:=$(patsubst %.cpp, %.o, $(SRC_CPP))
 OBJ_SRC_C:=$(patsubst %.c, %.o, $(SRC_C))
 
-OBJ=$(OBJ_SRC_CPP) $(OBJ_SRC_C)
+OBJ=$(OBJ_SRC_C) $(OBJ_SRC_CPP)
 all:build_prepare $(OBJ)
 	$(TOOL_CHAIN) $(OBJ) -o $(JRME_PLUGIN)$(OUT_FILE) -shared $(CFLAGS)
 
