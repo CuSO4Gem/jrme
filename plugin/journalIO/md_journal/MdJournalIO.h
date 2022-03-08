@@ -53,7 +53,7 @@ void release_instance(void *handle);
 
 
 uint32_t apiSupport(void *handle);
-char* formateSupport(void *handle, size_t *line_num);
+const char* formateSupport(void *handle, size_t *line_num);
 bool isSupportAes256(void *handle);
 void setKey(void *handle, uint8_t key[32]);
 void clearKey(void *handle);

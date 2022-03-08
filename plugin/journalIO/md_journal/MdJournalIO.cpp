@@ -6,6 +6,7 @@
 /*debug */
 #include "debug_print.h"
 
+
 void md2txtEnter(string &iStr)
 {
     if (iStr.length() == 0)
@@ -426,7 +427,7 @@ uint32_t apiSupport(void *handle)
     return journalIO.apiSupport();
 }
 
-char* formateSupport(void *handle, size_t *line_num)
+const char* formateSupport(void *handle, size_t *line_num)
 {
     if (!handle)
         return NULL;
@@ -504,15 +505,41 @@ bool readJournal(void *handle, struct journal_s* journal2R)
     if (!journal2R)
         return false;
     shared_ptr<Journal> journal = journalIO.readJournal();
+    if (!journal)
+    {
+        journal2R->title = NULL;
+        journal2R->config = NULL;
+        journal2R->content = NULL;
+        return false;
+    }
     string strBuffer =  journal->getTitle();
-    journal2R->title = (char*)malloc(strBuffer.length()+1);
-    memcpy(journal2R->title, strBuffer.c_str(), strBuffer.length()+1);
+    if (strBuffer.length()>0)
+    {
+        journal2R->title = (char*)malloc(strBuffer.length()+1);
+        memcpy(journal2R->title, strBuffer.c_str(), strBuffer.length()+1);
+    }
+    else
+        journal2R->title = NULL;
+    
     strBuffer = journal->getConfig();
-    journal2R->config = (char*)malloc(strBuffer.length()+1);
-    memcpy(journal2R->config, strBuffer.c_str(), strBuffer.length()+1);
+    if (strBuffer.length()>0)
+    {
+        journal2R->config = (char*)malloc(strBuffer.length()+1);
+        memcpy(journal2R->config, strBuffer.c_str(), strBuffer.length()+1);
+    }
+    else
+        journal2R->config = NULL;
+    
+
     strBuffer = journal->getContent();
-    journal2R->content = (char*)malloc(strBuffer.length()+1);
-    memcpy(journal2R->content, strBuffer.c_str(), strBuffer.length()+1);
+    if (strBuffer.length()>0)
+    {
+        journal2R->content = (char*)malloc(strBuffer.length()+1);
+        memcpy(journal2R->content, strBuffer.c_str(), strBuffer.length()+1);
+    }
+    else
+        journal2R->content = NULL;
+
     return true;
 }
 

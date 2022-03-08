@@ -1,3 +1,5 @@
+#include <dlfcn.h>
+
 #include "JrmeConfig.h"
 
 #include "ConfigNodeMaster.h"
@@ -6,8 +8,8 @@
 #include "LevelConfigNode.h"
 #include "TagConfigNode.h"
 
-#include "dlfcn.h"
 #include "config_node_api.h"
+#include "journal_struct.h"
 class PluginNode : public ConfigNodeBase
 {
 private:

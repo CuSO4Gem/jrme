@@ -59,14 +59,14 @@ endif
 ifeq ($(DEBUG),exclusive)
 #编译调试版本
 #bild debug version
-all:build_prepare  $(MODULES) $(OBJ_SRC_CPP) $(OBJ_SRC_C)
+all:build_prepare  $(MODULES) $(OBJ_SRC_C) $(OBJ_SRC_CPP)
 	$(TOOL_CHAIN) $(OBJ) -o $(DOUT_TARGET) $(CFLAGS) $(STATIC)
 	rm -f $(OUT_TARGET)
 
 else
 #编译release版本
 #build
-all:build_prepare $(MODULES) $(OBJ_SRC_CPP) $(OBJ_SRC_C)
+all:build_prepare $(MODULES) $(OBJ_SRC_C) $(OBJ_SRC_CPP)
 	$(TOOL_CHAIN) $(OBJ) -o $(OUT_TARGET) $(CFLAGS) $(STATIC)
 endif
 
