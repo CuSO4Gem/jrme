@@ -49,6 +49,7 @@ endif
 
 #------------------------------remove files-------------------------------#
 CLEAN_TARGET:= $(OUT_DIR)* $(TEMP_FILES)
+JRME_PLUGIN?=~/.jrme/plugin/
 ifeq ($(PLUGIN),y)
 	CLEAN_TARGET+=$(JRME_PLUGIN)*
 endif
