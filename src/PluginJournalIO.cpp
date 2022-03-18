@@ -5,6 +5,8 @@
 #include "JrmeConfig.h"
 
 #include "journal_struct.h"
+
+/*debug*/
 #include "debug_print.h"
 
 #define FUNC_PTR_CHECK(ptr) if (!(ptr)) { if (mDlHandle) {dlclose(mDlHandle);} return false; }
@@ -131,7 +133,10 @@ bool PluginJournalIO::setWriteMode()
 bool PluginJournalIO::open(string path)
 {
     if (mJournalIOHandle && p_openIO)
+    {
+        JLOGD("[D] open file:%s", path.c_str());
         return p_openIO(mJournalIOHandle, path.c_str());
+    }
     
     return false;
 }
@@ -145,11 +150,17 @@ void PluginJournalIO::close()
 shared_ptr<Journal> PluginJournalIO::readJournal()
 {
     if (!mJournalIOHandle || !p_openIO)
+    {
+        JLOGE("[E] %s call fail for plugin load fail", __func__);
         return nullptr;
+    }
     
     struct journal_s journalRet;
-    if (p_readJournal(mJournalIOHandle, &journalRet))
+    if (!p_readJournal(mJournalIOHandle, &journalRet))
+    {
+        JLOGD("[D] readJournal return false, so return nullptr");
         return nullptr;
+    }
     
     shared_ptr<Journal> journal = make_shared<Journal>();
     if (journalRet.title)

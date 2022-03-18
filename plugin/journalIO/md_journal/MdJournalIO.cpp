@@ -5,6 +5,7 @@
 
 /*debug */
 #include "debug_print.h"
+#define PLUGIN_NAME "md_journal(plugin)"
 
 
 void md2txtEnter(string &iStr)
@@ -119,7 +120,7 @@ bool MdJournalIO::open(string path)
     {
         /*maybe file no exist, try too create one*/
         string cmd = string("touch ")+path;
-        JLOGT("touch journal file: %s\n",cmd.c_str());
+        JLOGT("[T] %s: touch journal file: %s\n", PLUGIN_NAME,cmd.c_str());
         int ret = system(cmd.c_str());
         if (ret!=0)
             return false;
@@ -231,7 +232,7 @@ shared_ptr<Journal> MdJournalIO::readJournal()
     }
     if (!finded)
     {
-        JLOGE("ERROR: return null journal while search title");
+        JLOGE("[E] %s: return null journal while search title!", PLUGIN_NAME);
         mJournal.close();
         mState = INITED;
         return nullptr;
@@ -500,16 +501,23 @@ void closeIO(void *handle)
 bool readJournal(void *handle, struct journal_s* journal2R)
 {
     if (!handle)
+    {
+        JLOGE("[E] %s: handle is null while calling %s", PLUGIN_NAME, __func__);
         return false;
+    }
     MdJournalIO &journalIO = *(MdJournalIO *)handle;
     if (!journal2R)
+    {
+        JLOGD("[D] %s: read jounal == nullptr", PLUGIN_NAME);
         return false;
+    }
     shared_ptr<Journal> journal = journalIO.readJournal();
     if (!journal)
     {
         journal2R->title = NULL;
         journal2R->config = NULL;
         journal2R->content = NULL;
+        JLOGD("[D] %s: read jounal == nullptr", PLUGIN_NAME);
         return false;
     }
     string strBuffer =  journal->getTitle();
@@ -540,16 +548,23 @@ bool readJournal(void *handle, struct journal_s* journal2R)
     else
         journal2R->content = NULL;
 
+    JLOGD("[D] %s: read jounal success", PLUGIN_NAME);
     return true;
 }
 
 bool writeJournal(void *handle, struct journal_s* journal2W)
 {
     if (!handle)
+    {
+        JLOGE("[E] %s: handle is null while calling %s", PLUGIN_NAME, __func__);
         return false;
+    }
     MdJournalIO &journalIO = *(MdJournalIO *)handle;
     if (!journal2W->title || !journal2W->config || !journal2W->content)
+    {
+        JLOGE("[E] %s: journal2W is not avalible while calling %s", PLUGIN_NAME, __func__);
         return false;
+    }
     
     shared_ptr<Journal> journal = make_shared<Journal>();
     string strBuffer = string(journal2W->title);
@@ -558,7 +573,6 @@ bool writeJournal(void *handle, struct journal_s* journal2W)
     journal->setConfig(strBuffer);
     strBuffer = string(journal2W->content);
     journal->setContent(strBuffer);
-    releaseJournalStruct(*journal2W);
     return journalIO.writeJournal(journal);
 }
 

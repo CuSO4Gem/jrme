@@ -17,7 +17,7 @@
 /**
  * Enable debug printing
  */
-#define DBG_PRINT_ENABLED (0)
+#define DBG_PRINT_ENABLED (1)
 //0:no log, 1:error, 2:warning, 3:trace, 4.Debug
 #endif /* DBG_PRINT_ENABLED */
 
