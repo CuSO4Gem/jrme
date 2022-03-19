@@ -1,6 +1,6 @@
 #选择想要编译测试模块
 #select test modules which want to compile
-MODULES+=txtJournalIO sfJournalBook configNode timeparser
+MODULES+=configNode JournalIOFactory MdJournalIO SfJournalBook timeparser TxtJournalIO
 
 TOOL_CHAIN?=gcc
 

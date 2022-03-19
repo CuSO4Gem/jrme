@@ -52,6 +52,8 @@ $(OBJ_SRC_CPP) : %.o:%.cpp
 $(OBJ_SRC_C) : %.o:%.c
 	$(TOOL_CHAIN) $< -o $@ -c  $(CFLAGS)
 
+test: all
+	./$(OUT_FILE)
 
 .PHONY: clean
 clean:
