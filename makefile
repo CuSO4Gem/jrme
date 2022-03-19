@@ -15,7 +15,7 @@ CFLAGS:= -I./src -I./include -I./lib -I./plugin/timeparser/include -Llib -lc -ls
 #传参决定是否需要调试，如果DEBUG=exclusive，则调试的时候会删除release版本
 #debug or not. if DEBUG=exclusive, release version will be delate after build
 ifdef DEBUG
-	CFLAGS+=-g
+	CFLAGS+=-g -DDBG_PRINT_ENABLED="(4)"
 endif	
 
 #寻找所有.cpp 和.c文件的路径
@@ -49,6 +49,7 @@ endif
 
 #------------------------------remove files-------------------------------#
 CLEAN_TARGET:= $(OUT_DIR)* $(TEMP_FILES)
+JRME_PLUGIN?=~/.jrme/plugin/
 ifeq ($(PLUGIN),y)
 	CLEAN_TARGET+=$(JRME_PLUGIN)*
 endif
@@ -59,14 +60,14 @@ endif
 ifeq ($(DEBUG),exclusive)
 #编译调试版本
 #bild debug version
-all:build_prepare  $(MODULES) $(OBJ_SRC_CPP) $(OBJ_SRC_C)
+all:build_prepare  $(MODULES) $(OBJ_SRC_C) $(OBJ_SRC_CPP)
 	$(TOOL_CHAIN) $(OBJ) -o $(DOUT_TARGET) $(CFLAGS) $(STATIC)
 	rm -f $(OUT_TARGET)
 
 else
 #编译release版本
 #build
-all:build_prepare $(MODULES) $(OBJ_SRC_CPP) $(OBJ_SRC_C)
+all:build_prepare $(MODULES) $(OBJ_SRC_C) $(OBJ_SRC_CPP)
 	$(TOOL_CHAIN) $(OBJ) -o $(OUT_TARGET) $(CFLAGS) $(STATIC)
 endif
 

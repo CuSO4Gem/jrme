@@ -9,7 +9,7 @@ CLEAN_TARGET:=*.o *.elf *.exe
 #寻找所有.cpp 和.c文件的路径
 #find all path of .cpp and .c
 SRC_CPP:=$(wildcard  $(shell pwd)/*.cpp)
-SRC_C:=$(wildcard  $(shell pwd)*.c)
+SRC_C:=$(wildcard  $(shell pwd)/*.c)
 #指定可执行文件位置与名字
 OUT_FILE?=main.elf
 
@@ -25,7 +25,7 @@ OBJ_SRC_CPP:=$(patsubst %.cpp, %.o, $(SRC_CPP))
 OBJ_SRC_C:=$(patsubst %.c, %.o, $(SRC_C))
 #所有的.o文件
 #all .o files
-OBJ:=$(OBJ_SRC_CPP) $(OBJ_SRC_C)
+OBJ:=$(OBJ_SRC_C) $(OBJ_SRC_CPP)
 
 #----------------------------------build----------------------------------#
 #如果定义互斥(DEBUG=exclusive)，则调试的时候会删除发行版
@@ -52,6 +52,8 @@ $(OBJ_SRC_CPP) : %.o:%.cpp
 $(OBJ_SRC_C) : %.o:%.c
 	$(TOOL_CHAIN) $< -o $@ -c  $(CFLAGS)
 
+test: all
+	./$(OUT_FILE)
 
 .PHONY: clean
 clean:

@@ -17,7 +17,7 @@ INCLUDE_DIR:=-I$(shell pwd)/../../include -I$(shell pwd)/../lib
 
 #寻找所有.cpp 和.c文件的路径
 #find all path of .cpp and .c
-SRC_CPP:=$(wildcard  ./*.cpp ../lib/*.cpp)
+SRC_CPP:=$(wildcard  ./*.cpp)
 SRC_C:=$(wildcard  ./*.c)
 
 #把.cpp和c 换成.o
