@@ -20,6 +20,8 @@
 #define DBG_PRINT_ENABLED (0)
 //0:no log, 1:error, 2:warning, 3:trace, 4.Debug
 #endif /* DBG_PRINT_ENABLED */
+/*file remove path*/
+#define MYFILE(x) strrchr(x,'/')?strrchr(x,'/')+1:x
 
 #ifndef DGB_PRINT_BUFFER_SIZE
 /**
@@ -60,25 +62,25 @@ extern int debug_print_callback(char *debugMessage, unsigned int length);
 /////////////////////////////////////////
 
 #if DBG_PRINT_ENABLED >= (1)
-#define JLOGE(fmt, ...) debug_printf_ln(ANSI_COLOR_RED, __FILE__, __FUNCTION__, __LINE__, fmt, ##__VA_ARGS__)
+#define JLOGE(fmt, ...) debug_printf_ln(ANSI_COLOR_RED, MYFILE(__FILE__), __FUNCTION__, __LINE__, fmt, ##__VA_ARGS__)
 #else
 #define JLOGE(fmt, ...)
 #endif
 
 #if DBG_PRINT_ENABLED >= (2)
-#define JLOGW(fmt, ...) debug_printf_ln(ANSI_COLOR_YELLOW, __FILE__, __FUNCTION__, __LINE__, fmt, ##__VA_ARGS__)
+#define JLOGW(fmt, ...) debug_printf_ln(ANSI_COLOR_YELLOW, MYFILE(__FILE__), __FUNCTION__, __LINE__, fmt, ##__VA_ARGS__)
 #else
 #define JLOGW(fmt, ...)
 #endif
 
 #if DBG_PRINT_ENABLED >= (3)
-#define JLOGT(fmt, ...) debug_printf_ln(ANSI_COLOR_BLUE, __FILE__, __FUNCTION__, __LINE__, fmt, ##__VA_ARGS__)
+#define JLOGT(fmt, ...) debug_printf_ln(ANSI_COLOR_BLUE, MYFILE(__FILE__), __FUNCTION__, __LINE__, fmt, ##__VA_ARGS__)
 #else
 #define JLOGT(fmt, ...)
 #endif
 
 #if DBG_PRINT_ENABLED >= (4)
-#define JLOGD(fmt, ...) debug_printf_ln(ANSI_COLOR_GREEN, __FILE__, __FUNCTION__, __LINE__, fmt, ##__VA_ARGS__)
+#define JLOGD(fmt, ...) debug_printf_ln(ANSI_COLOR_GREEN, MYFILE(__FILE__), __FUNCTION__, __LINE__, fmt, ##__VA_ARGS__)
 #else
 #define JLOGD(fmt, ...)
 #endif
