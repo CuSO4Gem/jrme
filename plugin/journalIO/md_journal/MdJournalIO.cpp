@@ -120,7 +120,7 @@ bool MdJournalIO::open(string path)
     {
         /*maybe file no exist, try too create one*/
         string cmd = string("touch ")+path;
-        JLOGT("[T] %s: touch journal file: %s\n", PLUGIN_NAME,cmd.c_str());
+        JLOGT("[T] %s: touch journal file: %s", PLUGIN_NAME,cmd.c_str());
         int ret = system(cmd.c_str());
         if (ret!=0)
             return false;
@@ -437,7 +437,7 @@ const char* formateSupport(void *handle, size_t *line_num)
     int32_t cpyLen = fList[0].length() < (FORMATE_TABLE_COLUM-1) ? fList[0].length() : (FORMATE_TABLE_COLUM-1);
     memcpy(formateList[0], fList[0].c_str(), cpyLen);
     formateList[0][cpyLen+1] = '\n';
-    *line_num = 0;
+    *line_num = 1;
     return formateList[0];
 }
 

@@ -1,6 +1,7 @@
 #include <algorithm> 
 #include <vector>
 
+#include "JournalIOFactory.h"
 #include "SfJournalBook.h"
 #include "Utils.h"
 
@@ -18,7 +19,7 @@ void SfJournalBook::setKey(uint8_t key[32])
 bool SfJournalBook::open(string path)
 {
     //todo : add more formate of JournalIO
-    mJournalIO = shared_ptr<JournalIOBase>(new TxtJournalIO());
+    mJournalIO = JournalIOFactory().getJournalIO(path);
     if (!mJournalIO->open(path))
         return false;
     

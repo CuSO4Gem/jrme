@@ -101,6 +101,7 @@ TEST(txt, read)
     shared_ptr<JournalIOBase> journalIO = JournalIOFactory().getJournalIO("read1.txt");
     ASSERT_TRUE(journalIO) << "creat journal faild!";
     ASSERT_TRUE(journalIO->open("read1.txt")) << "TxtJournalIO open failed";
+    journalIO->setReadMod();
     for (size_t i = 0; i < 3; i++)
     {
         shared_ptr<Journal> journal = journalIO->readJournal();

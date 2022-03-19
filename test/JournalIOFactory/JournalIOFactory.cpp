@@ -41,6 +41,7 @@ shared_ptr<JournalIOBase> JournalIOFactory::getJournalIO(string journalPath)
     }
 
     /*find postfix, so select journalIO by postfix*/
+    i=0;
     if (postfix.length()>0)
     {
         for (auto &it:ioVector)
@@ -51,21 +52,26 @@ shared_ptr<JournalIOBase> JournalIOFactory::getJournalIO(string journalPath)
                 if (itf==postfix && it->open(journalPath))
                 {
                     it->close();
+                    JLOGD("[D] match postfix return journalIO %d", i);
                     return it;
                 }
             }
+            i++;
         }
     }
 
     /*not get postfix or can not open journal by postfix
       so we open journal one by one*/
+    i=0;
     for (auto &it:ioVector)
     {
         if (it->open(journalPath))
         {
+            JLOGD("[D] not match postfix return journalIO %d", i);
             it->close();
             return it;
         }
+        i++;
     }
 
     JLOGW("[W] JournalIOFactory create journalIO failed!");

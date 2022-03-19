@@ -15,7 +15,7 @@ CFLAGS:= -I./src -I./include -I./lib -I./plugin/timeparser/include -Llib -lc -ls
 #传参决定是否需要调试，如果DEBUG=exclusive，则调试的时候会删除release版本
 #debug or not. if DEBUG=exclusive, release version will be delate after build
 ifdef DEBUG
-	CFLAGS+=-g
+	CFLAGS+=-g -DDBG_PRINT_ENABLED="(4)"
 endif	
 
 #寻找所有.cpp 和.c文件的路径
