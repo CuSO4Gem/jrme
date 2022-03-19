@@ -83,7 +83,11 @@ shared_ptr<Journal> TxtEditor::getJournalFromEditor()
         journal->setConfig(readBuffer);
     
     readBuffer.clear();
-    iTmpFile >> readBuffer;
+    lineBuffer.clear();
+    while (getline(iTmpFile, lineBuffer))
+    {
+        readBuffer.append(lineBuffer + string("\n"));
+    }
     journal->setContent(readBuffer);
 
     iTmpFile.close();
