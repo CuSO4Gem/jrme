@@ -2,6 +2,7 @@
 #define JRME_CONFIG_H
 
 #include <string>
+#include <vector>
 
 #include "iniparser.hpp"
 
@@ -35,5 +36,12 @@ string getPluginDir();
  * @return false install fail
  */
 bool installIfNeed();
+
+/**
+ * @brief Get config of the JournalIO Plugin Name 
+ * 
+ * @return vector<string> 
+ */
+vector<string> getJournalIOPluginNames();
 
 #endif

@@ -139,3 +139,18 @@ bool installIfNeed()
     config.Save(target);
     return true;
 }
+
+vector<string> getJournalIOPluginNames()
+{
+    INI::File configFile = INI::File(getConfigFilePath());
+    string plugNames = configFile.GetSection("plugin")->GetValue("journal format").AsString();
+    istringstream plugNameStream = istringstream(plugNames);
+    string pluginName;
+    vector<string> plugins;
+    while (getline(plugNameStream, pluginName, ','))
+    {
+        if (pluginName.length()>0)
+            plugins.push_back(pluginName);
+    }
+    return plugins;
+}
