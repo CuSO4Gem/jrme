@@ -48,7 +48,7 @@ PluginNode::~PluginNode()
 
 bool PluginNode::loadPlugin(string name)
 {
-    string path = getPluginDir()+name;
+    string path = JrmeConfig::getPluginDir()+name;
     mDlHandle = dlopen(path.c_str(), RTLD_NOW);
     if (!mDlHandle)
     {

@@ -11,21 +11,21 @@
 using namespace std;
 
 
-string getConfigRootDir()
+string JrmeConfig::getConfigRootDir()
 {
     char const* home = getenv("HOME");
     string dir = string(home)+string("/.jrme/");
     return dir;
 }
 
-string getConfigFilePath()
+string JrmeConfig::getConfigFilePath()
 {
     char const* home = getenv("HOME");
     string dir = string(home)+string("/.jrme/config.ini");
     return dir;
 }
 
-string getPluginDir()
+string JrmeConfig::getPluginDir()
 {
     char const* home = getenv("HOME");
     string dir = string(home)+string("/.jrme/plugin/");
@@ -34,7 +34,7 @@ string getPluginDir()
 
 string getDefaultJournalPath()
 {
-    return getConfigRootDir() + string("journal.txt");
+    return JrmeConfig::getConfigRootDir() + string("journal.txt");
 }
 
 /**
@@ -84,7 +84,7 @@ bool pathNormalize(string &rawPath, string &normalizedPath)
 }
 
 
-bool installIfNeed()
+bool JrmeConfig::installIfNeed()
 {
     bool ret;
     string path = getConfigRootDir();
@@ -140,7 +140,7 @@ bool installIfNeed()
     return true;
 }
 
-vector<string> getJournalIOPluginNames()
+vector<string> JrmeConfig::getJournalIOPluginNames()
 {
     INI::File configFile = INI::File(getConfigFilePath());
     string plugNames = configFile.GetSection("plugin")->GetValue("journal format").AsString();

@@ -57,7 +57,7 @@ void journlWriteMode(string bookPath, string timeDescription, string title)
     configMaster.setDate(date.stamp());
 
     // load config node plugin
-    INI::File configFile = INI::File(getConfigFilePath());
+    INI::File configFile = INI::File(JrmeConfig::getConfigFilePath());
     string plugNames = configFile.GetSection("plugin")->GetValue("config node").AsString();
     istringstream plugNameStream = istringstream(plugNames);
     string pluginName;
