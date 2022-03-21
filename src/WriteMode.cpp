@@ -18,7 +18,7 @@
 using namespace std;
 using namespace ec;
 
-void journlWriteMode(string bookPath, string timeDescription, string title)
+void journlWriteMode(string bookPath, string timeDescription, string title, string content)
 {
     shared_ptr<JournalBookBase> journalBook;
 
@@ -81,27 +81,34 @@ void journlWriteMode(string bookPath, string timeDescription, string title)
     shared_ptr<Journal> journal = make_shared<Journal>();
     journal->setTitle(title);
     journal->setConfig(config);
+    journal->setContent(content);
     configMaster.preprocess(journal);
 
-    string strBuffer;
-    strBuffer.append("==========journal==========\n");
-    strBuffer.append(journal->getTitle());
-    strBuffer.append("\n");
-    strBuffer.append("==========config==========\n");
-    strBuffer.append(journal->getConfig());
-    strBuffer.append("==========content==========\n");
-
-    TxtEditor editor;
-    editor.setInitStr(strBuffer);
-    string gotStr;
-    journal = nullptr;
-    journal = editor.getJournalFromEditor();
-    if (!journal)
+    /** no all of title, time and content are ready, program will call editor to get a jounal.
+     * Otherwise, journal will be save directly.
+     * */
+    if (!(title.length()>0 && timeDescription.length()>0 && content.length()>0))
     {
-        printf("error: The input journal format error!!\n");
-        return ;
+        string strBuffer;
+        strBuffer.append("==========journal==========\n");
+        strBuffer.append(journal->getTitle());
+        strBuffer.append("\n");
+        strBuffer.append("==========config==========\n");
+        strBuffer.append(journal->getConfig());
+        strBuffer.append("==========content==========\n");
+        strBuffer.append(journal->getContent());
+        TxtEditor editor;
+        editor.setInitStr(strBuffer);
+        string gotStr;
+        journal = nullptr;
+        journal = editor.getJournalFromEditor();
+        if (!journal)
+        {
+            printf("error: The input journal format error!!\n");
+            return ;
+        }
     }
-    
+
     configMaster.postprocess(journal);
     
     journalBook->push_back(journal);
