@@ -10,42 +10,20 @@
 
 using namespace std;
 
-
-string JrmeConfig::getConfigRootDir()
-{
-    char const* home = getenv("HOME");
-    string dir = string(home)+string("/.jrme/");
-    return dir;
-}
-
-string JrmeConfig::getConfigFilePath()
-{
-    char const* home = getenv("HOME");
-    string dir = string(home)+string("/.jrme/config.ini");
-    return dir;
-}
-
-string JrmeConfig::getPluginDir()
-{
-    char const* home = getenv("HOME");
-    string dir = string(home)+string("/.jrme/plugin/");
-    return dir;
-}
-
-string getDefaultJournalPath()
+string JrmeConfig::getDefaultJournalPath()
 {
     return JrmeConfig::getConfigRootDir() + string("journal.txt");
 }
 
 /**
- * @brief 
+ * @brief '\t' to space, '~' to dir
  * 
  * @param pathIn 
  * @param normalizedPath 
  * @return true normalized success
  * @return false normalize fail
  */
-bool pathNormalize(string &rawPath, string &normalizedPath)
+bool JrmeConfig::pathNormalize(string &rawPath, string &normalizedPath)
 {
     if (rawPath.empty())
         return false;
@@ -83,6 +61,27 @@ bool pathNormalize(string &rawPath, string &normalizedPath)
     return true;
 }
 
+
+string JrmeConfig::getConfigRootDir()
+{
+    char const* home = getenv("HOME");
+    string dir = string(home)+string("/.jrme/");
+    return dir;
+}
+
+string JrmeConfig::getConfigFilePath()
+{
+    char const* home = getenv("HOME");
+    string dir = string(home)+string("/.jrme/config.ini");
+    return dir;
+}
+
+string JrmeConfig::getPluginDir()
+{
+    char const* home = getenv("HOME");
+    string dir = string(home)+string("/.jrme/plugin/");
+    return dir;
+}
 
 bool JrmeConfig::installIfNeed()
 {

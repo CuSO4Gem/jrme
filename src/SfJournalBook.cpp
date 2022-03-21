@@ -165,6 +165,22 @@ void SfJournalBook::push_back(shared_ptr<Journal> journal)
     mJournalList.push_back(journal);
 }
 
+void SfJournalBook::erase(size_t pos)
+{
+    AutoLock aLock = AutoLock(mJournalListLock);
+    if (pos<0 || pos>=mJournalList.size())
+    {
+        return;
+    }
+    
+    list<shared_ptr<Journal>>::iterator it = mJournalList.begin();
+    for (size_t i = 0; i < pos; i++)
+    {
+        it++;
+    }
+    mJournalList.erase(it);
+}
+
 bool SfJournalBook::swap(size_t pos1, size_t pos2)
 {
     AutoLock aLock = AutoLock(mJournalListLock);

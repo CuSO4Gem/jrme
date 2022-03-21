@@ -34,6 +34,7 @@ public:
     bool insert(size_t pos, shared_ptr<Journal> journal);
     void push_front(shared_ptr<Journal> journal);
     void push_back(shared_ptr<Journal> journal);
+    void erase(size_t pos);
     bool swap(size_t pos1, size_t pos2);
 };
 #endif

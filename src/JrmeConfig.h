@@ -10,6 +10,9 @@ using namespace std;
 
 class JrmeConfig
 {
+private:
+    static string getDefaultJournalPath();
+    static bool pathNormalize(string &rawPath, string &normalizedPath);
 
 public:
     /**
