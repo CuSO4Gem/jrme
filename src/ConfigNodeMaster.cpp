@@ -5,6 +5,7 @@
 #include "ConfigNodeMaster.h"
 #include "ConfigNodeBase.h"
 #include "DateConfigNode.h"
+#include "debug_print.h"
 #include "LevelConfigNode.h"
 #include "TagConfigNode.h"
 
@@ -52,7 +53,7 @@ bool PluginNode::loadPlugin(string name)
     mDlHandle = dlopen(path.c_str(), RTLD_NOW);
     if (!mDlHandle)
     {
-        printf("dlopen - %s\n", dlerror());
+        JLOGW("[W] dlopen - %s", dlerror());
         return false;
     }
     

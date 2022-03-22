@@ -21,7 +21,7 @@ public:
     virtual bool insert(size_t pos, shared_ptr<Journal> journal) = 0;
     virtual void push_front(shared_ptr<Journal> journal) = 0;
     virtual void push_back(shared_ptr<Journal> journal) = 0;
-    virtual void erase(size_t pos);
+    virtual void erase(size_t pos) = 0;
     virtual bool swap(size_t pos1, size_t pos2) = 0;
 };
 

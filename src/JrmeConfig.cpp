@@ -1,12 +1,12 @@
-#include "JrmeConfig.h"
-
-#include "Utils.h"
 
 #include <iostream>
+#include <string>
 #include <sys/stat.h>
 #include <unistd.h>
 
-#include <string>
+#include "JrmeConfig.h"
+#include "debug_print.h"
+#include "Utils.h"
 
 using namespace std;
 
@@ -93,7 +93,7 @@ bool JrmeConfig::installIfNeed()
     {
         if (mkdir(path.c_str(), 0700) != 0)
         {
-            printf("error: can not mkdir config dir:%s\n", path.c_str());
+            JLOGE("[E] can not mkdir config dir:%s\n", path.c_str());
             return false;
         }
     }
@@ -104,7 +104,7 @@ bool JrmeConfig::installIfNeed()
     {
         if (mkdir(target.c_str(), 0700) != 0)
         {
-            printf("error: can not mkdir config dir:%s\n", target.c_str());
+            JLOGE("[E] can not mkdir config dir:%s\n", target.c_str());
             return false;
         }
     }

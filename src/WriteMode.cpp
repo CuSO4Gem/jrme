@@ -4,8 +4,9 @@
 #include <sys/stat.h>
 
 #include "ConfigNodeMaster.h"
-#include "DateConfigNode.h"
 #include "date.h"
+#include "DateConfigNode.h"
+#include "debug_print.h"
 #include "EnTimeParser.h"
 #include "iniparser.hpp"
 #include "JrmeConfig.h"
@@ -34,7 +35,7 @@ void journlWriteMode(string bookPath, string timeDescription, string title, stri
 
     if(!journalBook->open(bookPath))
     {
-        printf("error: conn't not open journal book %s\n", bookPath.c_str());
+        JLOGE("[E] conn't not open journal book %s\n", bookPath.c_str());
         return;
     }
 
@@ -104,7 +105,7 @@ void journlWriteMode(string bookPath, string timeDescription, string title, stri
         journal = editor.getJournalFromEditor();
         if (!journal)
         {
-            printf("error: The input journal format error!!\n");
+            JLOGE("[E] The input journal format error!!\n");
             return ;
         }
     }

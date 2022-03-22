@@ -10,13 +10,6 @@
 using namespace ec;
 using namespace std;
 
-// #define DEBUG
-#ifdef DEBUG
-#define DEBUGP(...) (printf(__VA_ARGS__))
-#else
-#define DEBUGP(...) ;
-#endif
-
 #define ALL_SHORT_MONTH_REGEX "(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)"
 char monthShortName[][4] = {
     "jan",
@@ -373,13 +366,8 @@ timeParserRet Parser::getTime()
         }
     }
     instSrot(mVmInst);
-    #ifdef DEBUG
-    DEBUGP("instructions srot:");
-    printVmInst(mVmInst);
-    #endif
     
     mParseResult = parseVM(mVmInst, &mParseFlag, &mEstimation);
-    DEBUGP("after parse time is %s\n\n", mParseResult.format().c_str());
     tRet.estimation = mEstimation;
     tRet.flag = mParseFlag;
     tRet.year = mParseResult.year();
@@ -997,7 +985,6 @@ void Parser::parseFormat(string &words, vector<vmInst_t> &instVector)
         atoi(regexResult.str(2).c_str())<=12 &&
         atoi(regexResult.str(3).c_str())>=1970)
     {
-        DEBUGP("DD-MM-YYYY\n");
         instVector.push_back(vmInst_t {{'m', 'd'}, true, atoi(regexResult.str(1).c_str())});
         instVector.push_back(vmInst_t {{'m', 'o'}, true, atoi(regexResult.str(2).c_str())});
         instVector.push_back(vmInst_t {{'y', 'y'}, true, atoi(regexResult.str(3).c_str())});
