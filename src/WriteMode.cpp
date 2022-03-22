@@ -9,6 +9,7 @@
 #include "debug_print.h"
 #include "EnTimeParser.h"
 #include "iniparser.hpp"
+#include "pthread.h"
 #include "JrmeConfig.h"
 #include "TagConfigNode.h"
 #include "TxtEditor.h"
@@ -19,25 +20,75 @@
 using namespace std;
 using namespace ec;
 
-void journlWriteMode(string bookPath, string timeDescription, string title, string content)
-{
-    shared_ptr<JournalBookBase> journalBook;
+//create a pthread to open journal book
+#define PTHREAD_OPEN
+#ifdef PTHREAD_OPEN
+timed_mutex openFinishMu;
+#endif
 
+static shared_ptr<JournalBookBase> sJournalBook = nullptr;
+static string sBookPath;
+
+void *openJournalBook(void* args)
+{
     struct stat sBuf;
-    stat(bookPath.c_str(), &sBuf);
+    stat(sBookPath.c_str(), &sBuf);
     if (S_ISDIR(sBuf.st_mode))
     {
         //todo : multifile journal book
         ;
     }
     else
-        journalBook = make_shared<SfJournalBook>();
+        sJournalBook = make_shared<SfJournalBook>();
 
-    if(!journalBook->open(bookPath))
+    if(!sJournalBook->open(sBookPath))
     {
-        JLOGE("[E] conn't not open journal book %s\n", bookPath.c_str());
+        JLOGE("[E] connot not open journal book %s", sBookPath.c_str());
+        sJournalBook = nullptr;
+    }
+
+    #ifdef PTHREAD_OPEN
+    // just for nofiy that the process of open jounal book have finish.
+    openFinishMu.unlock();
+    #endif
+    return NULL;
+}
+
+void journlWriteMode(string bookPath, string timeDescription, string title, string content)
+{
+    sBookPath = bookPath;
+#ifdef PTHREAD_OPEN
+    pthread_t openTid=0;
+    openFinishMu.lock();
+    pthread_create(&openTid, NULL, openJournalBook, NULL);
+    /**
+     * The process of open journal book my fail. The user would be sad, that
+     * if user has finish input but find the journal book opened fail.  
+     * If the journal book can be open in 50 ms, that would be fine.
+     */
+    if (!openFinishMu.try_lock_for(chrono::milliseconds(50)))
+    {
+        JLOGT("spend too mach time in opening journal book!");
+    }
+    else
+    {
+        openFinishMu.unlock();
+        // before out of time, we get result but journal book open fail.
+        if (!sJournalBook)
+        {
+            printf("connot not open journal book %s", bookPath.c_str());
+            return;
+        }
+    }
+#else
+    openJournalBook(NULL);
+    /* sJournalBook is nullptr while journal book open fail. return immediately*/
+    if (!sJournalBook)
+    {
+        printf("connot not open journal book %s", bookPath.c_str());
         return;
     }
+#endif
 
     // todo : more type of time parse from timeDescription
     ConfigNodeMaster configMaster = ConfigNodeMaster();
@@ -109,10 +160,52 @@ void journlWriteMode(string bookPath, string timeDescription, string title, stri
             return ;
         }
     }
-
+    void *tRet;
     configMaster.postprocess(journal);
     
-    journalBook->push_back(journal);
-    journalBook->order();
-    journalBook->save();
+    pthread_join(openTid, &tRet);
+#ifdef PTHREAD_OPEN
+    /** 
+     * Program has created a pthread to open jounal book. Program my find that,
+     * user has finish input a journal, but journal book open fail. Quary user, if
+     * he want to save journal to another path
+    */
+    if (sJournalBook==nullptr)
+    {
+        printf("journal book open fail, would you like to save the jounal which input just befor to another place? (Y/N):");
+        bool wantSave = true;
+        string gotAnswer;
+        getline(cin, gotAnswer);
+        if (!(gotAnswer[0] == 'Y' || gotAnswer[0] == 'y'))
+        {
+            wantSave = false;
+        }
+        while (wantSave)
+        {
+            printf("input path:");
+            getline(cin, gotAnswer);
+            ofstream outFile;
+            outFile.open(gotAnswer, ios::out);
+            if (!outFile.is_open())
+            {
+                printf("file open faild, would you want to save to another path? (Y/N):");
+                getline(cin, gotAnswer);
+                if (!(gotAnswer[0] == 'Y' || gotAnswer[0] == 'y'))
+                {
+                    wantSave = false;
+                }
+            }
+            else
+            {
+                outFile << journal->toString();
+                outFile.close();
+                break;
+            }
+        }
+        return;
+    }
+#endif
+    sJournalBook->push_back(journal);
+    sJournalBook->order();
+    sJournalBook->save();
 }

@@ -10,7 +10,7 @@ TEMP_FILES:=src/*.o lib/*.o
 TOOL_CHAIN?=gcc
 
 STATIC:=		
-CFLAGS:= -I./src -I./include -I./lib -I./plugin/timeparser/include -Llib -lc -lstdc++ -ldl
+CFLAGS:= -I./src -I./include -I./lib -I./plugin/timeparser/include -Llib -lc -lstdc++ -ldl -lpthread
 
 #传参决定是否需要调试，如果DEBUG=exclusive，则调试的时候会删除release版本
 #debug or not. if DEBUG=exclusive, release version will be delate after build

@@ -1,3 +1,8 @@
+-s --select select a book
+-S --book_path input book path to select book
+-A --at 日记的时间
+-T --title 日记的标题
+-C --content 日记的内容
 -n 最近n篇幅
 -f --from 搜索的起始时间
 -t --to 搜索的结束时间
@@ -5,9 +10,10 @@
 -g --tag 制定tag搜索
 -G --tags 显示所有tag
 -l --level 指定level搜索
--A --at 日记的时间
--T --title 日记的标题
--C --content 日记的内容
 
+-b --add_book add a journal book to config
+-B --remove_book frome config
+
+-F --file load from file
 -E --editor 编辑指定的日记
 -D --delete 删除指定的日记
