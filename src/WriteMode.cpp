@@ -115,5 +115,4 @@ void journlWriteMode(string bookPath, string timeDescription, string title, stri
     journalBook->push_back(journal);
     journalBook->order();
     journalBook->save();
-    system("clear");
 }

@@ -31,6 +31,8 @@ int main(int argc, char* argv[]) {
         JLOGD("[D] write a journal to %s", journalBookPath.c_str());
         return 0;
     }
-    
+
+
+    journlWriteMode(journalBookPath, string(""), string(""), string(""));
     return 0;
 }

@@ -2,6 +2,7 @@
 #define SFJOURNAL_BOOK_BASE_H
 
 #include <list>
+#include <vector>
 #include <memory>
 #include <mutex>
 
@@ -15,8 +16,9 @@ class SfJournalBook : public JournalBookBase
 {
 private:
     shared_ptr<JournalIOBase> mJournalIO;
-    list<shared_ptr<Journal>> mJournalList;
-    mutex mJournalListLock;
+    vector<shared_ptr<Journal>> mJournalVector;
+    mutex mJournalVectorLock;
+    
 
 public:
     SfJournalBook() = default;
