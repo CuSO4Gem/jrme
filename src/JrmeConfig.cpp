@@ -70,16 +70,12 @@ string JrmeConfig::getConfigRootDir()
 
 string JrmeConfig::getConfigFilePath()
 {
-    char const* home = getenv("HOME");
-    string dir = string(home)+string("/.jrme/config.ini");
-    return dir;
+    return getConfigRootDir()+string("config.ini");
 }
 
 string JrmeConfig::getPluginDir()
 {
-    char const* home = getenv("HOME");
-    string dir = string(home)+string("/.jrme/plugin/");
-    return dir;
+    return getConfigRootDir()+string("plugin/");
 }
 
 bool JrmeConfig::installIfNeed()
@@ -109,7 +105,7 @@ bool JrmeConfig::installIfNeed()
     }
     
 
-    target = path+string("config.ini");
+    target = getConfigFilePath();
     if (access(target.c_str(), R_OK|W_OK) != 0)
     {
         string cmd = string("touch ") + target;
@@ -152,3 +148,5 @@ vector<string> JrmeConfig::getJournalIOPluginNames()
     }
     return plugins;
 }
+
+

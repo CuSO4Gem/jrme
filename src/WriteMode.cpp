@@ -1,6 +1,6 @@
 #include <fstream>
-#include <memory>
 #include <iostream>
+#include <memory>
 #include <sys/stat.h>
 #include <unistd.h>
 
@@ -10,12 +10,12 @@
 #include "debug_print.h"
 #include "EnTimeParser.h"
 #include "iniparser.hpp"
-#include "pthread.h"
 #include "JrmeConfig.h"
+#include "LevelConfigNode.h"
+#include "pthread.h"
+#include "SfJournalBook.h"
 #include "TagConfigNode.h"
 #include "TxtEditor.h"
-#include "LevelConfigNode.h"
-#include "SfJournalBook.h"
 #include "Utils.h"
 #include "WriteMode.h"
 

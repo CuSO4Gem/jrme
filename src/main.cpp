@@ -3,10 +3,10 @@
 
 using namespace std;
 
-#include "debug_print.h"
 #include "cmdline.h"
-#include "WriteMode.h"
+#include "debug_print.h"
 #include "JrmeConfig.h"
+#include "WriteMode.h"
 
 int main(int argc, char* argv[]) {
     if (!JrmeConfig::installIfNeed())

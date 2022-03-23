@@ -62,7 +62,7 @@ void SfJournalBook::close()
 
 static bool fastSortDataCmp(const fastSortData &d1,const fastSortData &d2)
 {
-    return d1.stamp<d2.stamp;
+    return d1.stamp>d2.stamp;
 }
 
 void SfJournalBook::order()
