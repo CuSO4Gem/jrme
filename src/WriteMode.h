@@ -5,6 +5,6 @@
 
 using namespace std;
 
-void journlWriteMode(string bookPath, string timeDescription, string title);
+void journlWriteMode(string bookPath, string timeDescription, string title, string content);
 
 #endif

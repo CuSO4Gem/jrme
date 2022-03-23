@@ -223,7 +223,7 @@ shared_ptr<Journal> MdJournalIO::readJournal()
     //todo: more strong
     while (getline(mJournal, lineBuffer))
     {
-        if (lineBuffer.length()>2 && lineBuffer[0]=='#' && lineBuffer[1]==' ')
+        if (lineBuffer.length()>=2 && lineBuffer[0]=='#' && lineBuffer[1]==' ')
         {
             finded = true;
             lineBuffer = lineBuffer.substr(2, lineBuffer.length()-2);

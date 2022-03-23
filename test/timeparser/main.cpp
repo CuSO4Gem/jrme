@@ -7,6 +7,7 @@
 #include <unistd.h>
 
 #include "date.h"
+#include "debug_print.h"
 #include "EnTimeParser.h"
 #include "timeParserType.h"
 
@@ -59,52 +60,52 @@ bool timePareCmp(const timeParserRet *tRet, const timeDetail *detail)
     
     if ((detail->flag&tRet->flag)!=detail->flag)
     {
-        printf("error timePareCmp flag %X VS %X\n", detail->flag, tRet->flag);
+        JLOGE("[E] timePareCmp flag %X VS %X", detail->flag, tRet->flag);
         return false;
     }
 
     if ((detail->flag&YEAR_FLAG) && (tRet->year)!=detail->year)
     {
-        printf("error year %d should be %d\n", tRet->year, detail->year);
+        JLOGE("[E] year %d should be %d", tRet->year, detail->year);
         return false;
     } else if (!(detail->flag&YEAR_FLAG) && tRet->year!=now.year())
     {
-        printf("erro year is %d, it should be now\n", tRet->year);
+        JLOGE("[E] year is %d, it should be now", tRet->year);
         return false;
     }
 
     if ((detail->flag&MONTH_FLGA) && tRet->month!=detail->month)
     {
-        printf("error month %d should be %d\n", tRet->month, detail->month);
+        JLOGE("[E] month %d should be %d", tRet->month, detail->month);
         return false;
     } else if (!(detail->flag&MONTH_FLGA) && tRet->month!=now.month())
     {
-        printf("error month should be now (is %d)", now.month());
+        JLOGE("[E] month should be now (is %d)", now.month());
         return false;
     }
     if ((detail->flag&DAY_FLAG) && tRet->day!=detail->day)
     {
-        printf("error day %d should be %d\n", tRet->day, detail->day);
+        JLOGE("[E] day %d should be %d", tRet->day, detail->day);
         return false;
     } else if (!(detail->flag&DAY_FLAG) && tRet->day!=now.day())
     {
-        printf("error day should be now");
+        JLOGE("[E] day should be now");
         return false;
     }
 
     if ((detail->flag&HOUR_FLAG) && tRet->hour!=detail->hour)
     {
-        printf("error hour %d should be %d\n", tRet->hour, detail->hour);
+        JLOGE("[E] hour %d should be %d", tRet->hour, detail->hour);
         return false;
     }
     if ((detail->flag&MINUTE_FLAG) && tRet->minute!=detail->minute)
     {
-        printf("error minute %d should be %d\n", tRet->minute, detail->minute);
+        JLOGE("[E] minute %d should be %d", tRet->minute, detail->minute);
         return false;
     }
     if ((detail->flag&SECOND_FLAG) && tRet->second!=detail->second)
     {
-        printf("error second %d should be %d\n", tRet   ->second, detail->second);
+        JLOGE("[E] second %d should be %d", tRet   ->second, detail->second);
         return false;
     }
 
@@ -116,12 +117,10 @@ TEST(EnTimeParser, sp)
 {
     timeDetail detail = {string("2020-2-1"), 2021, 1, 1, 9, 0, 0, YEAR_FLAG|MONTH_FLGA|DAY_FLAG};
 
-    printf("send to parse:%s\r\n", detail.sentence.c_str());
+    JLOGD("[D] send to parse:%s", detail.sentence.c_str());
     EnTimeParser Parser;
     timeParserRet tRet;
     tRet = Parser.parse(detail.sentence);
-    // printf("ret = %d time is %d-%d-%d ", ret, timeGot.tm_year+1900, timeGot.tm_mon ,timeGot.tm_mday);
-    // printf("%d:%d:%d\n", timeGot.tm_hour, timeGot.tm_min ,timeGot.tm_sec);
 }
 
 TEST(EnTimeParser, formate)
@@ -132,7 +131,7 @@ TEST(EnTimeParser, formate)
 
     for (auto &it:formateTestCaseSuit)
     {
-        printf("send to parse:%s\r\n", it.sentence.c_str());
+        JLOGD("[D] send to parse:%s", it.sentence.c_str());
         tRet = Parser.parse(it.sentence);
         ASSERT_GE(tRet.estimation, 1) ;
         ASSERT_TRUE(timePareCmp(&tRet, &it));
@@ -146,7 +145,7 @@ TEST(EnTimeParser, describe)
 
     for (auto &it:describeTestCaseSuit)
     {
-        printf("send to parse:%s\r\n", it.sentence.c_str());
+        JLOGD("[D] send to parse:%s", it.sentence.c_str());
         tRet = Parser.parse(it.sentence);
         ASSERT_GE(tRet.estimation, 1) ;
         ASSERT_TRUE(timePareCmp(&tRet, &it));

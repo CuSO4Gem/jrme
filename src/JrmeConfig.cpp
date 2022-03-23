@@ -1,51 +1,29 @@
-#include "JrmeConfig.h"
-
-#include "Utils.h"
 
 #include <iostream>
+#include <string>
 #include <sys/stat.h>
 #include <unistd.h>
 
-#include <string>
+#include "JrmeConfig.h"
+#include "debug_print.h"
+#include "Utils.h"
 
 using namespace std;
 
-
-string getConfigRootDir()
+string JrmeConfig::getDefaultJournalPath()
 {
-    char const* home = getenv("HOME");
-    string dir = string(home)+string("/.jrme/");
-    return dir;
-}
-
-string getConfigFilePath()
-{
-    char const* home = getenv("HOME");
-    string dir = string(home)+string("/.jrme/config.ini");
-    return dir;
-}
-
-string getPluginDir()
-{
-    char const* home = getenv("HOME");
-    string dir = string(home)+string("/.jrme/plugin/");
-    return dir;
-}
-
-string getDefaultJournalPath()
-{
-    return getConfigRootDir() + string("journal.txt");
+    return JrmeConfig::getConfigRootDir() + string("journal.txt");
 }
 
 /**
- * @brief 
+ * @brief '\t' to space, '~' to dir
  * 
  * @param pathIn 
  * @param normalizedPath 
  * @return true normalized success
  * @return false normalize fail
  */
-bool pathNormalize(string &rawPath, string &normalizedPath)
+bool JrmeConfig::pathNormalize(string &rawPath, string &normalizedPath)
 {
     if (rawPath.empty())
         return false;
@@ -57,8 +35,7 @@ bool pathNormalize(string &rawPath, string &normalizedPath)
     {
         normalizedPath.replace(pos, 1, " ");
     }
-    removeMultipleSpaces(normalizedPath);
-    if (normalizedPath[0] == ' ')
+    while (normalizedPath[0] == ' ')
     {
         normalizedPath.erase(0, 1);
     }
@@ -84,7 +61,28 @@ bool pathNormalize(string &rawPath, string &normalizedPath)
 }
 
 
-bool installIfNeed()
+string JrmeConfig::getConfigRootDir()
+{
+    char const* home = getenv("HOME");
+    string dir = string(home)+string("/.jrme/");
+    return dir;
+}
+
+string JrmeConfig::getConfigFilePath()
+{
+    char const* home = getenv("HOME");
+    string dir = string(home)+string("/.jrme/config.ini");
+    return dir;
+}
+
+string JrmeConfig::getPluginDir()
+{
+    char const* home = getenv("HOME");
+    string dir = string(home)+string("/.jrme/plugin/");
+    return dir;
+}
+
+bool JrmeConfig::installIfNeed()
 {
     bool ret;
     string path = getConfigRootDir();
@@ -94,7 +92,7 @@ bool installIfNeed()
     {
         if (mkdir(path.c_str(), 0700) != 0)
         {
-            printf("error: can not mkdir config dir:%s\n", path.c_str());
+            JLOGE("[E] can not mkdir config dir:%s\n", path.c_str());
             return false;
         }
     }
@@ -105,7 +103,7 @@ bool installIfNeed()
     {
         if (mkdir(target.c_str(), 0700) != 0)
         {
-            printf("error: can not mkdir config dir:%s\n", target.c_str());
+            JLOGE("[E] can not mkdir config dir:%s\n", target.c_str());
             return false;
         }
     }
@@ -140,7 +138,7 @@ bool installIfNeed()
     return true;
 }
 
-vector<string> getJournalIOPluginNames()
+vector<string> JrmeConfig::getJournalIOPluginNames()
 {
     INI::File configFile = INI::File(getConfigFilePath());
     string plugNames = configFile.GetSection("plugin")->GetValue("journal format").AsString();

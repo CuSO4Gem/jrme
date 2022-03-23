@@ -25,13 +25,13 @@ shared_ptr<Journal> TxtEditor::getJournalFromEditor()
 {
     shared_ptr<Journal> journal = make_shared<Journal>();
 
-    string tmpFilePath = getConfigRootDir()+".journal.tmp";
+    string tmpFilePath = JrmeConfig::getConfigRootDir()+".journal.tmp";
     ofstream oTmpFile;
     oTmpFile.open(tmpFilePath);
     oTmpFile << mInitStr << endl;
     oTmpFile.close();
 
-    INI::File configFile = INI::File(getConfigFilePath());
+    INI::File configFile = INI::File(JrmeConfig::getConfigFilePath());
     string cmdEditor = configFile.GetSection("base")->GetValue("editor", "vi").AsString();
     system((cmdEditor + " " + tmpFilePath).c_str());
 

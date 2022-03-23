@@ -8,9 +8,10 @@
 
 using namespace std;
 
-
 #include "SfJournalBook.h"
 #include "Utils.h"
+
+#include "debug_print.h"
 
 TEST(SFJournalBook, total)
 {
@@ -30,7 +31,7 @@ TEST(SFJournalBook, total)
     jInsert->setConfig(lineBuffer);
     getline(journalStore, lineBuffer, '#');
     jInsert->setContent(lineBuffer);
-
+    
     journalBook.push_back(jInsert);
     ASSERT_EQ(journalBook.size(), 4) << "journal on SfJournalBook not eq 4 after insert";
 

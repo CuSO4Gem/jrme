@@ -1,6 +1,6 @@
 
 TOOL_CHAIN?=gcc
-CFLAGS:= -I./ -L./lib -lc -lstdc++ -ldl -lgtest -lm -pthread  -DDBG_PRINT_ENABLED="(4)"
+CFLAGS:= -I./ -L./lib -lc -lstdc++ -ldl -lgtest -lm -pthread -DDBG_PRINT_ENABLED="(4)"
 
 #需要清除的临时文件
 #The tempory files which need to be clear
