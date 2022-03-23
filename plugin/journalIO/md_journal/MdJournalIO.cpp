@@ -258,7 +258,7 @@ shared_ptr<Journal> MdJournalIO::readJournal()
     }
     if (!finded)
     {
-        JLOGE("ERROR: return null journal while reading title");
+        JLOGE("[E] return null journal while reading title");
         mJournal.close();
         mState = INITED;
         return nullptr;
@@ -315,7 +315,7 @@ shared_ptr<Journal> MdJournalIO::readJournal()
     }
     if (!finded)
     {
-        JLOGE("ERROR: return null journal while reading config");
+        JLOGE("[E] return null journal while reading config");
         mJournal.close();
         mState = INITED;
         return nullptr;

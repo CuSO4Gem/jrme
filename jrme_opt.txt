@@ -13,6 +13,7 @@
 
 -b --add_book add a journal book to config
 -B --remove_book frome config
+-d --select_default_book
 
 -F --file load from file
 -E --editor 编辑指定的日记

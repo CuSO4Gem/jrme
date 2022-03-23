@@ -73,7 +73,7 @@ void journlWriteMode(string bookPath, string timeDescription, string title, stri
     {
         if (!openFinishMu.try_lock_for(chrono::milliseconds(50)))
         {
-            JLOGT("spend too mach time in opening journal book!");
+            JLOGT("[T] spend too mach time in opening journal book!");
         }
         else
         {
@@ -113,26 +113,17 @@ void journlWriteMode(string bookPath, string timeDescription, string title, stri
         date.setSecond(timeRet.second);
     }
     configMaster.setDate(date.stamp());
-
     // load config node plugin
-    INI::File configFile = INI::File(JrmeConfig::getConfigFilePath());
-    string plugNames = configFile.GetSection("plugin")->GetValue("config node").AsString();
-    istringstream plugNameStream = istringstream(plugNames);
+    vector<string> pluginNameVector = JrmeConfig::getConfigNodePluginNames();
     string pluginName;
-    bool load_fail = false;
-    while (getline(plugNameStream, pluginName, ','))
+    for (auto &it:pluginNameVector)
     {
-        if (!configMaster.addPluginNode(pluginName))
+        if (!configMaster.addPluginNode(it))
         {
             printf("warning: plugin %s not find\n", pluginName.c_str());
-            load_fail = true;
         }
     }
-    if (load_fail)
-    {
-        string tmpStr;
-        getline(cin, tmpStr);
-    }
+    
 
     string config = configMaster.genConfig();
     

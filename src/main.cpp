@@ -22,8 +22,7 @@ int main(int argc, char* argv[]) {
 
     cmd.parse_check(argc, argv);
     
-    INI::File configFile = INI::File(JrmeConfig::getConfigFilePath());
-    string journalBookPath = configFile.GetSection("journal books")->GetValue("default").AsString();
+    string journalBookPath = JrmeConfig::getDefaultJournalBookPath();
     
     if (cmd.exist("title") || cmd.exist("at") || cmd.exist("content"))
     {

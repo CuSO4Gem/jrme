@@ -10,9 +10,27 @@
 
 using namespace std;
 
-string JrmeConfig::getDefaultJournalPath()
+
+string JrmeConfig::getConfigRootDir()
+{
+    char const* home = getenv("HOME");
+    string dir = string(home)+string("/.jrme/");
+    return dir;
+}
+
+string JrmeConfig::getInitJournalBookPath()
 {
     return JrmeConfig::getConfigRootDir() + string("journal.txt");
+}
+
+string JrmeConfig::journalBooksPathCfg()
+{
+    return getConfigRootDir() + string("booklist.txt");
+}
+
+string JrmeConfig::getConfigFilePath()
+{
+    return getConfigRootDir()+string("config.ini");
 }
 
 /**
@@ -61,18 +79,6 @@ bool JrmeConfig::pathNormalize(string &rawPath, string &normalizedPath)
 }
 
 
-string JrmeConfig::getConfigRootDir()
-{
-    char const* home = getenv("HOME");
-    string dir = string(home)+string("/.jrme/");
-    return dir;
-}
-
-string JrmeConfig::getConfigFilePath()
-{
-    return getConfigRootDir()+string("config.ini");
-}
-
 string JrmeConfig::getPluginDir()
 {
     return getConfigRootDir()+string("plugin/");
@@ -114,11 +120,17 @@ bool JrmeConfig::installIfNeed()
             return false;
     }
     
-    INI::File config = INI::File(target);
+    INI::File config;
+    if (!config.Load(JrmeConfig::getConfigFilePath()))
+    {
+        JLOGE("cannot not load ini file!");
+        return false;
+    }
+
     string journBook = config.GetSection("journal books")->GetValue("default").AsString();
     if (journBook.empty())
     {
-        string dafaultJournal = getDefaultJournalPath();
+        string dafaultJournal = getInitJournalBookPath();
         string gotPath;
         string savePath;
         printf("Path of your journal file (leave blank for %s):", dafaultJournal.c_str());
@@ -134,9 +146,74 @@ bool JrmeConfig::installIfNeed()
     return true;
 }
 
+string JrmeConfig::getEditorName()
+{
+    INI::File configFile;
+    if (!configFile.Load(JrmeConfig::getConfigFilePath()))
+    {
+        JLOGE("cannot not load ini file!");
+        return string();
+    }
+        
+    return configFile.GetSection("base")->GetValue("editor", "vi").AsString();
+}
+
+vector<string> JrmeConfig::getConfigNodePluginNames()
+{
+    INI::File configFile;
+    if (!configFile.Load(JrmeConfig::getConfigFilePath()))
+    {
+        JLOGE("cannot not load ini file!");
+        return vector<string>();
+    }
+
+    string plugNames = configFile.GetSection("plugin")->GetValue("config node").AsString();
+    istringstream plugNameStream = istringstream(plugNames);
+    string pluginName;
+    vector<string> plugNameVector;
+    while (getline(plugNameStream, pluginName, ','))
+    {
+        plugNameVector.push_back(pluginName);
+    }
+    return plugNameVector;
+}
+
+string JrmeConfig::getDefaultJournalBookPath()
+{
+    INI::File configFile;
+    if (!configFile.Load(JrmeConfig::getConfigFilePath()))
+    {
+        JLOGE("cannot not load ini file!");
+        return string();
+    }
+    
+    return configFile.GetSection("journal books")->GetValue("default", getInitJournalBookPath).AsString();
+}
+
+void JrmeConfig::setDeafultJournalBookPath(string path)
+{
+    if (path.length()==0)
+        return;
+
+    INI::File configFile;
+    if (!configFile.Load(JrmeConfig::getConfigFilePath()))
+    {
+        JLOGE("cannot not load ini file!");
+        return ;
+    }
+    
+    configFile.GetSection("journal books")->SetValue("default", path);
+}
+
+
 vector<string> JrmeConfig::getJournalIOPluginNames()
 {
-    INI::File configFile = INI::File(getConfigFilePath());
+    INI::File configFile;
+    if (!configFile.Load(JrmeConfig::getConfigFilePath()))
+    {
+        JLOGE("cannot not load ini file!");
+        return vector<string> ();
+    }
     string plugNames = configFile.GetSection("plugin")->GetValue("journal format").AsString();
     istringstream plugNameStream = istringstream(plugNames);
     string pluginName;
@@ -149,4 +226,38 @@ vector<string> JrmeConfig::getJournalIOPluginNames()
     return plugins;
 }
 
+vector<string> JrmeConfig::getJournalBooksPath()
+{
+    string listPath = journalBooksPathCfg();
+    vector<string> allPath;
+    ifstream bookPathCfg;
+    bookPathCfg.open(listPath, ios::in);
+    if (!bookPathCfg.is_open())
+    {
+        JLOGW("[W] cann't open journal books list config file(%s). error:%s", listPath.c_str(), strerror(errno));
+        return allPath;
+    }
+    string bookPath;
+    while (getline(bookPathCfg, bookPath))
+    {
+        allPath.push_back(bookPath);
+    }
+    return allPath;
+}
 
+void JrmeConfig::saveJournalBooksPath(vector<string> allPath)
+{
+    string listPath = journalBooksPathCfg();
+    ofstream bookPathCfg;
+    bookPathCfg.open(listPath, ios::out);
+    if (!bookPathCfg.is_open())
+    {
+        JLOGW("[W] cann't open journal books list config file(%s). error:%s", listPath.c_str(), strerror(errno));
+        return;
+    }
+    for (auto &it:allPath)
+    {
+        bookPathCfg << it << endl;
+    }
+    bookPathCfg.close();
+}

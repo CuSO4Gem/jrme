@@ -11,8 +11,10 @@ using namespace std;
 class JrmeConfig
 {
 private:
-    static string getDefaultJournalPath();
     static bool pathNormalize(string &rawPath, string &normalizedPath);
+    static string getConfigFilePath();
+    static string getInitJournalBookPath();
+    static string journalBooksPathCfg();
 
 public:
     /**
@@ -23,18 +25,19 @@ public:
     static string getConfigRootDir();
 
     /**
-     * @brief Get the Config Path of jrme
-     * 
-     * @return string 
-     */
-    static string getConfigFilePath();
-
-    /**
      * @brief Get the dir for save plugin
      * 
      * @return string 
      */
     static string getPluginDir();
+
+    static string getEditorName();
+
+    static vector<string> getConfigNodePluginNames();
+
+    static string getDefaultJournalBookPath();
+    
+    static void setDeafultJournalBookPath(string path);
 
     /**
      * @brief install to init jrme, if need
@@ -51,6 +54,18 @@ public:
      */
     static vector<string> getJournalIOPluginNames();
 
+    /**
+     * @brief Get the Journal Books path from config.
+     * 
+     * @return vector<string> 
+     */
+    static vector<string> getJournalBooksPath();
+
+    /**
+     * @brief Save journal books path to config
+     * 
+     */
+    static void saveJournalBooksPath(vector<string> allPath);
 };
 
 #endif
