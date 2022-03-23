@@ -18,13 +18,13 @@ level=
 ```
 保存并退出后将会保存日记。
 ## 写日记的其他方式
-jrme [时间][:][标题{.}][正文]  
+jrme [-A 时间] [-T 标题] [-C正文]  
 例如：
 ```
-jrme today:hello world.what a nice day.
-jrme today:
-jrme hello world. what a nice day.
-jrme hello world.
+jrme -A today -T hello world.what a nice day.
+jrme -A today
+jrme -T hello world. -C what a nice day.
+jrme -T hello world.
 ```
 
 # 配置文件
