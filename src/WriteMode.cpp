@@ -2,6 +2,7 @@
 #include <memory>
 #include <iostream>
 #include <sys/stat.h>
+#include <unistd.h>
 
 #include "ConfigNodeMaster.h"
 #include "date.h"
@@ -15,6 +16,7 @@
 #include "TxtEditor.h"
 #include "LevelConfigNode.h"
 #include "SfJournalBook.h"
+#include "Utils.h"
 #include "WriteMode.h"
 
 using namespace std;
@@ -65,19 +67,23 @@ void journlWriteMode(string bookPath, string timeDescription, string title, stri
      * The process of open journal book my fail. The user would be sad, that
      * if user has finish input but find the journal book opened fail.  
      * If the journal book can be open in 50 ms, that would be fine.
+     * If time, title and content are all input from commend line, don't wait.
      */
-    if (!openFinishMu.try_lock_for(chrono::milliseconds(50)))
+    if (!(title.length()>0 && timeDescription.length()>0 && content.length()>0))
     {
-        JLOGT("spend too mach time in opening journal book!");
-    }
-    else
-    {
-        openFinishMu.unlock();
-        // before out of time, we get result but journal book open fail.
-        if (!sJournalBook)
+        if (!openFinishMu.try_lock_for(chrono::milliseconds(50)))
         {
-            printf("connot not open journal book %s", bookPath.c_str());
-            return;
+            JLOGT("spend too mach time in opening journal book!");
+        }
+        else
+        {
+            openFinishMu.unlock();
+            // before out of time, we get result but journal book open fail.
+            if (!sJournalBook)
+            {
+                printf("connot not open journal book %s", bookPath.c_str());
+                return;
+            }
         }
     }
 #else
@@ -183,12 +189,13 @@ void journlWriteMode(string bookPath, string timeDescription, string title, stri
         while (wantSave)
         {
             printf("input path:");
-            getline(cin, gotAnswer);
+            gotAnswer = getFilePath();
             ofstream outFile;
             outFile.open(gotAnswer, ios::out);
             if (!outFile.is_open())
             {
-                printf("file open faild, would you want to save to another path? (Y/N):");
+                printf("file open faild:%s\n",strerror(errno));
+                printf("would you want to save to another path? (Y/N):");
                 getline(cin, gotAnswer);
                 if (!(gotAnswer[0] == 'Y' || gotAnswer[0] == 'y'))
                 {
@@ -208,4 +215,5 @@ void journlWriteMode(string bookPath, string timeDescription, string title, stri
     sJournalBook->push_back(journal);
     sJournalBook->order();
     sJournalBook->save();
+    JLOGD("[D] write a journal to %s", bookPath.c_str());
 }

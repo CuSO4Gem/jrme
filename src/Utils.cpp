@@ -360,3 +360,35 @@ shared_ptr<Journal> strToJournal(const string &inStr)
 
     return journl;
 }
+
+string getFilePath()
+{
+    string inputPath;
+    getline(cin, inputPath);
+    if (inputPath.length()==0)
+        return inputPath;
+    while (inputPath[0] == ' ')
+    {
+        inputPath.erase(0, 1);
+    }
+    if (inputPath.length()==0)
+        return inputPath;
+    
+    uint32_t count=0;
+    for (size_t i = 0; i < inputPath.length(); i++)
+    {
+        if (inputPath[i] == '~')
+            count++;
+    }
+    if (count>1)
+        return string("");
+    else if (count==1)
+    {
+        char const* home = getenv("HOME");
+        string homeDir = string(home);
+        size_t pos;
+        pos = inputPath.find('~');
+        inputPath.replace(pos, 1, homeDir);
+    }
+    return inputPath;
+}

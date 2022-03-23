@@ -28,7 +28,6 @@ int main(int argc, char* argv[]) {
     if (cmd.exist("title") || cmd.exist("at") || cmd.exist("content"))
     {
         journlWriteMode(journalBookPath, cmd.get<string>("at"), cmd.get<string>("title"), cmd.get<string>("content"));
-        JLOGD("[D] write a journal to %s", journalBookPath.c_str());
         return 0;
     }
 

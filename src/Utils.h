@@ -53,4 +53,11 @@ time_t getStampFormConfig(const string &config);
  * @return shared_ptr<Journal> 
  */
 shared_ptr<Journal> strToJournal(const string &inStr);
+
+/**
+ * @brief get path from user, conver ~ to home dir
+ * 
+ * @return string 
+ */
+string getFilePath();
 #endif

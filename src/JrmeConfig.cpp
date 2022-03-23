@@ -35,8 +35,7 @@ bool JrmeConfig::pathNormalize(string &rawPath, string &normalizedPath)
     {
         normalizedPath.replace(pos, 1, " ");
     }
-    removeMultipleSpaces(normalizedPath);
-    if (normalizedPath[0] == ' ')
+    while (normalizedPath[0] == ' ')
     {
         normalizedPath.erase(0, 1);
     }
