@@ -11,9 +11,9 @@
 -G --tags 显示所有tag
 -l --level 指定level搜索
 
--b --add_book add a journal book to config
--B --remove_book frome config
--d --select_default_book
+-a --add_book add a journal book to config
+-d --remove_book
+-B --edito_book_list  
 
 -F --file load from file
 -E --editor 编辑指定的日记

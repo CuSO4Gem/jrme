@@ -3,6 +3,7 @@
 #include <regex>
 #include <sstream>
 
+#include "debug_print.h"
 #include "Utils.h"
 
 inline bool isNumChar(const char ch)
@@ -242,7 +243,7 @@ time_t getStampFormConfig(const string &config)
         
         case 3:
             hour = it;
-            if (hour<0 || hour>12)
+            if (hour<0 || hour>24)
                 return date.stamp();
             else
                 date.setHour(hour);
