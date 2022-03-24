@@ -23,11 +23,70 @@ int main(int argc, char* argv[]) {
     cmd.add<string>("at", 'A', "the time of journal", false, "");
     cmd.add<string>("content", 'C', "The content of journal", false, "");
 
+    cmd.add("default_book", 'd', "select default journal book");
+    cmd.add<string>("add_book", 'a', "add a journal book path list", false, "");
+    cmd.add("edit_book_list", 'B', "edit journal book path list");
     cmd.parse_check(argc, argv);
+
+    /*Select a journal book as default*/
+    if (cmd.exist("default_book"))
+    {
+        list<string> allBooksPath = JrmeConfig::readJournalBooksCfg();
+        printf("input a number to select the default journal book\n");
+        size_t i=0;
+        for (auto &it:allBooksPath)
+        {
+            printf("[%ld] %s\n", i,it.c_str());
+            i++;
+        }
+        printf(":");
+        string answer;
+        getline(cin, answer);
+        if (answer.length()==0)
+            return 0;
+        int number = atoi(answer.c_str());
+        if (number<0 || number>=allBooksPath.size())
+        {
+            printf("Invalid input\n");
+            return -1;
+        }
+        list<string>::iterator strIt;
+        strIt = allBooksPath.begin();
+        for (i=0; i<number; i++)
+        {
+            strIt++;
+        }
+        JrmeConfig::setDeafultJournalBookPath(*strIt);
+        return 0;
+    }
     
+    /*Add book path to journal book path list*/
+    if (cmd.exist("add_book"))
+    {
+        string path = cmd.get<string>("add_book");
+        path = validPath(path);
+        if (path.size()==0)
+        {
+            printf("Invalid input\n");
+            return -1;
+        }
+        list<string> pathList = JrmeConfig::readJournalBooksCfg();
+        pathList.push_back(path);
+        JrmeConfig::writeJournalBooksCfg(pathList);
+        return 0;
+    }
+
+    /*Edit journal book path list config file*/
+    if (cmd.exist("edit_book_list"))
+    {
+        string editorName = JrmeConfig::getEditorName();
+        string bookListCfg = JrmeConfig::getJournalBooksCfgPath();
+        system((editorName + " " + bookListCfg).c_str());
+        return 0;
+    }
+
+    /** Select a journal book */
     string journalBookPath;
-    /** Select a journal book;
-     */
     if (cmd.exist("book"))
     {
         /** Let user to select a journal book from joruanl book cfg.
@@ -50,6 +109,11 @@ int main(int argc, char* argv[]) {
         string answer;
         getline(cin, answer);
         if (answer.length()==0)
+        {
+            printf("Invalid input\n");
+            return -1;
+        }
+        if (answer.length()==0 || !isNumChar(answer[0]))
         {
             printf("Invalid input\n");
             return -1;
@@ -84,8 +148,8 @@ int main(int argc, char* argv[]) {
         }
     }
     else
-        string journalBookPath = JrmeConfig::getDefaultJournalBookPath();
-    
+        journalBookPath = JrmeConfig::getDefaultJournalBookPath();
+        
     if (cmd.exist("title") || cmd.exist("at") || cmd.exist("content"))
     {
         journlWriteMode(journalBookPath, cmd.get<string>("at"), cmd.get<string>("title"), cmd.get<string>("content"));

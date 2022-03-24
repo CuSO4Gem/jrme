@@ -198,6 +198,7 @@ void JrmeConfig::setDeafultJournalBookPath(string path)
         if (*it == path && it!=allPath.begin())
         {
             allPath.erase(it);
+            break;
         }
         else
             it++;
@@ -241,7 +242,8 @@ list<string> JrmeConfig::readJournalBooksCfg()
     string bookPath;
     while (getline(bookPathCfg, bookPath))
     {
-        allPath.push_back(bookPath);
+        if (bookPath.length() > 0)
+            allPath.push_back(bookPath);
     }
     return allPath;
 }
@@ -258,7 +260,8 @@ bool JrmeConfig::writeJournalBooksCfg(list<string> allPath)
     }
     for (auto &it:allPath)
     {
-        bookPathCfg << it << endl;
+        if (it.length() > 0)
+            bookPathCfg << it << endl;
     }
     bookPathCfg.close();
     return true;

@@ -11,8 +11,9 @@
 -G --tags 显示所有tag
 -l --level 指定level搜索
 
+-d --default_book select default journal book
 -a --add_book add a journal book path to config
--B --edito_book_list  
+-B --edit_book  
 
 -F --file load from file
 -E --editor 编辑指定的日记

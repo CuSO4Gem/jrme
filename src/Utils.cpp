@@ -6,11 +6,6 @@
 #include "debug_print.h"
 #include "Utils.h"
 
-inline bool isNumChar(const char ch)
-{
-    return '0'<=ch && ch<='9';
-}
-
 bool seekToNumChar(size_t *pos, const string &inStr)
 {
     if (*pos<0 || *pos>=inStr.length())

@@ -15,7 +15,6 @@ private:
     static bool pathNormalize(string &rawPath, string &normalizedPath);
     static string getConfigFilePath();
     static string getInitJournalBookPath();
-    static string getJournalBooksCfgPath();
 
 public:
     /**
@@ -24,6 +23,12 @@ public:
      * @return string 
      */
     static string getConfigRootDir();
+
+    /**
+     * @brief get path of journak book list config file.
+     * 
+     */
+    static string getJournalBooksCfgPath();
 
     /**
      * @brief Get the dir for save plugin
