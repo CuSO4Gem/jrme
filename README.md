@@ -34,9 +34,6 @@ jrme -T hello world.
 [base]
 editor = 调用的系统编辑器
 
-[journal books]
-default = 日记保存的位置
-
 [plugin]
 config node = 插件，多个插件用,分割
 ```
