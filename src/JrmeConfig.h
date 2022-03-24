@@ -1,6 +1,7 @@
 #ifndef JRME_CONFIG_H
 #define JRME_CONFIG_H
 
+#include <list>
 #include <string>
 #include <vector>
 
@@ -11,8 +12,9 @@ using namespace std;
 class JrmeConfig
 {
 private:
-    static string getDefaultJournalPath();
     static bool pathNormalize(string &rawPath, string &normalizedPath);
+    static string getConfigFilePath();
+    static string getInitJournalBookPath();
 
 public:
     /**
@@ -23,11 +25,10 @@ public:
     static string getConfigRootDir();
 
     /**
-     * @brief Get the Config Path of jrme
+     * @brief get path of journak book list config file.
      * 
-     * @return string 
      */
-    static string getConfigFilePath();
+    static string getJournalBooksCfgPath();
 
     /**
      * @brief Get the dir for save plugin
@@ -35,6 +36,14 @@ public:
      * @return string 
      */
     static string getPluginDir();
+
+    static string getEditorName();
+
+    static list<string> getConfigNodePluginNames();
+
+    static string getDefaultJournalBookPath();
+    
+    static void setDeafultJournalBookPath(string path);
 
     /**
      * @brief install to init jrme, if need
@@ -49,8 +58,20 @@ public:
      * 
      * @return vector<string> 
      */
-    static vector<string> getJournalIOPluginNames();
+    static list<string> getJournalIOPluginNames();
 
+    /**
+     * @brief Get the Journal Books path from config.
+     * 
+     * @return vector<string> 
+     */
+    static list<string> readJournalBooksCfg();
+
+    /**
+     * @brief Save journal books path to config
+     * 
+     */
+    static bool writeJournalBooksCfg(list<string> allPath);
 };
 
 #endif

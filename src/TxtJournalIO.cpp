@@ -84,7 +84,7 @@ bool TxtJournalIO::open(string path)
     {
         /*maybe file no exist, try too create one*/
         string cmd = string("touch ")+path;
-        JLOGT("touch journal file: %s",cmd.c_str());
+        JLOGT("[T] touch journal file: %s",cmd.c_str());
         int ret = system(cmd.c_str());
         if (ret!=0)
             return false;

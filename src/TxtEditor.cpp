@@ -31,8 +31,7 @@ shared_ptr<Journal> TxtEditor::getJournalFromEditor()
     oTmpFile << mInitStr << endl;
     oTmpFile.close();
 
-    INI::File configFile = INI::File(JrmeConfig::getConfigFilePath());
-    string cmdEditor = configFile.GetSection("base")->GetValue("editor", "vi").AsString();
+    string cmdEditor = JrmeConfig::getEditorName();
     system((cmdEditor + " " + tmpFilePath).c_str());
 
     ifstream iTmpFile;

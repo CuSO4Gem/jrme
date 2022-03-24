@@ -15,7 +15,7 @@ shared_ptr<JournalIOBase> JournalIOFactory::getJournalIO(string journalPath)
     ioVector.push_back(make_shared<TxtJournalIO>());
     JLOGD("[D] load TxtJournal at 0");
     size_t i = 1;
-    vector<string> plugins = JrmeConfig::getJournalIOPluginNames();
+    list<string> plugins = JrmeConfig::getJournalIOPluginNames();
     for (auto &it:plugins)
     {
         shared_ptr<PluginJournalIO> pluginIO = make_shared<PluginJournalIO>();

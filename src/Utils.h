@@ -16,6 +16,7 @@ inline bool isNumChar(const char ch)
     return '0'<=ch && ch<='9';
 }
 
+
 /**
  * @brief remove multiple space from string
  */
@@ -58,6 +59,15 @@ time_t getStampFormConfig(const string &config);
  * @return shared_ptr<Journal> 
  */
 shared_ptr<Journal> strToJournal(const string &inStr);
+
+/**
+ * @brief conver rawPath to a valid path
+ *  remove spaces at begin, conver ~ to home dir
+ * 
+ * @param rawPath 
+ * @return string 
+ */
+string validPath(string rawPath);
 
 /**
  * @brief get path from user, conver ~ to home dir

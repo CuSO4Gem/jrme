@@ -26,7 +26,7 @@ bool PluginJournalIO::loadPlugin(string name)
     mDlHandle = dlopen(path.c_str(), RTLD_NOW);
     if (!mDlHandle)
     {
-        JLOGW("dlopen - %s\n", dlerror());
+        JLOGW("[W] dlopen - %s\n", dlerror());
         return false;
     }
     p_releaseJournal = (releaseJournal_fnc)dlsym(mDlHandle, "releaseJournalStruct");

@@ -22,12 +22,12 @@ bool SfJournalBook::open(string path)
     mJournalIO = JournalIOFactory().getJournalIO(path);
     if (!mJournalIO)
     {
-        JLOGW("Cann't create journalIO");
+        JLOGW("[W] Cann't create journalIO");
         return false;
     }
     if (!mJournalIO->open(path))
     {
-        JLOGW("journal open fail (%s)", path.c_str());
+        JLOGW("[W] journal open fail (%s)", path.c_str());
         return false;
     }
     
@@ -38,7 +38,7 @@ bool SfJournalBook::open(string path)
     {
         listJournal.push_back(journal);
     }
-    JLOGD("Read %ld journals from %s", listJournal.size(), path.c_str());
+    JLOGD("[D] Read %ld journals from %s", listJournal.size(), path.c_str());
     /** +1 for pushback a journal while writeMode
      */
     mJournalVector.reserve(listJournal.size()+1);
@@ -62,7 +62,7 @@ void SfJournalBook::close()
 
 static bool fastSortDataCmp(const fastSortData &d1,const fastSortData &d2)
 {
-    return d1.stamp<d2.stamp;
+    return d1.stamp>d2.stamp;
 }
 
 void SfJournalBook::order()
