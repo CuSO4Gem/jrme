@@ -27,6 +27,18 @@ jrme -T hello world. -C what a nice day.
 jrme -T hello world.
 ```
 
+## 选项
+```
+-T, --title 指定日记的标题
+-A, --at 指定日记的时间，可以是描述性内容，如"now"，"yesterday"等
+-C, --content 日定日记的内容
+-b, --book 将弹出选项让用户选择日记本
+-p, --path 指定日记的路径
+-d, --default_book 弹出选项让用户选择默认日记
+-a, --add_book 添加一个日基本陆军
+-B, --edit_book_list 调用编辑其编辑日记本记录列表
+```
+
 # 配置文件
 配置文件位于:~/.jrme/config.ini  
 目前支持配置：

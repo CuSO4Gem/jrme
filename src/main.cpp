@@ -17,11 +17,11 @@ int main(int argc, char* argv[]) {
     }
     
     cmdline::parser cmd;
-    cmd.add("book", 'b', "select a journal book");
-    cmd.add<string>("path", 'p', "input a path of journal book", false, "");
     cmd.add<string>("title", 'T', "The title of journal", false, "");
     cmd.add<string>("at", 'A', "the time of journal", false, "");
     cmd.add<string>("content", 'C', "The content of journal", false, "");
+    cmd.add("book", 'b', "select a journal book");
+    cmd.add<string>("path", 'p', "input a path of journal book", false, "");
 
     cmd.add("default_book", 'd', "select default journal book");
     cmd.add<string>("add_book", 'a', "add a journal book path list", false, "");
