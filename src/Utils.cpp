@@ -362,23 +362,21 @@ shared_ptr<Journal> strToJournal(const string &inStr)
     return journl;
 }
 
-string getFilePath()
+string validPath(string rawPath)
 {
-    string inputPath;
-    getline(cin, inputPath);
-    if (inputPath.length()==0)
-        return inputPath;
-    while (inputPath[0] == ' ')
+    if (rawPath.length()==0)
+        return rawPath;
+    while (rawPath[0] == ' ')
     {
-        inputPath.erase(0, 1);
+        rawPath.erase(0, 1);
     }
-    if (inputPath.length()==0)
-        return inputPath;
+    if (rawPath.length()==0)
+        return rawPath;
     
     uint32_t count=0;
-    for (size_t i = 0; i < inputPath.length(); i++)
+    for (size_t i = 0; i < rawPath.length(); i++)
     {
-        if (inputPath[i] == '~')
+        if (rawPath[i] == '~')
             count++;
     }
     if (count>1)
@@ -388,8 +386,16 @@ string getFilePath()
         char const* home = getenv("HOME");
         string homeDir = string(home);
         size_t pos;
-        pos = inputPath.find('~');
-        inputPath.replace(pos, 1, homeDir);
+        pos = rawPath.find('~');
+        rawPath.replace(pos, 1, homeDir);
     }
-    return inputPath;
+    return rawPath;
+}
+
+string getFilePath()
+{
+    string inputPath;
+    getline(cin, inputPath);
+    
+    return validPath(inputPath);
 }
