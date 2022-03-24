@@ -50,7 +50,7 @@ TEST(SFJournalBook, total)
     for (size_t i = 1; i < loopCount; i++)
     {
         stampNow = getStampFormConfig(journalBookV.at(i)->getConfig());
-        if (stampBefor>stampNow)
+        if (stampBefor<stampNow)
         {
             inorder = false;
             break;
