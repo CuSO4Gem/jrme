@@ -114,7 +114,7 @@ void journlWriteMode(string bookPath, string timeDescription, string title, stri
     }
     configMaster.setDate(date.stamp());
     // load config node plugin
-    vector<string> pluginNameVector = JrmeConfig::getConfigNodePluginNames();
+    list<string> pluginNameVector = JrmeConfig::getConfigNodePluginNames();
     string pluginName;
     for (auto &it:pluginNameVector)
     {

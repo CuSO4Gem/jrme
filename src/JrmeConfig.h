@@ -1,6 +1,7 @@
 #ifndef JRME_CONFIG_H
 #define JRME_CONFIG_H
 
+#include <list>
 #include <string>
 #include <vector>
 
@@ -14,7 +15,7 @@ private:
     static bool pathNormalize(string &rawPath, string &normalizedPath);
     static string getConfigFilePath();
     static string getInitJournalBookPath();
-    static string journalBooksPathCfg();
+    static string getJournalBooksCfgPath();
 
 public:
     /**
@@ -33,7 +34,7 @@ public:
 
     static string getEditorName();
 
-    static vector<string> getConfigNodePluginNames();
+    static list<string> getConfigNodePluginNames();
 
     static string getDefaultJournalBookPath();
     
@@ -52,20 +53,20 @@ public:
      * 
      * @return vector<string> 
      */
-    static vector<string> getJournalIOPluginNames();
+    static list<string> getJournalIOPluginNames();
 
     /**
      * @brief Get the Journal Books path from config.
      * 
      * @return vector<string> 
      */
-    static vector<string> getJournalBooksPath();
+    static list<string> readJournalBooksCfg();
 
     /**
      * @brief Save journal books path to config
      * 
      */
-    static void saveJournalBooksPath(vector<string> allPath);
+    static bool writeJournalBooksCfg(list<string> allPath);
 };
 
 #endif
