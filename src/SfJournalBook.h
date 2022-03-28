@@ -6,19 +6,23 @@
 #include <memory>
 #include <mutex>
 
-#include "AutoLock.h"
 #include "Journal.h"
 #include "JournalBookBase.h"
 #include "JournalIOBase.h"
 #include "TxtJournalIO.h"
+
+struct fastSortData
+{
+    time_t stamp;
+    size_t order;
+};
 
 class SfJournalBook : public JournalBookBase
 {
 private:
     shared_ptr<JournalIOBase> mJournalIO;
     vector<shared_ptr<Journal>> mJournalVector;
-    mutex mJournalVectorLock;
-    
+    static bool fastSortDataCmp(const fastSortData &d1,const fastSortData &d2);
 
 public:
     SfJournalBook() = default;

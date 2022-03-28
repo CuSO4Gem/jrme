@@ -69,9 +69,10 @@ string Journal::toString()
 
 bool Journal::operator ==(Journal &anotherJournal)
 {
-    if (this->mTitle == anotherJournal.mTitle &&
-        this->mConfig == anotherJournal.mConfig &&
-        this->mContent == anotherJournal.mContent)
+    hash<string> hFunc;
+    size_t h1 = hFunc(this->toString());
+    size_t h2 = hFunc(anotherJournal.toString());
+    if (h1 == h2)
         return true;
     return false;
 }

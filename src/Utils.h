@@ -2,11 +2,10 @@
 #define UTILS_H
 
 #include <memory>
+#include <string>
 
 #include "date.h"
 #include "Journal.h"
-
-#include <string>
 
 using namespace::std;
 using namespace::ec;
@@ -51,6 +50,22 @@ bool setValueToConfig(string &config, const string &key,const string value);
  * @return time_t 
  */
 time_t getStampFormConfig(const string &config);
+
+/**
+ * @brief Get the Level Form Journal Config
+ * 
+ * @param config 
+ * @return int32_t 
+ */
+int32_t getLevelFormConfig(const string &config);
+
+/**
+ * @brief Get the Tags Form Journal Config
+ * 
+ * @param config 
+ * @return vector<string> 
+ */
+vector<string> getTagsFormConfig(const string &config);
 
 /**
  * @brief parse string to journal

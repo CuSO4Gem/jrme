@@ -4,7 +4,7 @@ error content
 # My first journal
 ```
 date=2022-01-01 09:00:00
-tag=first;second;
+tags=first;second;
 level=10
 ```
 hello world!  
@@ -14,7 +14,7 @@ the second line.
 # have space in spliter
 ```
 date=2022-01-01 09:00:00
-tag=first;second;
+tags=first;second;
 level=10
 ```
 hello world!
@@ -23,7 +23,7 @@ hello world!
 # with null line in content
 ```
 date=2022-01-01 09:00:00
-tag=first;second;
+tags=first;second;
 level=10
 
 

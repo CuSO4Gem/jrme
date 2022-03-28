@@ -33,7 +33,7 @@ TEST(DateConfigNode, basic)
 
     date = Date(1970, 1, 1, 9, 0, 0);
     node.setDate(date.stamp());
-    journal->getConfig().append(string("tag=NULL\n"));
+    journal->getConfig().append(string("tags=NULL\n"));
     journal->getConfig().append(node.getKey()+"="+node.getDefaultValue()+"\n");
     journal->getConfig().append(string("level=0\n"));
 
@@ -47,7 +47,7 @@ TEST(ConfigNodeMaster, InnerKeyGen)
 {
     list<string> keyList;
     keyList.push_back(string("date="));
-    keyList.push_back(string("tag="));
+    keyList.push_back(string("tags="));
     keyList.push_back(string("level="));
 
     ConfigNodeMaster nodeMaster;

@@ -1,16 +1,16 @@
 #include <fstream>
 #include <gtest/gtest.h>
 #include <memory>
-#include <stdio.h>
 #include <stdint.h>
-
+#include <stdio.h>
 #include <string>
-
-using namespace std;
 
 #include "Journal.h"
 #include "JournalIOBase.h"
 #include "JournalIOFactory.h"
+
+using namespace std;
+
 
 TEST(markdown, read)
 {

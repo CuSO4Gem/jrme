@@ -57,22 +57,23 @@ bool configGetline(istringstream &configStream, string &key, string &value)
     if(!getline(configStream, lineBuffer))
         return false;
     
-    if (lineBuffer.length() == 0)
+    value = lineBuffer;
+    if (value.length() == 0)
         return true;
     
-    tabToSpace(lineBuffer);
+    tabToSpace(value);
     size_t pos = 0;
-    while (pos<lineBuffer.length())
+    while (pos<value.length())
     {
-        if (lineBuffer[pos]=='=')
+        if (value[pos]=='=')
         {
-            key = lineBuffer.substr(0, pos);
+            key = value.substr(0, pos);
             break;
         }
         pos++;
     }
 
-    lineBuffer.erase(0, min(pos+1, lineBuffer.length()));
+    value.erase(0, min(pos+1, value.length()));
     
     /*remove space front and back*/
     while (key.length()>0 && key[0]==' ')
@@ -84,19 +85,19 @@ bool configGetline(istringstream &configStream, string &key, string &value)
         key.erase(key.length()-1);
     }
 
-    if (lineBuffer.length()==0)
+    if (value.length()==0)
         return true;
     
-    value = lineBuffer;
     /*remove space front and back*/
     while (value.length()>0 && value[0]==' ')
     {
-        value.erase(0);
+        value.erase(0, 1);
     }
     while (value.length()>0 && value[value.length()-1]==' ')
     {
-        value.erase(value.length()-1);
+        value.erase(value.length()-1, 1);
     }
+    
     return true;
 }
 
@@ -269,6 +270,89 @@ time_t getStampFormConfig(const string &config)
     }
     
     return date.stamp();
+}
+
+int32_t getLevelFormConfig(const string &config)
+{
+    string key, value;
+    istringstream configStream = istringstream(config);
+    
+    bool finded = false;
+    while(configGetline(configStream, key, value))
+    {
+        if (key==string("level"))
+        {
+            finded = true;
+            break;
+        }
+    }
+
+    if (!finded || value.length()==0)
+    {
+        return 0;
+    }
+
+    size_t pos;
+    for (pos = 0; pos < value.length(); pos++)
+    {
+        if (isNumChar(value[pos]) || value[pos]=='-')
+            break;
+    }
+    if (pos == value.length())
+        return 0;
+    
+    return atoi(value.c_str()+pos);
+}
+
+vector<string> getTagsFormConfig(const string &config)
+{
+    string key, value;
+    istringstream configStream = istringstream(config);
+    
+    bool finded = false;
+    while(configGetline(configStream, key, value))
+    {
+        if (key==string("tags"))
+        {
+            finded = true;
+            break;
+        }
+    }
+    
+    if (!finded || value.length()==0)
+    {
+        return vector<string>();
+    }
+
+    size_t tagsSize=0;
+    for (size_t i = 0; i < value.length(); i++)
+    {
+        if (value[i] == ';')
+        {
+            tagsSize++;
+        }
+    }
+
+    vector<string> tags = vector<string>();
+    tags.reserve(tagsSize+1);
+    istringstream tagsStream = istringstream(value);
+    string tag;
+    while (getline(tagsStream, tag, ';'))
+    {
+        // remove space at front
+        size_t i=0;
+        while (i<tag.length() && tag[i]==' ')
+        {
+            i++;
+        }
+        if (i==tag.length())
+            continue;
+        else
+            tag.erase(0, i);
+
+        tags.push_back(tag);
+    }
+    return tags;
 }
 
 shared_ptr<Journal> strToJournal(const string &inStr)

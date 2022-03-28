@@ -6,12 +6,6 @@
 #include "SfJournalBook.h"
 #include "Utils.h"
 
-struct fastSortData
-{
-    time_t stamp;
-    size_t order;
-};
-
 void SfJournalBook::setKey(uint8_t key[32])
 {
     ;
@@ -55,12 +49,12 @@ bool SfJournalBook::open(string path)
 
 void SfJournalBook::close()
 {
-    AutoLock aLock = AutoLock(mJournalVectorLock);
+    
     mJournalIO->close();
     mJournalVector.clear();
 }
 
-static bool fastSortDataCmp(const fastSortData &d1,const fastSortData &d2)
+bool SfJournalBook::fastSortDataCmp(const fastSortData &d1,const fastSortData &d2)
 {
     return d1.stamp>d2.stamp;
 }
@@ -68,7 +62,6 @@ static bool fastSortDataCmp(const fastSortData &d1,const fastSortData &d2)
 void SfJournalBook::order()
 {
     //todo : more flexable sort
-    AutoLock aLock = AutoLock(mJournalVectorLock);
     vector<fastSortData> fsdVector = vector<fastSortData>(mJournalVector.size());
     size_t pos = 0;
     for (auto &it:mJournalVector)
@@ -91,7 +84,6 @@ void SfJournalBook::order()
 
 bool SfJournalBook::save()
 {
-    AutoLock aLock = AutoLock(mJournalVectorLock);
     if (!mJournalIO->setWriteMode())
         return false;
 
@@ -107,7 +99,7 @@ bool SfJournalBook::save()
 
 size_t SfJournalBook::size()
 {
-    AutoLock aLock = AutoLock(mJournalVectorLock);
+    
     return mJournalVector.size();
 }
 
@@ -127,7 +119,7 @@ shared_ptr<Journal> SfJournalBook::operator [](size_t pos)
 
 bool SfJournalBook::insert(size_t pos, shared_ptr<Journal> journal)
 {
-    AutoLock aLock = AutoLock(mJournalVectorLock);
+    
     if (pos<0 || pos> mJournalVector.size())
         return false;
     
@@ -137,19 +129,16 @@ bool SfJournalBook::insert(size_t pos, shared_ptr<Journal> journal)
 
 void SfJournalBook::push_front(shared_ptr<Journal> journal)
 {
-    AutoLock aLock = AutoLock(mJournalVectorLock);
     mJournalVector.insert(mJournalVector.begin(), journal);
 }
 
 void SfJournalBook::push_back(shared_ptr<Journal> journal)
 {
-    AutoLock aLock = AutoLock(mJournalVectorLock);
     mJournalVector.push_back(journal);
 }
 
 void SfJournalBook::erase(size_t pos)
 {
-    AutoLock aLock = AutoLock(mJournalVectorLock);
     if (pos<0 || pos>=mJournalVector.size())
     {
         return;
@@ -161,7 +150,6 @@ void SfJournalBook::erase(size_t pos)
 
 bool SfJournalBook::swap(size_t pos1, size_t pos2)
 {
-    AutoLock aLock = AutoLock(mJournalVectorLock);
     if (pos1<0 || pos1>=mJournalVector.size()||
         pos2<0 || pos2>=mJournalVector.size())
         return false;

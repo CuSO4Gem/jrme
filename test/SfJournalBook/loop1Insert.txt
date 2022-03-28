@@ -1,6 +1,6 @@
 My first journal to insert
 #date=2000-11-11 13:13:00
-tag=not;tag;
+tags=not;tag;
 level=8
 #hello world!
 insert journal the second line.

@@ -1,0 +1,54 @@
+==========journal==========
+Only one tag
+==========config==========
+date=2022-01-01 09:00:00
+tags=first;
+level=10
+==========content==========
+first
+###########################
+
+========== journal ==========
+Multiple Tag
+========== config ==========
+date=2022-01-01 09:00:00
+tags=first;second;thirdly;
+level=10
+========== content ==========
+first
+second
+thirdly
+###########################
+
+========== journal ==========
+last tag without ";"
+========== config ==========
+date=2022-01-01 09:00:00
+tags=first;second
+level=10
+========== content ==========
+first
+second
+###########################
+
+========== journal ==========
+tag with space at front
+========== config ==========
+date=2022-01-01 09:00:00
+tags= first;  second;
+level=10
+========== content ==========
+first
+second
+###########################
+
+========== journal ==========
+tag with space
+========== config ==========
+date=2022-01-01 09:00:00
+tags=first tag;second tag;
+level=10
+========== content ==========
+first tag
+second tag
+###########################
