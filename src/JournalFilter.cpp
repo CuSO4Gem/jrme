@@ -191,8 +191,9 @@ void JournalFilter::withTagsFilter(vector<string> tags)
 {
     tryCache(CACHE_TAGES);
     size_t i=0;
-    set<string> tagsSet = set<string>(tagsSet.begin(), tagsSet.end());
-
+    JLOGD("set");
+    set<string> tagsSet = set<string>(tags.begin(), tags.end());
+    
     while (i<mGuidance.size())
     {
         bool find = false;
@@ -204,7 +205,6 @@ void JournalFilter::withTagsFilter(vector<string> tags)
                 break;
             }
         }
-
         if (find)
             i++;
         else

@@ -123,6 +123,56 @@ TEST(Filter, level)
     }
 }
 
+TEST(Filter, tags)
+{
+    shared_ptr<JournalBookBase> bookToFilter = make_shared<SfJournalBook>();
+    ASSERT_TRUE(bookToFilter->open("tagsFilter.txt"));
+    ASSERT_GE(bookToFilter->size(), 2);
+    shared_ptr<JournalBookBase> bookToCmp = make_shared<SfJournalBook>();
+    ASSERT_TRUE(bookToCmp->open("tagsFilterCmp.txt"));
+    ASSERT_GE(bookToCmp->size(), 2);
+
+    JournalFilter filter(bookToFilter);
+    vector<string> filterTags = getTagsFormConfig(bookToFilter->at(0)->getConfig());
+    filter.withTagsFilter(filterTags);
+    vector<size_t> filterOrders = filter.getJournalOrder();
+    ASSERT_EQ(filterOrders.size(), bookToCmp->size());
+    for (size_t i = 0; i < bookToCmp->size(); i++)
+    {
+        ASSERT_TRUE(*bookToFilter->at(filterOrders[i])==*bookToCmp->at(i)) << string("faild while i=")+to_string(i)<<bookToFilter->at(filterOrders[i])->toString() << bookToCmp->at(i)->toString();
+    }
+}
+
+TEST(Filter, tagsCount)
+{
+    shared_ptr<JournalBookBase> book = make_shared<SfJournalBook>();
+    ASSERT_TRUE(book->open("tagsCount.txt"));
+    ASSERT_GE(book->size(), 2);
+    JournalFilter filter(book);
+    string dataStr = book->at(0)->getContent();
+    istringstream dataStrStream = istringstream(dataStr);
+    size_t i=0;
+    string Buffer;
+    string keyStr;
+    size_t number;
+    map<string, size_t> mapCmp = map<string, size_t>();
+    while (getline(dataStrStream, Buffer))
+    {
+        if (i%2)
+        {
+            number = atoi(Buffer.c_str());
+            mapCmp.insert(pair<string, size_t>(keyStr, number));
+        }
+        else
+        {
+            keyStr = Buffer;
+        }
+        i++;
+    }
+    ASSERT_EQ(i, 6) << "can not read enougth data to verfy count";
+    ASSERT_TRUE(mapCmp == filter.tagsCount());
+}
+
 int main(int argc, char* argv[])
 {
     testing::InitGoogleTest(&argc, argv);
