@@ -123,7 +123,7 @@ bool JrmeConfig::installIfNeed()
     INI::File config;
     if (!config.Load(JrmeConfig::getConfigFilePath()))
     {
-        JLOGE("cannot not load ini file!");
+        JLOGE("[E] cannot not load ini file!");
         return false;
     }
 
@@ -152,7 +152,7 @@ string JrmeConfig::getEditorName()
     INI::File configFile;
     if (!configFile.Load(JrmeConfig::getConfigFilePath()))
     {
-        JLOGE("cannot not load ini file!");
+        JLOGE("[E] cannot not load ini file!");
         return string();
     }
         
@@ -164,7 +164,7 @@ list<string> JrmeConfig::getConfigNodePluginNames()
     INI::File configFile;
     if (!configFile.Load(JrmeConfig::getConfigFilePath()))
     {
-        JLOGE("cannot not load ini file!");
+        JLOGE("[E] cannot not load ini file!");
         return list<string>();
     }
 
@@ -213,7 +213,7 @@ list<string> JrmeConfig::getJournalIOPluginNames()
     INI::File configFile;
     if (!configFile.Load(JrmeConfig::getConfigFilePath()))
     {
-        JLOGE("cannot not load ini file!");
+        JLOGE("[E] cannot not load ini file!");
         return list<string> ();
     }
     string plugNames = configFile.GetSection("plugin")->GetValue("journal format").AsString();

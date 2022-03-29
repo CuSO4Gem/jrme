@@ -1,6 +1,7 @@
 #include <algorithm> 
 #include <set>
 
+#include "debug_print.h"
 #include "JournalFilter.h"
 #include "Utils.h"
 
@@ -10,7 +11,7 @@
 
 JournalFilter::JournalFilter(shared_ptr<JournalBookBase> book)
 {
-    if (!mBook)
+    if (!book)
         return;
     mBook = book;
     mCacheFlag = 0;
@@ -28,7 +29,6 @@ void JournalFilter::tryCache(uint32_t cacheFlag)
 {
     if (!mBook)
         return;
-    
     cacheFlag &= ~mCacheFlag;
     if (cacheFlag&CACHE_STAMP)
     {
@@ -37,6 +37,7 @@ void JournalFilter::tryCache(uint32_t cacheFlag)
             shared_ptr<Journal> journal = mBook->at(it.order);
             it.stamp = getStampFormConfig(journal->getConfig());
         }
+        mCacheFlag |= CACHE_STAMP;
     }
 
     if (cacheFlag&CACHE_LEVEL)
@@ -46,6 +47,7 @@ void JournalFilter::tryCache(uint32_t cacheFlag)
             shared_ptr<Journal> journal = mBook->at(it.order);
             it.level = getLevelFormConfig(journal->getConfig());
         }
+        mCacheFlag |= CACHE_LEVEL;
     }
 
     if (cacheFlag&CACHE_TAGES)
@@ -55,6 +57,7 @@ void JournalFilter::tryCache(uint32_t cacheFlag)
             shared_ptr<Journal> journal = mBook->at(it.order);
             it.tags = getTagsFormConfig(journal->getConfig());
         }
+        mCacheFlag |= CACHE_TAGES;
     }
 }
 
@@ -139,7 +142,9 @@ void JournalFilter::stampFilter(time_t stamp, bool uperrLimit)
         while (i<mGuidance.size())
         {
             if (mGuidance[i].stamp>stamp)
-                mGuidance.erase(mGuidance.begin()+1);
+                mGuidance.erase(mGuidance.begin()+i);
+            else
+                i++;
         }
     }
     else
@@ -148,7 +153,9 @@ void JournalFilter::stampFilter(time_t stamp, bool uperrLimit)
         while (i<mGuidance.size())
         {
             if (mGuidance[i].stamp<stamp)
-                mGuidance.erase(mGuidance.begin()+1);
+                mGuidance.erase(mGuidance.begin()+i);
+            else
+                i++;
         }
     }
 }
@@ -162,7 +169,9 @@ void JournalFilter::levelFilter(int32_t level, bool uperrLimit)
         while (i<mGuidance.size())
         {
             if (mGuidance[i].level>level)
-                mGuidance.erase(mGuidance.begin()+1);
+                mGuidance.erase(mGuidance.begin()+i);
+            else
+                i++;
         }
     }
     else
@@ -171,7 +180,9 @@ void JournalFilter::levelFilter(int32_t level, bool uperrLimit)
         while (i<mGuidance.size())
         {
             if (mGuidance[i].level<level)
-                mGuidance.erase(mGuidance.begin()+1);
+                mGuidance.erase(mGuidance.begin()+i);
+            else
+                i++;
         }
     }
 }

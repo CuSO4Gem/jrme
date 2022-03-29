@@ -8,6 +8,7 @@
 #define _DEBUG_PRINT_H_
 
 #include <ansi_colors.h>
+#include <string.h>
 
 /////////////////////////////////////////
 //// Configurations
