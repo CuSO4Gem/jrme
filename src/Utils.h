@@ -3,9 +3,11 @@
 
 #include <memory>
 #include <string>
+#include <vector>
 
 #include "date.h"
 #include "Journal.h"
+#include "JournalBookBase.h"
 
 using namespace::std;
 using namespace::ec;
@@ -90,4 +92,12 @@ string validPath(string rawPath);
  * @return string 
  */
 string getFilePath();
+
+/**
+ * @brief select journal book by path
+ * 
+ * @param path 
+ * @return shared_ptr<JournalBookBase> 
+ */
+shared_ptr<JournalBookBase> bookFactory(string path);
 #endif

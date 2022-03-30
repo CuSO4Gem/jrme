@@ -5,9 +5,13 @@ using namespace std;
 
 #include "cmdline.h"
 #include "debug_print.h"
+#include "EnTimeParser.h"
+#include "JournalFilter.h"
 #include "JrmeConfig.h"
+#include "SearchMod.h"
 #include "Utils.h"
 #include "WriteMode.h"
+
 
 int main(int argc, char* argv[]) {
     if (!JrmeConfig::installIfNeed())
@@ -22,6 +26,14 @@ int main(int argc, char* argv[]) {
     cmd.add<string>("content", 'C', "The content of journal", false, "");
     cmd.add("book", 'b', "select a journal book");
     cmd.add<string>("path", 'p', "input a path of journal book", false, "");
+
+    cmd.add<size_t>("number", 'n', "the nomber of journal for show", false);
+    cmd.add<string>("from", 'f', "Search time starting point", false);
+    cmd.add<string>("to", 't', "Search time ending point", false);
+    cmd.add<string>("on", 'o', "Search time on .....", false);
+    cmd.add<string>("tags", 'g', "show journal with tags. for example \"first;second;\"");
+    cmd.add("all_tags", 'G', "show all tags");
+    cmd.add<string>("level", 'l', "show level with in level. for example \"-1~10\"");
 
     cmd.add("default_book", 'd', "select default journal book");
     cmd.add<string>("add_book", 'a', "add a journal book path list", false, "");
@@ -150,14 +162,20 @@ int main(int argc, char* argv[]) {
     }
     else
         journalBookPath = JrmeConfig::getDefaultJournalBookPath();
-        
+    
+    /*write journal*/
     if (cmd.exist("title") || cmd.exist("at") || cmd.exist("content"))
     {
         journlWriteMode(journalBookPath, cmd.get<string>("at"), cmd.get<string>("title"), cmd.get<string>("content"));
         return 0;
     }
 
-
-    journlWriteMode(journalBookPath, string(""), string(""), string(""));
+    if (cmd.exist("all_tags") || cmd.exist("tags")||
+        cmd.exist("level")    || cmd.exist("on")  ||
+        cmd.exist("from")     || cmd.exist("to")  ||
+        cmd.exist("number"))
+        journalSearchMod(cmd, journalBookPath);
+    else
+        journlWriteMode(journalBookPath, string(""), string(""), string(""));
     return 0;
 }

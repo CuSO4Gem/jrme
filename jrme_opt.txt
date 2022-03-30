@@ -3,12 +3,13 @@
 -A --at 日记的时间
 -T --title 日记的标题
 -C --content 日记的内容
--n 最近n篇幅
+
+-n --number 最近n篇幅
 -f --from 搜索的起始时间
 -t --to 搜索的结束时间
 -o --on 搜索的时间
--g --tag 制定tag搜索
--G --tags 显示所有tag
+-g --tags 制定tag搜索
+-G --all_tags 显示所有tag
 -l --level 指定level搜索
 
 -d --default_book select default journal book

@@ -2,8 +2,11 @@
 #include <list>
 #include <regex>
 #include <sstream>
+#include <sys/stat.h>
+#include <unistd.h>
 
 #include "debug_print.h"
+#include "SfJournalBook.h"
 #include "Utils.h"
 
 bool seekToNumChar(size_t *pos, const string &inStr)
@@ -477,4 +480,16 @@ string getFilePath()
     getline(cin, inputPath);
     
     return validPath(inputPath);
+}
+
+shared_ptr<JournalBookBase> bookFactory(string path)
+{
+    struct stat sBuf;
+    stat(path.c_str(), &sBuf);
+    if (S_ISDIR(sBuf.st_mode))
+    {
+        return nullptr;
+    }
+    else
+        return make_shared<SfJournalBook>();
 }

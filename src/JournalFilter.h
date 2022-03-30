@@ -48,7 +48,7 @@ public:
 
     void stampFilter(time_t stamp, bool uperrLimit);
     void levelFilter(int32_t level, bool uperrLimit);
-    void withTagsFilter(vector<string> tags);
+    void withTagsFilter(const vector<string> &tags);
 
     map<string, size_t> tagsCount();
 };

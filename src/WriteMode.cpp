@@ -33,16 +33,10 @@ static string sBookPath;
 
 void *openJournalBook(void* args)
 {
-    struct stat sBuf;
-    stat(sBookPath.c_str(), &sBuf);
-    if (S_ISDIR(sBuf.st_mode))
-    {
-        //todo : multifile journal book
-        ;
-    }
-    else
-        sJournalBook = make_shared<SfJournalBook>();
-
+    sJournalBook = bookFactory(sBookPath);
+    if (!sJournalBook)
+        return NULL;
+        
     if(!sJournalBook->open(sBookPath))
     {
         JLOGE("[E] connot not open journal book %s", sBookPath.c_str());
@@ -105,12 +99,20 @@ void journlWriteMode(string bookPath, string timeDescription, string title, stri
     {
         EnTimeParser parser;
         timeParserRet timeRet = parser.parse(timeDescription);
-        date.setYear(timeRet.year);
-        date.setMonth(timeRet.month);
-        date.setDay(timeRet.day);
-        date.setHour(timeRet.hour);
-        date.setMinute(timeRet.minute);
-        date.setSecond(timeRet.second);
+        if (timeRet.estimation<TIME_PARSE_LITTLE_SUCCESS)
+        {
+            JLOGE("EnTimeParser faild");
+            date = Time().toDate();
+        }
+        else
+        {
+            date.setYear(timeRet.year);
+            date.setMonth(timeRet.month);
+            date.setDay(timeRet.day);
+            date.setHour(timeRet.hour);
+            date.setMinute(timeRet.minute);
+            date.setSecond(timeRet.second);
+        }
     }
     configMaster.setDate(date.stamp());
     // load config node plugin

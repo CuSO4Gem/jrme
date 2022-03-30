@@ -187,7 +187,7 @@ void JournalFilter::levelFilter(int32_t level, bool uperrLimit)
     }
 }
 
-void JournalFilter::withTagsFilter(vector<string> tags)
+void JournalFilter::withTagsFilter(const vector<string> &tags)
 {
     tryCache(CACHE_TAGES);
     size_t i=0;
