@@ -191,7 +191,6 @@ void JournalFilter::withTagsFilter(const vector<string> &tags)
 {
     tryCache(CACHE_TAGES);
     size_t i=0;
-    JLOGD("set");
     set<string> tagsSet = set<string>(tags.begin(), tags.end());
     
     while (i<mGuidance.size())

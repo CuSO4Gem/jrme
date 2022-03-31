@@ -31,9 +31,9 @@ int main(int argc, char* argv[]) {
     cmd.add<string>("from", 'f', "Search time starting point", false);
     cmd.add<string>("to", 't', "Search time ending point", false);
     cmd.add<string>("on", 'o', "Search time on .....", false);
-    cmd.add<string>("tags", 'g', "show journal with tags. for example \"first;second;\"");
+    cmd.add<string>("tags", 'g', "show journal with tags. for example \"first;second;\"", false);
     cmd.add("all_tags", 'G', "show all tags");
-    cmd.add<string>("level", 'l', "show level with in level. for example \"-1~10\"");
+    cmd.add<string>("level", 'l', "show level with in level. for example \"-1~10\"", false);
 
     cmd.add("default_book", 'd', "select default journal book");
     cmd.add<string>("add_book", 'a', "add a journal book path list", false, "");

@@ -39,7 +39,7 @@ Date dataEnd(timeParserRet timeRet)
     date.setHour(timeRet.flag&HOUR_FLAG ? timeRet.hour : 23);
     date.setMinute(timeRet.flag&MINUTE_FLAG ? timeRet.minute : 59);
     date.setSecond(timeRet.flag&SECOND_FLAG ? timeRet.second : 59);
-    
+
     return date;
 }
 
@@ -57,17 +57,17 @@ int journalSearchMod(cmdline::parser &cmd, string bookPath)
     {
         map<string, size_t> allTags = filter.tagsCount();
         size_t firstLen=0;
+        JLOGT("Search all_tags, get %ld tags", allTags.size());
         for (auto &it:allTags)
         {
             if (firstLen<it.first.length())
                 firstLen = it.first.length();
         }
-        firstLen += 4;
 
         for (auto &it:allTags)
         {
             cout << setw(firstLen) << it.first;
-            printf("%ld\n", it.second);
+            printf("\t%ld\n", it.second);
         }
         return 0;
     }
@@ -83,26 +83,29 @@ int journalSearchMod(cmdline::parser &cmd, string bookPath)
         {
             if (inputNumber==0)
                 min = atoi(buffer.c_str());
-            if (inputNumber==1)
+            else if (inputNumber==1)
                 max = atoi(buffer.c_str());
             else
                 JLOGW("too many input in --level"); 
             inputNumber++;
         }
-        if (min>max)
+        /*when input 2 numbers, ensure min<max*/
+        if (inputNumber>=2 && min>max)
         {
             int32_t t = min;
             min = max;
             max = t;
         }
-
+        
         if (inputNumber==1)
         {
+            JLOGT("Search level equal %d", min);
             filter.levelFilter(min, false);
             filter.levelFilter(min, true);
         }
         else if (inputNumber==2)
         {
+            JLOGT("Search level %d to %d", min, max);
             filter.levelFilter(min, false);
             filter.levelFilter(max, true);
         }
@@ -126,9 +129,10 @@ int journalSearchMod(cmdline::parser &cmd, string bookPath)
         
         Date date = dataBegin(timeRet);
         filter.stampFilter(date.stamp(), false);
+        JLOGT("Search on, from %s", date.toString().c_str());
         date = dataEnd(timeRet);
         filter.stampFilter(date.stamp(), true);
-        filter.sortByStamp(); 
+        JLOGT("Search on, to %s", date.toString().c_str());
     }
 
     if ((cmd.exist("from") || cmd.exist("to")) && !cmd.exist("on"))
@@ -145,13 +149,8 @@ int journalSearchMod(cmdline::parser &cmd, string bookPath)
             }
             EnTimeParser parser;
             timeParserRet timeRet = parser.parse(value);
-            Date date;
-            date.setYear(timeRet.year);
-            date.setMonth(timeRet.month);
-            date.setDay(timeRet.day);
-            date.setHour(timeRet.hour);
-            date.setMinute(timeRet.minute);
-            date.setSecond(timeRet.second);
+            Date date = dataBegin(timeRet);
+            JLOGT("Search from the date:%s", date.toString().c_str());
             filter.stampFilter(date.stamp(), false);
         }
         if (cmd.exist("to"))
@@ -164,13 +163,8 @@ int journalSearchMod(cmdline::parser &cmd, string bookPath)
             }
             EnTimeParser parser;
             timeParserRet timeRet = parser.parse(value);
-            Date date;
-            date.setYear(timeRet.year);
-            date.setMonth(timeRet.month);
-            date.setDay(timeRet.day);
-            date.setHour(timeRet.hour);
-            date.setMinute(timeRet.minute);
-            date.setSecond(timeRet.second);
+            Date date = dataEnd(timeRet);
+            JLOGT("Search to the date:%s", date.toString().c_str());
             filter.stampFilter(date.stamp(), true);
         }
         filter.sortByStamp(acsSort);   
@@ -179,7 +173,7 @@ int journalSearchMod(cmdline::parser &cmd, string bookPath)
     if (cmd.exist("tags"))
     {
         string tags = cmd.get<string>("tags");
-        if (tags.length() == 9)
+        if (tags.length() == 0)
         {
             printf("value of --tags error");
             return -1;
