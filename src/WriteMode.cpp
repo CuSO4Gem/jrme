@@ -50,7 +50,7 @@ void *openJournalBook(void* args)
     return NULL;
 }
 
-void journlWriteMode(string bookPath, string timeDescription, string title, string content)
+int journlWriteMode(string bookPath, string timeDescription, string title, string content)
 {
     sBookPath = bookPath;
 #ifdef PTHREAD_OPEN
@@ -76,7 +76,7 @@ void journlWriteMode(string bookPath, string timeDescription, string title, stri
             if (!sJournalBook)
             {
                 printf("connot not open journal book %s", bookPath.c_str());
-                return;
+                return -1;
             }
         }
     }
@@ -156,7 +156,7 @@ void journlWriteMode(string bookPath, string timeDescription, string title, stri
         if (!journal)
         {
             JLOGE("[E] The input journal format error!!\n");
-            return ;
+            return -1;
         }
     }
     void *tRet;
@@ -202,11 +202,13 @@ void journlWriteMode(string bookPath, string timeDescription, string title, stri
                 break;
             }
         }
-        return;
+        return 0;
     }
 #endif
     sJournalBook->push_back(journal);
     sJournalBook->order();
     sJournalBook->save();
     JLOGD("[D] write a journal to %s", bookPath.c_str());
+    
+    return 0;
 }

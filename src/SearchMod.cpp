@@ -6,9 +6,12 @@
 #include "EnTimeParser.h"
 #include "JournalFilter.h"
 #include "SearchMod.h"
+#include "TxtEditor.h"
 #include "Utils.h"
 
 using namespace ec;
+
+#define WARNING_PERCENT 20
 
 Date dataBegin(timeParserRet timeRet)
 {
@@ -43,6 +46,20 @@ Date dataEnd(timeParserRet timeRet)
     return date;
 }
 
+void editJournal(shared_ptr<JournalBookBase> book, size_t order)
+{
+    if (order<0 || order>book->size())
+    {
+        JLOGE("[E] edit error book size is %d, order is %d", book->size(), order);
+        return;
+    }
+    TxtEditor editor = TxtEditor();
+    editor.setInitStr(book->at(order)->toString());
+    shared_ptr<Journal> journal = editor.getJournalFromEditor();
+    book->erase(order);
+    book->insert(order, journal);
+}
+
 int journalSearchMod(cmdline::parser &cmd, string bookPath)
 {
     shared_ptr<JournalBookBase> book = bookFactory(bookPath);
@@ -57,7 +74,7 @@ int journalSearchMod(cmdline::parser &cmd, string bookPath)
     {
         map<string, size_t> allTags = filter.tagsCount();
         size_t firstLen=0;
-        JLOGT("Search all_tags, get %ld tags", allTags.size());
+        JLOGT("[T] Search all_tags, get %ld tags", allTags.size());
         for (auto &it:allTags)
         {
             if (firstLen<it.first.length())
@@ -86,7 +103,7 @@ int journalSearchMod(cmdline::parser &cmd, string bookPath)
             else if (inputNumber==1)
                 max = atoi(buffer.c_str());
             else
-                JLOGW("too many input in --level"); 
+                JLOGW("[W] too many input in --level"); 
             inputNumber++;
         }
         /*when input 2 numbers, ensure min<max*/
@@ -99,13 +116,13 @@ int journalSearchMod(cmdline::parser &cmd, string bookPath)
         
         if (inputNumber==1)
         {
-            JLOGT("Search level equal %d", min);
+            JLOGT("[T] Search level equal %d", min);
             filter.levelFilter(min, false);
             filter.levelFilter(min, true);
         }
         else if (inputNumber==2)
         {
-            JLOGT("Search level %d to %d", min, max);
+            JLOGT("[T] Search level %d to %d", min, max);
             filter.levelFilter(min, false);
             filter.levelFilter(max, true);
         }
@@ -123,16 +140,16 @@ int journalSearchMod(cmdline::parser &cmd, string bookPath)
         timeParserRet timeRet = parser.parse(value);
         if (timeRet.estimation<TIME_PARSE_LITTLE_SUCCESS)
         {
-            JLOGE("EnTimeParser faild");
+            JLOGE("[E] EnTimeParser faild");
             printf("cannot parser \"%s\"", value.c_str());
         }
         
         Date date = dataBegin(timeRet);
         filter.stampFilter(date.stamp(), false);
-        JLOGT("Search on, from %s", date.toString().c_str());
+        JLOGT("[T] Search on, from %s", date.toString().c_str());
         date = dataEnd(timeRet);
         filter.stampFilter(date.stamp(), true);
-        JLOGT("Search on, to %s", date.toString().c_str());
+        JLOGT("[T] Search on, to %s", date.toString().c_str());
     }
 
     if ((cmd.exist("from") || cmd.exist("to")) && !cmd.exist("on"))
@@ -150,7 +167,7 @@ int journalSearchMod(cmdline::parser &cmd, string bookPath)
             EnTimeParser parser;
             timeParserRet timeRet = parser.parse(value);
             Date date = dataBegin(timeRet);
-            JLOGT("Search from the date:%s", date.toString().c_str());
+            JLOGT("[T] Search from the date:%s", date.toString().c_str());
             filter.stampFilter(date.stamp(), false);
         }
         if (cmd.exist("to"))
@@ -164,7 +181,7 @@ int journalSearchMod(cmdline::parser &cmd, string bookPath)
             EnTimeParser parser;
             timeParserRet timeRet = parser.parse(value);
             Date date = dataEnd(timeRet);
-            JLOGT("Search to the date:%s", date.toString().c_str());
+            JLOGT("[T] Search to the date:%s", date.toString().c_str());
             filter.stampFilter(date.stamp(), true);
         }
         filter.sortByStamp(acsSort);   
@@ -197,8 +214,58 @@ int journalSearchMod(cmdline::parser &cmd, string bookPath)
     else if (cmd.exist("level"))
         filter.sortByLevel();
 
-    /*************print*************/
     vector<size_t> orderVector = filter.getJournalOrder();
+    if (cmd.exist("number"))
+    {
+        size_t number = cmd.get<size_t>("number");
+        while (number>=0 && orderVector.size()>number)
+        {
+            orderVector.pop_back();
+        }
+    }
+
+    if (cmd.exist("edit"))
+    {
+        if (orderVector.size()==0)
+            return 0;
+        if (orderVector.size()==1)
+        {
+            editJournal(book, orderVector[0]);
+            book->save();
+            return 0;
+        }
+        else if (orderVector.size()>1)
+        {
+            printf("find %ld journal, are you sure to editor them one by one?(Y/N)", orderVector.size());
+            string gotAnswer;
+            bool sure = true;
+            getline(cin, gotAnswer);
+            if (!(gotAnswer[0] == 'Y' || gotAnswer[0] == 'y'))
+                sure = false;
+            
+            /*editor one journal*/
+            if (!sure)
+            {
+                editJournal(book, orderVector[0]);
+                book->save();
+                return 0;
+            }
+            
+            /*editor journal one by one*/
+            for (auto &it:orderVector)
+            {
+                editJournal(book, it);
+            }
+            book->save();
+            return 0;
+        }
+        else
+        {
+            JLOGE("[E] some thing error in filter");
+            return -1;
+        }
+    }
+    /*************print*************/
     for (auto &it:orderVector)
     {
         printf("%s\n",book->at(it)->toString().c_str());

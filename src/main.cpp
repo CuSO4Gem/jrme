@@ -39,6 +39,8 @@ int main(int argc, char* argv[]) {
     cmd.add<string>("add_book", 'a', "add a journal book path list", false, "");
     cmd.add("edit_book_list", 'B', "edit journal book path list");
 
+    cmd.add("edit", 'E', "edit journal");
+
     cmd.parse_check(argc, argv);
 
     /*Select a journal book as default*/
@@ -164,18 +166,22 @@ int main(int argc, char* argv[]) {
         journalBookPath = JrmeConfig::getDefaultJournalBookPath();
     
     /*write journal*/
+    int ret;
     if (cmd.exist("title") || cmd.exist("at") || cmd.exist("content"))
     {
-        journlWriteMode(journalBookPath, cmd.get<string>("at"), cmd.get<string>("title"), cmd.get<string>("content"));
+        ret = journlWriteMode(journalBookPath, cmd.get<string>("at"), cmd.get<string>("title"), cmd.get<string>("content"));
         return 0;
     }
 
+    
     if (cmd.exist("all_tags") || cmd.exist("tags")||
         cmd.exist("level")    || cmd.exist("on")  ||
         cmd.exist("from")     || cmd.exist("to")  ||
         cmd.exist("number"))
-        journalSearchMod(cmd, journalBookPath);
+        ret = journalSearchMod(cmd, journalBookPath);
     else
-        journlWriteMode(journalBookPath, string(""), string(""), string(""));
-    return 0;
+        ret = journlWriteMode(journalBookPath, string(""), string(""), string(""));
+    
+
+    return ret;
 }

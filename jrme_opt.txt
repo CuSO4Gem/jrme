@@ -16,6 +16,5 @@
 -a --add_book add a journal book path to config
 -B --edit_book  
 
--F --file load from file
--E --editor 编辑指定的日记
+-E --edit   编辑指定的日记
 -D --delete 删除指定的日记
