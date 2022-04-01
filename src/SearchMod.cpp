@@ -11,7 +11,7 @@
 
 using namespace ec;
 
-#define WARNING_PERCENT 20
+#define WARNING_PERCENTAGE (20)
 
 Date dataBegin(timeParserRet timeRet)
 {
@@ -224,6 +224,7 @@ int journalSearchMod(cmdline::parser &cmd, string bookPath)
         }
     }
 
+    /*************editor*************/
     if (cmd.exist("edit"))
     {
         if (orderVector.size()==0)
@@ -236,9 +237,9 @@ int journalSearchMod(cmdline::parser &cmd, string bookPath)
         }
         else if (orderVector.size()>1)
         {
-            printf("find %ld journal, are you sure to editor them one by one?(Y/N)", orderVector.size());
-            string gotAnswer;
             bool sure = true;
+            string gotAnswer;
+            printf("find %ld journal, are you sure to editor them one by one?(Y/N)", orderVector.size());
             getline(cin, gotAnswer);
             if (!(gotAnswer[0] == 'Y' || gotAnswer[0] == 'y'))
                 sure = false;
@@ -265,10 +266,66 @@ int journalSearchMod(cmdline::parser &cmd, string bookPath)
             return -1;
         }
     }
-    /*************print*************/
-    for (auto &it:orderVector)
+
+    /*************print/delete*************/
+    if ((cmd.exist("delete") || cmd.exist("force_delete")) && !cmd.exist("edit"))
     {
-        printf("%s\n",book->at(it)->toString().c_str());
+        JLOGT("delete %ld journal", orderVector.size());
+        if (orderVector.size()==0)
+        {
+            printf("nothing to delete\n");
+            return 0;
+        }
+        size_t percent = 100*orderVector.size()/book->size();
+        if (percent>WARNING_PERCENTAGE)
+        {
+            JLOGW("delete joural for %ld%%", percent);
+        }
+        
+        bool sure = true;
+        if (cmd.exist("force_delete"))
+            sure = true;
+        else
+        {
+            string gotAnswer;
+            if (orderVector.size()==0)
+                printf("Are you sure to delete a journals?(Y/N)");
+            else
+                printf("Are you sure to delete %ld journals?(Y/N)", orderVector.size());
+            getline(cin, gotAnswer);
+            if (!(gotAnswer[0] == 'Y' || gotAnswer[0] == 'y'))
+                sure = false;
+        }
+        if (!sure)
+            return 0;
+            
+        //resort to delete
+        filter.sortByOrder();
+        orderVector = filter.getJournalOrder();
+        size_t i=0;
+        while (i<orderVector.size())
+        {
+            orderVector[i] -= i;
+            if (orderVector[i]<0)
+            {
+                JLOGE("[E] something error while delete");
+                printf("nothing to delete for someting error\n");
+                return -1;
+            }
+            i++;
+        }
+        for (auto &it:orderVector)
+        {
+            book->erase(it);
+        }
+        book->save();
+    }
+    else
+    {
+        for (auto &it:orderVector)
+        {
+            printf("%s\n",book->at(it)->toString().c_str());
+        }
     }
 
     return 0;

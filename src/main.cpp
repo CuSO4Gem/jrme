@@ -40,6 +40,8 @@ int main(int argc, char* argv[]) {
     cmd.add("edit_book_list", 'B', "edit journal book path list");
 
     cmd.add("edit", 'E', "edit journal");
+    cmd.add("delete", 'D', "delate journal. If input -D true, jrme will delete journal without asking.");
+    cmd.add("force_delete", '\0', "force delate journal. If input -D true, jrme will delete journal without asking.");
 
     cmd.parse_check(argc, argv);
 
