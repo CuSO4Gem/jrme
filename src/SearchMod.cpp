@@ -138,10 +138,11 @@ int journalSearchMod(cmdline::parser &cmd, string bookPath)
         }
         EnTimeParser parser;
         timeParserRet timeRet = parser.parse(value);
-        if (timeRet.estimation<TIME_PARSE_LITTLE_SUCCESS)
+        if (timeRet.estimation<TIME_PARSE_LITTLE_SUCCESS || timeRet.flag==0)
         {
             JLOGE("[E] EnTimeParser faild");
             printf("cannot parser \"%s\"", value.c_str());
+            return -1;
         }
         
         Date date = dataBegin(timeRet);
@@ -154,10 +155,8 @@ int journalSearchMod(cmdline::parser &cmd, string bookPath)
 
     if ((cmd.exist("from") || cmd.exist("to")) && !cmd.exist("on"))
     {
-        bool acsSort = false;
         if (cmd.exist("from"))
         {
-            acsSort = true;
             string value = cmd.get<string>("from");
             if (value.length()==0)
             {
@@ -166,6 +165,12 @@ int journalSearchMod(cmdline::parser &cmd, string bookPath)
             }
             EnTimeParser parser;
             timeParserRet timeRet = parser.parse(value);
+            if (timeRet.estimation<TIME_PARSE_LITTLE_SUCCESS || timeRet.flag==0)
+            {
+                JLOGE("[E] EnTimeParser faild");
+                printf("cannot parser \"%s\"", value.c_str());
+                return -1;
+            }
             Date date = dataBegin(timeRet);
             JLOGT("[T] Search from the date:%s", date.toString().c_str());
             filter.stampFilter(date.stamp(), false);
@@ -180,11 +185,16 @@ int journalSearchMod(cmdline::parser &cmd, string bookPath)
             }
             EnTimeParser parser;
             timeParserRet timeRet = parser.parse(value);
+            if (timeRet.estimation<TIME_PARSE_LITTLE_SUCCESS || timeRet.flag==0)
+            {
+                JLOGE("[E] EnTimeParser faild");
+                printf("cannot parser \"%s\"", value.c_str());
+                return -1;
+            }
             Date date = dataEnd(timeRet);
             JLOGT("[T] Search to the date:%s", date.toString().c_str());
             filter.stampFilter(date.stamp(), true);
         }
-        filter.sortByStamp(acsSort);   
     }
 
     if (cmd.exist("tags"))
