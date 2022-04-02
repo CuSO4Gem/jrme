@@ -35,10 +35,75 @@ jrme -T hello world.
 -C, --content 日定日记的内容
 -b, --book 将弹出选项让用户选择日记本
 -p, --path 指定日记的路径
+
+-n, --number 制定n篇日记显示。配合--edit可以编辑日记或者配合--delete可以删除日记
+-f, --from 指定搜索日记的起始时间
+-t, --to 指定搜索日记的终止时间
+-o, --on 指定搜索日记的日记
+-g, --tags 指定tag搜索日记，一次可以输入多个tags，用";"分割
+-l, --level 指定level搜索日记，可以用"~"表示level区间
+-G, --all_tags 显示所有的tags以及数量
+
 -d, --default_book 弹出选项让用户选择默认日记
 -a, --add_book 添加一个日基本陆军
 -B, --edit_book_list 调用编辑其编辑日记本记录列表
+
+-E, --edit 编辑所选日记
+-D, --delete 删除所选日记
+--force_delete 删除所选日记并且不询问
 ```
+
+# 显示/搜索日记
+-n, --number 搜索n篇日记。如搜索最近10篇：
+```
+jrme -n 10
+```
+-f, --from 指定搜索日记的起始时间。如：
+```
+jrme -f "last year"
+jrme -f "2018.10"
+jrme -f "last week"
+```
+-t, --to 指定搜索日记的终止时间。如：
+```
+jrme -f "2018.10" -t "2020-1-2"
+jrme -f "last" -t "yesterday"
+```
+-o, --on 指定搜索日记的日记。如：
+```
+jrme -on "today"
+jrme -on "last month"
+```
+-g, --tags 指定tag搜索日记，一次可以输入多个tags，用";"分割
+```
+jrme -g "tag"
+jrme -g "tag1;tag2;"
+```
+-l, --level 指定level搜索日记，可以用"~"表示level区间。该选项默认检索日记config node中的"level"关键字，如没有填写，则自动认为是0。用法示例：
+```
+jrme -l "2"
+jrme -l "-12~13"
+```
+**以上选项大多可以联用，例如：**
+```
+jrme -f "last year" -t "yesterday" -n 5
+jrme -o "today" -n 3
+jrme -f "2011-1-10" -t "2022-3-1" -l "1~5" -t "jrme;jrnl;" -n 33
+```
+-G, --all_tags 显示所有的tags以及数量。注意：*显示的是tags的数量，而不是拥有该tag的日记的数量*
+
+# 修改/删除日记
+在搜索日记的功能基础上添加-E或者--edit编辑所选日记，如:
+```
+jrme -on "today" -E
+jrme -f "last year" -t "yesterday" -n 5 -E
+```
+
+搜索日记的功能基础上添加-D或者--delete删除所选日记，如:
+```
+jrme -f "2014" -t "2018" -g "university;school" -D
+```
+--force_delete的功能与--delete几乎相同，所不同的是，删除时不会询问。
 
 # 配置文件
 配置文件位于:~/.jrme/config.ini  
