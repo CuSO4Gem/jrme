@@ -13,7 +13,7 @@ STATIC:=
 CFLAGS:= -I./src -I./include -I./lib -I./plugin/timeparser/include -Llib -lc -lstdc++ -ldl -lpthread
 
 #version
-GIT_TAG:=$(shell git describe --tags)
+GIT_TAG:=$(shell git branch --show-current):$(shell git describe --tags)
 CFLAGS+= -DGIT_TAG_VERSION=\"$(GIT_TAG)\"
 
 #传参决定是否需要调试，如果DEBUG=exclusive，则调试的时候会删除release版本
