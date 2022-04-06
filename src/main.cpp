@@ -27,7 +27,6 @@ using namespace std;
 #include "Utils.h"
 #include "WriteMode.h"
 
-
 int main(int argc, char* argv[]) {
     if (!JrmeConfig::installIfNeed())
     {
@@ -58,8 +57,20 @@ int main(int argc, char* argv[]) {
     cmd.add("delete", 'D', "delate journal. If input -D true, jrme will delete journal without asking.");
     cmd.add("force_delete", '\0', "force delate journal. If input -D true, jrme will delete journal without asking.");
 
+    cmd.add("version", '\0');
+
     cmd.parse_check(argc, argv);
 
+    /* print version */
+    if (cmd.exist("version"))
+    {
+#ifndef GIT_TAG_VERSION
+        printf("jrme version 0.9.0.\ndebug level %d\n", DBG_PRINT_ENABLED);
+#else
+        printf("jrme version %s (get from git)\ndebug level %d\n", GIT_TAG_VERSION, DBG_PRINT_ENABLED);
+#endif
+        return 0;
+    }
     /*Select a journal book as default*/
     if (cmd.exist("default_book"))
     {
