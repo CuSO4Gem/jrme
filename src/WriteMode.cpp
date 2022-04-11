@@ -119,7 +119,7 @@ int journlWriteMode(string bookPath, string timeDescription, string title, strin
     {
         EnTimeParser parser;
         timeParserRet timeRet = parser.parse(timeDescription);
-        if (timeRet.estimation<TIME_PARSE_LITTLE_SUCCESS)
+        if (timeRet.estimation<TIME_PARSE_LITTLE_SUCCESS || timeRet.flag==0)
         {
             JLOGE("EnTimeParser faild");
             date = Time().toDate();
