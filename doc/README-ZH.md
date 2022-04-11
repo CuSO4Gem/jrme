@@ -164,3 +164,7 @@ journal format = md_journal.so
 
 编译（带插件）：make PLUGIN=y  
 清除（带插件）：make clean PLUGIN=y
+
+## 其他选项
+自动通过git录入版本号：VERSION=y
+debug版本 DEBUG=y

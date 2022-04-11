@@ -65,7 +65,7 @@ int main(int argc, char* argv[]) {
     if (cmd.exist("version"))
     {
 #ifndef GIT_TAG_VERSION
-        printf("jrme version 0.9.0.\ndebug level %d\n", DBG_PRINT_ENABLED);
+        printf("jrme version 0.9.1.\ndebug level %d\n", DBG_PRINT_ENABLED);
 #else
         printf("jrme version (get from git) %s \ndebug level %d\n", GIT_TAG_VERSION, DBG_PRINT_ENABLED);
 #endif
