@@ -36,6 +36,15 @@ typedef void (*releaseJournal_fnc)(struct journal_s);
 extern "C" {
 #endif
 
+/**
+ * @brief 
+ * 插件和jrme都需要实现自己的releaseJournalStruct()函数。
+ * 其实journal_release.c里面已经实现了，编译的时候加上就好了。
+ * 
+ * plugin and jrme need to impelement releaseJournalStruct() function.
+ * Actually it has been impelement in journal_release.c. Add the file while
+ * compile, that will be fine.
+ */
 void releaseJournalStruct(struct journal_s journal);
 
 #ifdef __cplusplus
