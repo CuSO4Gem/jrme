@@ -104,3 +104,12 @@ ifeq ($(PLUGIN),y)
 	$(MAKE) -C ./plugin clean
 endif
 	$(MAKE) -C ./test clean
+
+#install && unstall
+.PHONY: install
+install:
+	cp bin/jrme /bin/
+
+.PHONY: unstall
+unstall:
+	rm -f /bin/jrme

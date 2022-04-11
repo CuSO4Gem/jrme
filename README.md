@@ -168,16 +168,19 @@ journal format = md_journal.so
 
 # 编译
 需求：gcc,g++,gtest(如果需要运行test)  
-输出位于./bin/jrme.elf  
+输出位于./bin/jrme  
 
 编译：make  
 编译插件：make plugin  
+
+## 安装
+
+## 其他选项
 编译测试：make test (注意，编译测试需要先安装gtest)  
 清除：make clean
 
 编译（带插件）：make PLUGIN=y  
 清除（带插件）：make clean PLUGIN=y
 
-## 其他选项
 自动通过git录入版本号：VERSION=y
 debug版本 DEBUG=y

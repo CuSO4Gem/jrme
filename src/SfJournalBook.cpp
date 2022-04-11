@@ -31,13 +31,15 @@ bool SfJournalBook::open(string path)
     mJournalIO = JournalIOFactory().getJournalIO(path);
     if (!mJournalIO)
     {
-        JLOGW("[W] Cann't create journalIO");
+        JLOGW("[E] Cann't create journalIO");
         return false;
     }
     if (!mJournalIO->open(path))
     {
         JLOGW("[W] journal open fail (%s)", path.c_str());
-        return false;
+        //JournalIOFactory已经确认过journalIO是可以打开文件的了，这只是说明文件是空的。所以返回true
+        //JournalIOFactory has already check that journalIO is fine. Now, the file may be empty.
+        return true;
     }
     
     mJournalIO->setReadMod();
