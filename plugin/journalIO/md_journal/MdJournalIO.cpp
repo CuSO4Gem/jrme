@@ -564,6 +564,14 @@ bool readJournal(void *handle, struct journal_s* journal2R)
         journal2R->content = NULL;
 
     JLOGD("[D] %s: read jounal success", PLUGIN_NAME);
+/**
+ * @note 
+ * journal2R不需要插件主动调用releaseJournalStruct()释放，
+ * jrme会调用插件的releaseJournalStruct()。
+ * 
+ * journal2R does not require the plugin to actively call releaseJournalStruct() to release,
+ * jrme will call releaseJournalStruct() in plugin.
+ */
     return true;
 }
 

@@ -17,6 +17,15 @@ limitations under the License.
 #define CONFIG_NODE_API_H
 
 #include <stdint.h>
+/**
+ * @note 
+ * 插件和jrme都需要实现自己的releaseJournalStruct()函数。
+ * 其实journal_release.c里面已经实现了，编译的时候加上就好了。
+ * 
+ * plugin and jrme need to impelement releaseJournalStruct() function.
+ * Actually it has been impelement in journal_release.c. Add the file while
+ * compile, that will be fine.
+ */
 #include "journal_struct.h"
 
 /**
@@ -33,6 +42,7 @@ limitations under the License.
  */
 typedef void *(*allocate_instance_fnc)();
 typedef void (*release_instance_fnc)(void *);
+
 typedef void (*preprocess_fnc)(void *, const struct journal_s *, struct journal_s *);
 typedef void (*postprocess_fnc)(void *, const struct journal_s *, struct journal_s *);
 

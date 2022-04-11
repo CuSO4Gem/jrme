@@ -63,7 +63,15 @@ void postprocess(void *handle, const struct journal_s *refJournal, struct journa
     retJournal->config = (char *)malloc(config.length()+1);
     memcpy(retJournal->config, config.c_str(), config.length());
     (retJournal->config)[config.length()] = '\0';
-    
+
+/**
+ * @note 
+ * retJournal不需要插件主动调用releaseJournalStruct()释放，
+ * jrme会调用插件的releaseJournalStruct()。
+ * 
+ * retJournal does not require the plugin to actively call releaseJournalStruct() to release,
+ * jrme will call releaseJournalStruct() in plugin.
+ */
 }
 
 #ifdef __cplusplus
