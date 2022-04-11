@@ -14,8 +14,15 @@ CFLAGS:= -I./src -I./include -I./lib -I./plugin/timeparser/include -Llib -lc -ls
 
 #通过git自动填写系统版本
 #version
-GIT_TAG:=$(shell git branch --show-current):$(shell git describe --tags)
-CFLAGS+= -DGIT_TAG_VERSION=\"$(GIT_TAG)\"
+ifdef VERSION
+	GIT_TAG:=$(shell git branch --show-current):$(shell git describe --tags).\n Tool chain:$(TOOL_CHAIN).\n
+	ifdef DEBUG
+		GIT_TAG+= debug version
+	else
+		GIT_TAG+= release version
+	endif
+	CFLAGS+= -DGIT_TAG_VERSION="\"$(GIT_TAG)\""
+endif
 
 #传参决定是否需要调试，如果DEBUG=exclusive，则调试的时候会删除release版本
 #debug or not. if DEBUG=exclusive, release version will be delate after build
@@ -60,21 +67,11 @@ ifeq ($(PLUGIN),y)
 endif
 
 #----------------------------------build----------------------------------#
-#如果定义互斥(DEBUG=exclusive)，则调试的时候会删除发行版
-#if DEBUG=exclusive, release version will be delate after build
-ifeq ($(DEBUG),exclusive)
-#编译调试版本
-#bild debug version
-all:build_prepare  $(MODULES) $(OBJ_SRC_C) $(OBJ_SRC_CPP)
-	$(TOOL_CHAIN) $(OBJ) -o $(DOUT_TARGET) $(CFLAGS) $(STATIC)
-	rm -f $(OUT_TARGET)
-
-else
 #编译release版本
 #build
 all:build_prepare $(MODULES) $(OBJ_SRC_C) $(OBJ_SRC_CPP)
 	$(TOOL_CHAIN) $(OBJ) -o $(OUT_TARGET) $(CFLAGS) $(STATIC)
-endif
+
 
 #将.cpp和.c编译为.o
 #compile .cpp and .c to .o
