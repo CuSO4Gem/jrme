@@ -1,14 +1,3 @@
-# Language/语言  
-[Chinese](https://github.com/CuSO4Gem/jrme/doc/README-ZH.md)  
-[English](https://github.com/CuSO4Gem/jrme/doc/README-EN.md)
-
-# Aboult
-With jrme, you can write, search, modify, and delete diary/notes only through the command line. Not only that, but you can also add plugins to save journals in different formats, and process them automatically.  
-This project refers to the jrnl project.The jrnl project can well implement the function of writing a journal from the command line, but jrnl has several shortcomings:  
-1. Requires python3.
-2. Additional information of journal (such as tag, time) is not placed regularly.
-3. Additional information of lacks flexibility.
-
 # 关于此项目  
 通过jrme，你仅需要通过命令行就可以实现日记/笔记的书写，查找，修改，删除功能。不仅如此，你还可以添加插件实现不同格式的日记保存，和自动处理。  
 本项目参考了jrnl项目。jrnl项目能够很好的实现命令行写日记的功能，但是jrnl有几点不足：  
@@ -175,4 +164,3 @@ journal format = md_journal.so
 
 编译（带插件）：make PLUGIN=y  
 清除（带插件）：make clean PLUGIN=y
-
