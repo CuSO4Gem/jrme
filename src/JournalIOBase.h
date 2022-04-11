@@ -24,6 +24,13 @@ limitations under the License.
 
 using namespace std;
 
+/**
+ * @brief 
+ * 用于日记IO的接口类型，为了实现不同格式的日记保存工作
+ * 
+ * Interface class for IO journal. To support different formate of journal.
+ * 
+ */
 class JournalIOBase
 {
 public:

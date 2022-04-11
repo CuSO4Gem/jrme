@@ -22,6 +22,12 @@ limitations under the License.
 
 using namespace ec;
 
+/**
+ * @brief 
+ * 处理"date"config node，用于记录日记的时间
+ * 
+ * Process "date" config node. Mark the date of journal
+ */
 class DateConfigNode : public ConfigNodeBase
 {
     Date mDate;

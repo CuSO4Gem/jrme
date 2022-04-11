@@ -34,12 +34,16 @@ inline bool isNumChar(const char ch)
 
 
 /**
- * @brief remove multiple space from string
+ * @brief 
+ * 移除连续的多个空格
+ * remove multiple space from string
  */
 void removeMultipleSpaces(string &str);
 
 /**
- * @brief Get the Value From Config object
+ * @brief 
+ * 从日记的config部分获取指定key的value
+ * Given key return value from journal config
  * 
  * @param config 
  * @param key 
@@ -50,7 +54,9 @@ void removeMultipleSpaces(string &str);
 bool getValueFromConfig(const string &config, const string &key, string &value);
 
 /**
- * @brief Set the Value To Config object
+ * @brief 
+ * 向日记的config部分设置指定key的value
+ * Set the Value To Config 
  * 
  * @param config 
  * @param key 
@@ -61,7 +67,9 @@ bool getValueFromConfig(const string &config, const string &key, string &value);
 bool setValueToConfig(string &config, const string &key,const string value);
 
 /**
- * @brief Get the Stamp Form Config string
+ * @brief 
+ * 从config部分获取时戳
+ * Get the Stamp Form Config string
  * 
  * @param config 
  * @return time_t 
@@ -69,7 +77,9 @@ bool setValueToConfig(string &config, const string &key,const string value);
 time_t getStampFormConfig(const string &config);
 
 /**
- * @brief Get the Level Form Journal Config
+ * @brief 
+ * 从config部分获取level值
+ * Get the Level Form Journal Config
  * 
  * @param config 
  * @return int32_t 
@@ -77,39 +87,39 @@ time_t getStampFormConfig(const string &config);
 int32_t getLevelFormConfig(const string &config);
 
 /**
- * @brief Get the Tags Form Journal Config
- * 
- * @param config 
- * @return vector<string> 
+ * @brief 
+ * 从config解析config list
+ * Get the Tags Form Journal Config
  */
 vector<string> getTagsFormConfig(const string &config);
 
 /**
- * @brief parse string to journal
- * 
- * @param inStr 
- * @return shared_ptr<Journal> 
+ * @brief 
+ * 将字符串转换为日记（只能txt格式）
+ * Get string to journal (txt formate)
  */
 shared_ptr<Journal> strToJournal(const string &inStr);
 
 /**
- * @brief conver rawPath to a valid path
- *  remove spaces at begin, conver ~ to home dir
+ * @brief 
+ * 转移路径除开头的空格，将~转换为绝对路径
  * 
- * @param rawPath 
- * @return string 
+ * conver rawPath to a valid path
+ * remove spaces at begin, conver ~ to home dir
  */
 string validPath(string rawPath);
 
 /**
- * @brief get path from user, conver ~ to home dir
- * 
- * @return string 
+ * @brief
+ * 要求用户输入一个路径
+ * Let user input a file path
  */
 string getFilePath();
 
 /**
- * @brief select journal book by path
+ * @brief 
+ * 自动创建一个日记本类型
+ * select journal book by path
  * 
  * @param path 
  * @return shared_ptr<JournalBookBase> 

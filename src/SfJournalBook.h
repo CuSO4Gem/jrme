@@ -32,6 +32,11 @@ struct fastSortData
     size_t order;
 };
 
+/**
+ * @brief 
+ * 单文件日记本
+ * journal book with single file.
+ */
 class SfJournalBook : public JournalBookBase
 {
 private:

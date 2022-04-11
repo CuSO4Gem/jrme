@@ -24,6 +24,13 @@ limitations under the License.
 
 using namespace std;
 
+/**
+ * @brief 
+ * Jrme配置相关
+ * 
+ * Jrme config
+ * 
+ */
 class JrmeConfig
 {
 private:
@@ -32,36 +39,11 @@ private:
     static string getInitJournalBookPath();
 
 public:
-    /**
-     * @brief Get the Config Root dirstory
-     * 
-     * @return string 
-     */
-    static string getConfigRootDir();
 
     /**
-     * @brief get path of journak book list config file.
-     * 
-     */
-    static string getJournalBooksCfgPath();
-
-    /**
-     * @brief Get the dir for save plugin
-     * 
-     * @return string 
-     */
-    static string getPluginDir();
-
-    static string getEditorName();
-
-    static list<string> getConfigNodePluginNames();
-
-    static string getDefaultJournalBookPath();
-    
-    static void setDeafultJournalBookPath(string path);
-
-    /**
-     * @brief install to init jrme, if need
+     * @brief 
+     * 初始化jrme的配置
+     * init jrme config
      * 
      * @return true install success or not need to install
      * @return false install fail
@@ -69,22 +51,74 @@ public:
     static bool installIfNeed();
 
     /**
-     * @brief Get config of the JournalIO Plugin Name 
-     * 
-     * @return vector<string> 
+     * @brief
+     * 获取配置的根目录
+     * Get the Config root dirstory
+     * @return string 
+     */
+    static string getConfigRootDir();
+
+    /**
+     * @brief 
+     * 获取记录日记本的文件
+     * get path of journak book list config file.
+     */
+    static string getJournalBooksCfgPath();
+
+    /**
+     * @brief 
+     * 获取插件目录
+     * Get the dir for save plugin
+     */
+    static string getPluginDir();
+
+    /**
+     * @brief 
+     * 获取journalIO插件列表
+     * Get config of the JournalIO Plugin Names 
      */
     static list<string> getJournalIOPluginNames();
 
     /**
-     * @brief Get the Journal Books path from config.
-     * 
-     * @return vector<string> 
+     * @brief 
+     * 获取需要载入的config node插件列表
+     * Get the Config Node Plugin Names
+     */
+    static list<string> getConfigNodePluginNames();
+
+    /**
+     * @brief 
+     * 获取编辑器名
+     * Get the Editor Name
+     */
+    static string getEditorName();
+
+    /**
+     * @brief 
+     * 获取默认的日记本保存路径
+     * Get the Default Journal Book Path
+     */
+    static string getDefaultJournalBookPath();
+    
+    /**
+     * @brief 
+     * 设置默认的日记本保存路径
+     * Set the Deafult Journal Book Path
+     */
+    static void setDeafultJournalBookPath(string path);
+
+
+    /**
+     * @brief 
+     * 读取日记保存列表
+     * Read journal book list
      */
     static list<string> readJournalBooksCfg();
 
     /**
-     * @brief Save journal books path to config
-     * 
+     * @brief
+     * 写入日记保存列表
+     * Write journal book list
      */
     static bool writeJournalBooksCfg(list<string> allPath);
 };

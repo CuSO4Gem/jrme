@@ -26,6 +26,15 @@ limitations under the License.
 
 using namespace std;
 
+/**
+ * @brief 
+ * 缓存日记的stamp和level以及tags，用于加快排序和筛选的速度。
+ * 相关信息不会在创建filter全部缓存，而是在进行相关排序和筛选的时候临时处理。
+ * 
+ * To cache stamp, level and tags of journal, in order to bost sort and filter.
+ * Data will not caceh everything while filter construct. It will be cache before
+ * filter and sort.
+ */
 typedef struct guidance_s
 {
     size_t order; //order in book

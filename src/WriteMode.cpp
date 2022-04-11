@@ -46,6 +46,11 @@ timed_mutex openFinishMu;
 static shared_ptr<JournalBookBase> sJournalBook = nullptr;
 static string sBookPath;
 
+/**
+ * @brief 
+ * 加载日记本，可以多线程加载
+ * Load journal book. Can run as pthread
+ */
 void *openJournalBook(void* args)
 {
     sJournalBook = bookFactory(sBookPath);

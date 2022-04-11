@@ -21,12 +21,21 @@ limitations under the License.
 #include <Journal.h>
 using namespace std;
 
+/**
+ * @brief 用于判断是不是内部的config node，插件不需要用到
+ * Irrelevant for config node plugin
+ */
 enum innerConfigNode {
     DATE_CONFIG = 1,
     TAG_CONFIG,
     LEVEL_CONFIG,
 };
 
+/**
+ * @brief config node的接口类
+ * 
+ * interface class of config node 
+ */
 class ConfigNodeBase
 {
 public:
@@ -36,9 +45,21 @@ public:
 
     virtual string getKey() = 0;
     virtual string getDefaultValue() = 0;
+    /**
+     * @brief preprocess()是要求用户输入jrounal之前的处理
+     * postprocess()是用户输入完journal之后的处理
+     * 
+     * preprocess() will run before user input journal
+     * postprocess() process after user finish input journal
+     */
     virtual void preprocess(shared_ptr<Journal> journal) = 0;
     virtual void postprocess(shared_ptr<Journal> journal) = 0;
 
+    /**
+     * @brief 这两个函数不是通用的函数，是专门针对程序自带的几个config node
+     * The tow function is no a general function. It is for the config node, that
+     * build in jrme
+     */
     virtual int32_t innerConfigType()  {return 0;};
     virtual void setDate(time_t stamp) {};
 };

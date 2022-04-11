@@ -12,6 +12,7 @@ TOOL_CHAIN?=gcc
 STATIC:=		
 CFLAGS:= -I./src -I./include -I./lib -I./plugin/timeparser/include -Llib -lc -lstdc++ -ldl -lpthread
 
+#通过git自动填写系统版本
 #version
 GIT_TAG:=$(shell git branch --show-current):$(shell git describe --tags)
 CFLAGS+= -DGIT_TAG_VERSION=\"$(GIT_TAG)\"

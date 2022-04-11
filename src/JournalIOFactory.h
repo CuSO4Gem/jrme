@@ -26,6 +26,13 @@ limitations under the License.
 
 using namespace std;
 
+/**
+ * @brief 
+ * 尝试加载插件，自动选择合适的JournalIO类
+ * 
+ * Try to load and select applicable JournalIO class
+ * 
+ */
 class JournalIOFactory
 {
 private:

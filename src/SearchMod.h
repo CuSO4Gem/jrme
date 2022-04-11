@@ -22,6 +22,11 @@ limitations under the License.
 
 using namespace std;
 
+/**
+ * @brief 
+ * 日记搜索功能
+ * search journal
+ */
 int journalSearchMod(cmdline::parser &cmd, string bookPath);
 
 #endif

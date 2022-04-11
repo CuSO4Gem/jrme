@@ -18,7 +18,12 @@ limitations under the License.
 
 #include <memory>
 #include "Journal.h"
-
+/**
+ * @brief 
+ * 日记本的接口类，之后可能会推出多文件模式的日记本
+ * 
+ * Interface class of journal book. Maybe will have journal book with multy file
+ */
 class JournalBookBase
 {
 public:

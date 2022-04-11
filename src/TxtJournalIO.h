@@ -29,6 +29,11 @@ enum processState {
     WRITE
 };
 
+/**
+ * @brief 
+ * txt格式的日记IO
+ * IO txt formate journal
+ */
 class TxtJournalIO : public JournalIOBase
 {
 private:

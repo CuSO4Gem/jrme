@@ -18,6 +18,11 @@ limitations under the License.
 
 #include <malloc.h>
 
+/**
+ * @brief 
+ * 用于插件与jrme传递jrounal
+ * Deliver bewteen jrme and plugin
+ */
 struct journal_s
 {
     char *title;

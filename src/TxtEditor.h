@@ -33,21 +33,24 @@ public:
     ~TxtEditor() = default;
 
     /**
-     * @brief 设置editor初始的字符串
-     * 
+     * @brief 
+     * 设置editor初始的字符串
+     * Set init string of editor
      * @param initStr 
      */
     void setInitStr(string initStr);
 
     /**
-     * @brief 清除editor初始的字符串
-     * 
+     * @brief 
+     * 清除editor初始的字符串
+     * Clear init string of editr
      */
     void clearInitStr();
 
     /**
-     * @brief 让用户从editor输入日记
-     * 
+     * @brief 
+     * 让用户从editor输入日记
+     * Get journal from user
      * @return nullptr 用户不希望保存
      */
     shared_ptr<Journal> getJournalFromEditor();

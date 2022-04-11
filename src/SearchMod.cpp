@@ -28,6 +28,11 @@ using namespace ec;
 
 #define WARNING_PERCENTAGE (20)
 
+/**
+ * @brief 
+ * 给定一个timeParserRet结构图，对于未确定的时间，尽量早。
+ * Given a timeParserRet struct, return a Date as early as posable
+ */
 Date dataBegin(timeParserRet timeRet)
 {
     Date date;
@@ -41,6 +46,11 @@ Date dataBegin(timeParserRet timeRet)
     return date;
 }
 
+/**
+ * @brief 
+ * 给定一个timeParserRet结构图，对于未确定的时间，尽量量晚。
+ * Given a timeParserRet struct, return a Date as late as posable
+ */
 Date dataEnd(timeParserRet timeRet)
 {
     Date now = Time().toDate();

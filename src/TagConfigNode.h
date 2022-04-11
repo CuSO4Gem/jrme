@@ -20,6 +20,10 @@ limitations under the License.
 
 using namespace ec;
 
+/**
+ * @brief 
+ * "Tag" config node
+ */
 class TagConfigNode : public ConfigNodeBase
 {
 public:

@@ -26,6 +26,7 @@ using namespace ec;
 using namespace std;
 
 #define ALL_SHORT_MONTH_REGEX "(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)"
+
 char monthShortName[][4] = {
     "jan",
     "feb",

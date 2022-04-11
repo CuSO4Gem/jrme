@@ -21,6 +21,11 @@ limitations under the License.
 #include "JournalIOBase.h"
 #include "journal_io_api.h"
 
+/**
+ * @brief 
+ * 加载和使用JournalIO插件
+ * load and use JournalIO plugin
+ */
 class PluginJournalIO : public JournalIOBase
 {
 private:

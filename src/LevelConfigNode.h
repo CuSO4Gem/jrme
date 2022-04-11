@@ -20,6 +20,11 @@ limitations under the License.
 
 using namespace ec;
 
+/**
+ * @brief 
+ * "level"关键字的config node
+ * "level" config node
+ */
 class LevelConfigNode : public ConfigNodeBase
 {
 public:

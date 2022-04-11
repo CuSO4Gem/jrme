@@ -19,8 +19,20 @@ limitations under the License.
 #include <stddef.h>
 #include "journal_struct.h"
 
+/**
+ * @brief 
+ * 所支持格式的字符串长度。格式列表应该按照n*FORMATE_TABLE_COLUM保存
+ * 
+ * The string length of supported formats.
+ * Table should be saved as n*FORMATE TABLE COLUM
+ */
 #define FORMATE_TABLE_COLUM (8)
 
+/**
+ * @brief 
+ * JournalIO插件需要实现的API
+ * JournalIO plugin API
+ */
 typedef void *(*allocate_instance_fnc)();
 typedef void (*release_instance_fnc)(void *handle);
 

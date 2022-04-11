@@ -20,6 +20,11 @@ limitations under the License.
 
 using namespace std;
 
+/**
+ * @brief 
+ * 写日记
+ * Wirte journal
+ */
 int journlWriteMode(string bookPath, string timeDescription, string title, string content);
 
 #endif

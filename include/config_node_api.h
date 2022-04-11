@@ -19,15 +19,21 @@ limitations under the License.
 #include <stdint.h>
 #include "journal_struct.h"
 
+/**
+ * @brief 
+ * config node插件的api
+ * 插件还需要额外暴露以下内容
+ * 
+ * api of config node plugin
+ * plugin also need the following elements.
+ * 
+ * uint32_t api_version
+ * char key[]
+ * char default_value[]
+ */
 typedef void *(*allocate_instance_fnc)();
 typedef void (*release_instance_fnc)(void *);
-/**
- * @brief handle, input journal, journal after preprocess
- */
 typedef void (*preprocess_fnc)(void *, const struct journal_s *, struct journal_s *);
-/**
- * @brief handle, input journal, journal after postprocess
- */
 typedef void (*postprocess_fnc)(void *, const struct journal_s *, struct journal_s *);
 
 #endif

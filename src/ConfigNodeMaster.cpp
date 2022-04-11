@@ -26,6 +26,11 @@ limitations under the License.
 
 #include "config_node_api.h"
 #include "journal_struct.h"
+
+/**
+ * @brief 用于打开config node插件
+ * To open config node pulgin.
+ */
 class PluginNode : public ConfigNodeBase
 {
 private:
@@ -152,6 +157,13 @@ string PluginNode::getDefaultValue()
     return string(mDefaultValue);
 }
 
+/**
+ * @brief 将journal class转换为journal_s
+ * transfer journal class to journal_s
+ * 
+ * @param journal 
+ * @return struct journal_s 
+ */
 struct journal_s journal2S(shared_ptr<Journal> journal)
 {
     struct journal_s journalRet;
