@@ -1,6 +1,6 @@
 # Language/语言  
-[Chinese](https://github.com/CuSO4Gem/jrme/doc/README-ZH.md)  
-[English](https://github.com/CuSO4Gem/jrme/doc/README-EN.md)
+[Chinese](https://github.com/CuSO4Gem/jrme/blob/master/doc/README-ZH.md)  
+[English](https://github.com/CuSO4Gem/jrme/blob/master/doc/README-EN.md)
 
 # Aboult
 With jrme, you can write, search, modify, and delete diary/notes only through the command line. Not only that, but you can also add plugins to save journals in different formats, and process them automatically.  
