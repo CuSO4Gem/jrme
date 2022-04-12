@@ -173,7 +173,8 @@ journal format = md_journal.so
 编译：make  
 编译插件：make plugin  
 
-## 安装
+安装：make install  
+卸载：make uninstall
 
 ## 其他选项
 编译测试：make test (注意，编译测试需要先安装gtest)  

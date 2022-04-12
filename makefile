@@ -9,7 +9,7 @@ TEMP_FILES:=src/*.o lib/*.o
 
 TOOL_CHAIN?=gcc
 
-STATIC:=		
+STATIC:=-static
 CFLAGS:= -I./src -I./include -I./lib -I./plugin/timeparser/include -Llib -lc -lstdc++ -ldl -lpthread
 
 #通过git自动填写系统版本
@@ -110,6 +110,6 @@ endif
 install:
 	cp bin/jrme /bin/
 
-.PHONY: unstall
-unstall:
+.PHONY: uninstall
+uninstall:
 	rm -f /bin/jrme
