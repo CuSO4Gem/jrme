@@ -9,7 +9,6 @@ TEMP_FILES:=src/*.o lib/*.o
 
 TOOL_CHAIN?=gcc
 
-STATIC:=-static
 CFLAGS:= -I./src -I./include -I./lib -I./plugin/timeparser/include -Llib -lc -lstdc++ -ldl -lpthread
 
 #通过git自动填写系统版本
@@ -70,7 +69,7 @@ endif
 #编译release版本
 #build
 all:build_prepare $(MODULES) $(OBJ_SRC_C) $(OBJ_SRC_CPP)
-	$(TOOL_CHAIN) $(OBJ) -o $(OUT_TARGET) $(CFLAGS) $(STATIC)
+	$(TOOL_CHAIN) $(OBJ) -o $(OUT_TARGET) $(CFLAGS)
 
 
 #将.cpp和.c编译为.o
