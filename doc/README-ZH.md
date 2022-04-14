@@ -40,13 +40,13 @@ jrme -T hello world.
 -n, --number 制定n篇日记显示。配合--edit可以编辑日记或者配合--delete可以删除日记
 -f, --from 指定搜索日记的起始时间
 -t, --to 指定搜索日记的终止时间
--o, --on 指定搜索日记的日记
+-o, --on 指定搜索日记的时间
 -g, --tags 指定tag搜索日记，一次可以输入多个tags，用";"分割
 -l, --level 指定level搜索日记，可以用"~"表示level区间
 -G, --all_tags 显示所有的tags以及数量
 
 -d, --default_book 弹出选项让用户选择默认日记
--a, --add_book 添加一个日基本陆军
+-a, --add_book 添加一个日记本
 -B, --edit_book_list 调用编辑其编辑日记本记录列表
 
 -E, --edit 编辑所选日记
