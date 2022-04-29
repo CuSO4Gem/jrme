@@ -1,0 +1,12 @@
+bin/*
+.vscode
+
+*.o
+*.elf
+*.exe
+
+*.log
+
+libeditor.a
+test.txt
+result.log
