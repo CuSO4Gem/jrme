@@ -1,5 +1,6 @@
-bin/*
+bin
 .vscode
+build
 
 *.o
 *.elf
@@ -7,6 +8,4 @@ bin/*
 
 *.log
 
-libeditor.a
-test.txt
 result.log

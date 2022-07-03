@@ -1,0 +1,5 @@
+BasedOnStyle: GNU
+AlignConsecutiveDeclarations: true
+AlignConsecutiveAssignments: AcrossEmptyLines
+AlignConsecutiveMacros: AcrossEmptyLines
+IndentWidth: 4

@@ -1,2 +1,2 @@
 #!/bin/bash
-make uninstall
+rm -f /usr/bin/jrme

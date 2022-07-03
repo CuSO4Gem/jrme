@@ -39,6 +39,7 @@ void TxtEditor::clearInitStr()
 shared_ptr<Journal> TxtEditor::getJournalFromEditor()
 {
     shared_ptr<Journal> journal = make_shared<Journal>();
+    int ret;
 
     string tmpFilePath = JrmeConfig::getConfigRootDir()+".journal.tmp";
     ofstream oTmpFile;
@@ -47,7 +48,7 @@ shared_ptr<Journal> TxtEditor::getJournalFromEditor()
     oTmpFile.close();
 
     string cmdEditor = JrmeConfig::getEditorName();
-    system((cmdEditor + " " + tmpFilePath).c_str());
+    ret = system((cmdEditor + " " + tmpFilePath).c_str());
 
     ifstream iTmpFile;
     iTmpFile.open(tmpFilePath);

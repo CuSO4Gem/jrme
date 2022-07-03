@@ -1,1 +1,0 @@
-../../src/JournalBookBase.h

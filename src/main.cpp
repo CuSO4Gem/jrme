@@ -124,7 +124,8 @@ int main(int argc, char* argv[]) {
     {
         string editorName = JrmeConfig::getEditorName();
         string bookListCfg = JrmeConfig::getJournalBooksCfgPath();
-        system((editorName + " " + bookListCfg).c_str());
+        int sys_ret;
+        sys_ret = system((editorName + " " + bookListCfg).c_str());
         return 0;
     }
 

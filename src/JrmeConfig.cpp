@@ -184,6 +184,7 @@ list<string> JrmeConfig::getConfigNodePluginNames()
     }
 
     string plugNames = configFile.GetSection("plugin")->GetValue("config node").AsString();
+    JLOGD("[D] config node plugin ini:%s", plugNames.c_str());
     istringstream plugNameStream = istringstream(plugNames);
     string pluginName;
     list<string> plugNameVector;
