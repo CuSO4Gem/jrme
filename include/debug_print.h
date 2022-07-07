@@ -111,9 +111,9 @@ static int debug_printf_ln(const char *color, const char *fileName, const char *
 #endif
 
 #if DBG_PRINT_ENABLED >= (3)
-#define JLOGT(fmt, ...) debug_printf_ln(ANSI_COLOR_BLUE, MYFILE(__FILE__), __FUNCTION__, __LINE__, fmt, ##__VA_ARGS__)
+#define JLOGI(fmt, ...) debug_printf_ln(ANSI_COLOR_BLUE, MYFILE(__FILE__), __FUNCTION__, __LINE__, fmt, ##__VA_ARGS__)
 #else
-#define JLOGT(fmt, ...)
+#define JLOGI(fmt, ...)
 #endif
 
 #if DBG_PRINT_ENABLED >= (4)

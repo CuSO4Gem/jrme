@@ -87,7 +87,7 @@ int journlWriteMode(string bookPath, string timeDescription, string title, strin
     {
         if (!openFinishMu.try_lock_for(chrono::milliseconds(50)))
         {
-            JLOGT("[T] spend too mach time in opening journal book!");
+            JLOGI("[I] spend too mach time in opening journal book!");
         }
         else
         {

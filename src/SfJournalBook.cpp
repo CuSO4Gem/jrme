@@ -49,7 +49,7 @@ bool SfJournalBook::open(string path)
     {
         listJournal.push_back(journal);
     }
-    JLOGT("[T] Read %ld journals from %s", listJournal.size(), path.c_str());
+    JLOGI("[I] Read %ld journals from %s", listJournal.size(), path.c_str());
     /** +1 for pushback a journal while writeMode
      */
     mJournalVector.reserve(listJournal.size()+1);

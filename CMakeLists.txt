@@ -11,6 +11,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/out)
 
 include_directories(include src)
 
-add_subdirectory(test)
 add_subdirectory(src)
 add_subdirectory(plugin)
+add_subdirectory(googletest)
+add_subdirectory(test)

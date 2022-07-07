@@ -99,7 +99,7 @@ int journalSearchMod(cmdline::parser &cmd, string bookPath)
     {
         map<string, size_t> allTags = filter.tagsCount();
         size_t firstLen=0;
-        JLOGT("[T] Search all_tags, get %ld tags", allTags.size());
+        JLOGI("[I] Search all_tags, get %ld tags", allTags.size());
         for (auto &it:allTags)
         {
             if (firstLen<it.first.length())
@@ -141,13 +141,13 @@ int journalSearchMod(cmdline::parser &cmd, string bookPath)
         
         if (inputNumber==1)
         {
-            JLOGT("[T] Search level equal %d", min);
+            JLOGI("[I] Search level equal %d", min);
             filter.levelFilter(min, false);
             filter.levelFilter(min, true);
         }
         else if (inputNumber==2)
         {
-            JLOGT("[T] Search level %d to %d", min, max);
+            JLOGI("[I] Search level %d to %d", min, max);
             filter.levelFilter(min, false);
             filter.levelFilter(max, true);
         }
@@ -172,10 +172,10 @@ int journalSearchMod(cmdline::parser &cmd, string bookPath)
         
         Date date = dataBegin(timeRet);
         filter.stampFilter(date.stamp(), false);
-        JLOGT("[T] Search on, from %s", date.toString().c_str());
+        JLOGI("[I] Search on, from %s", date.toString().c_str());
         date = dataEnd(timeRet);
         filter.stampFilter(date.stamp(), true);
-        JLOGT("[T] Search on, to %s", date.toString().c_str());
+        JLOGI("[I] Search on, to %s", date.toString().c_str());
     }
 
     if ((cmd.exist("from") || cmd.exist("to")) && !cmd.exist("on"))
@@ -197,7 +197,7 @@ int journalSearchMod(cmdline::parser &cmd, string bookPath)
                 return -1;
             }
             Date date = dataBegin(timeRet);
-            JLOGT("[T] Search from the date:%s", date.toString().c_str());
+            JLOGI("[I] Search from the date:%s", date.toString().c_str());
             filter.stampFilter(date.stamp(), false);
         }
         if (cmd.exist("to"))
@@ -217,7 +217,7 @@ int journalSearchMod(cmdline::parser &cmd, string bookPath)
                 return -1;
             }
             Date date = dataEnd(timeRet);
-            JLOGT("[T] Search to the date:%s", date.toString().c_str());
+            JLOGI("[I] Search to the date:%s", date.toString().c_str());
             filter.stampFilter(date.stamp(), true);
         }
     }
@@ -305,7 +305,7 @@ int journalSearchMod(cmdline::parser &cmd, string bookPath)
     /*************print/delete*************/
     if ((cmd.exist("delete") || cmd.exist("force_delete")) && !cmd.exist("edit"))
     {
-        JLOGT("delete %ld journal", orderVector.size());
+        JLOGI("delete %ld journal", orderVector.size());
         if (orderVector.size()==0)
         {
             printf("nothing to delete\n");

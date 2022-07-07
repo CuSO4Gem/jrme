@@ -135,7 +135,7 @@ bool MdJournalIO::open(string path)
     {
         /*maybe file no exist, try too create one*/
         string cmd = string("touch ")+path;
-        JLOGT("[T] %s: touch journal file: %s", PLUGIN_NAME,cmd.c_str());
+        JLOGI("[I] %s: touch journal file: %s", PLUGIN_NAME,cmd.c_str());
         int ret = system(cmd.c_str());
         if (ret!=0)
             return false;
