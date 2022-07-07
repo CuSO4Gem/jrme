@@ -56,3 +56,16 @@ jrme -T hello world.
 -D, --delete Delete the selected diary
 --force_delete Force delete the selected diary without prompt
 ```
+
+# compile&sintall
+## compile
+Need：gcc,g++  
+Output: ./build/out/jrme  
+Build script: ：build.sh 
+
+## install
+Note: The install processes is acturly copy jrme to /usr/bin/. So you need to compile before install, and you also need root permission.  
+install jrme: install.sh  
+install plugin: install_plugin.sh  
+uninstall: uninstall.sh  
+uninstall plugins: uninstall_plugin.sh

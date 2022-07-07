@@ -153,22 +153,16 @@ config node = save_date.so
 journal format = md_journal.so
 ```
 
-# 编译
-需求：gcc,g++,gtest(如果需要运行test)  
-输出位于./bin/jrme  
+# 编译与安装
+## 编译
+需求：gcc,g++
+输出位于./build/out/jrme  
+编译脚本：build.sh  
 
-编译：make  
-编译插件：make plugin  
+## 安装
+注意，安装前请编译。安装实际上拷贝到/usr/bin/，所以需要root权限。  
+安装jrme脚本：install.sh  
+安装jrme插件脚本：install_plugin.sh  
+卸载jrme脚本:uninstall.sh  
+卸载jrme脚本:uninstall_plugin.sh
 
-安装：make install  
-卸载：make uninstall
-
-## 其他选项
-编译测试：make test (注意，编译测试需要先安装gtest)  
-清除：make clean
-
-编译（带插件）：make PLUGIN=y  
-清除（带插件）：make clean PLUGIN=y
-
-自动通过git录入版本号：VERSION=y
-debug版本 DEBUG=y
