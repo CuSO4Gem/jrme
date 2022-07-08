@@ -107,7 +107,7 @@ jrme -f "2014" -t "2018" -g "university;school" -D
 --force_delete的功能与--delete几乎相同，所不同的是，删除时不会询问。
 
 # Config Node
-当你开始写日记的时候，你应该注意到了日记中出现了一段特殊的字符内容，他们都是key和value的组合。这部分内容是日记的config部分，每一对key-value都是一对config node，这些config将日记的关键信息同意保存。jrme自带了3个config node，用户可以添加插件实现更多的config node。  
+当你开始写日记的时候，你应该注意到了日记中出现了一段特殊的字符内容，他们都是key和value的组合。这部分内容是日记的config部分，每一对key-value都是一对config node，这些config将日记的关键信息统一保存。jrme自带了3个config node，分必是“data”、“level”和“tags”，用户可以添加插件实现更多的config node。  
 ## date
 用于保存日记的时间，日记默认以时间降序保存。时间的形式默认为YYY-MM-DD hh:mm:ss。及时用户没有写全所有的要素，时间也能正常识别。
 ## level
@@ -116,7 +116,7 @@ jrme -f "2014" -t "2018" -g "university;school" -D
 日记的标签功能，多个标签请以;“;”进行分割。
 
 # 配置文件
-配置文件位于:~/.jrme/config.ini  
+配置文件位于：~/.jrme/config.ini  
 目前支持配置：
 ```
 [base]
@@ -136,7 +136,7 @@ jrme项目为了向日记添加更多更灵活的附加功能，提供了关于�
 2、每一个config node会在用户写日记前和用户保存日记的时候获得全部的日记文本，并且可以对其进行修改。
 3、jrme自带了3个config node，分别是date、level和tag。请最好不要使用这3个key
   
-当前工程自带一个key为"save date"的插件，可以记录保存日记的时间。运行：*make plugin*可以获得该插件，保存位置为：*~/.jrme/plugin/*。  
+当前工程自带一个key为"save date"的插件，可以记录保存日记的时间。运行：*build.sh*脚本可以在./build/plugin/获得该插件。将其保存到*~/.jrme/plugin/*并修改配置文件*~/.jrme/config.ini*以便jrme可以载入该插件。  
 注意：需要插件顺利加载，需要在配置文件中的config node加入该插件的文件名。如：
 ```
 [plugin]
@@ -146,7 +146,7 @@ config node = save_date.so
 用户可以通过插件实现不过格式的日记存储样式，但是需要注意，无论如何，在用户输入日记的界面是不会改变的，只有保存日记的文本会发生变化。  
 日记格式插件可以有自己支持的格式后缀列表，且后缀长度不超过7。系统会优先选择与第一个支持文件后缀名的日记格式插件。如果失败，依次调用插件尝试打开日记。  
   
-当前工程自带一个简单的markdown格式插件，运行：*make plugin*可以获得该插件，保存位置为：*~/.jrme/plugin/*。  
+当前工程自带一个简单的markdown格式插件，运行：*build.sh*脚本可以在./build/plugin/获得该插件。将其保存到*~/.jrme/plugin/*并修改配置文件*~/.jrme/config.ini*以便jrme可以载入该插件  
 注意：需要插件顺利加载，需要在配置文件中的journal format加入该插件的文件名。如：
 ```
 [plugin]

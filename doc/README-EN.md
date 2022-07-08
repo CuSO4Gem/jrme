@@ -1,11 +1,11 @@
 # Aboult
-With jrme, you can write, search, modify, and delete diary/notes only through the command line. Not only that, but you can also add plugins to save journals in different formats, and process them automatically.  
+With jrme, you can write, search, modify, and delete jrounal/notes only through the command line. Not only that, but you can also add plugins to save journals in different formats, and process them automatically.  
 This project refers to the jrnl project.The jrnl project can well implement the function of writing a journal from the command line, but jrnl has several shortcomings:  
 1. Requires python3.
 2. Additional information of journal (such as tag, time) is not placed regularly.
 3. Additional information of lacks flexibility.
 
-# Write a diary
+# Write a Journal
 In your terminal, input `jrme`, the editor (`vi` by default) will be launched. There will be templates ready for editing. It's expected to see the following content
 
 ```
@@ -21,7 +21,7 @@ level=
 
 `:wq` to save and quit.
 
-## Other way to write a diary
+## Other Way to Write a Journal
 
 jrme [-A date] [-T title] [-Cbody]  
 例如：
@@ -34,36 +34,129 @@ jrme -T hello world.
 
 ## Options
 ```
--T, --title Specifies the title of diary
--A, --at Specifies the diary date, can be a description, e.g. 'now' or 'yesterday'
--C, --content The diary content
--b, --book Will prompt user to select the diary book
--p, --path Specifies the diary path
+-T, --title Specifies the title of jrounal
+-A, --at Specifies the jrounal date, can be a description, e.g. 'now' or 'yesterday'
+-C, --content The jrounal content
+-b, --book Will prompt user to select the jrounal book
+-p, --path Specifies the jrounal path
 
--n, --number Create a collection of diaries of size `n`. It can be used together with `--edit` to edit a diary or `--delete` to delete one.
--f, --from The start date for diary search
--t, --to The end date for diary search
--o, --on The exact date for diary search
--g, --tags Search diary with tags, you can specify multiple tags, seperated by `;`
--l, --level Search diary by level. You may use `~` to specify the level range 
+-n, --number Create a collection of diaries of size `n`. It can be used together with `--edit` to edit a jrounal or `--delete` to delete one.
+-f, --from The start date for jrounal search
+-t, --to The end date for jrounal search
+-o, --on The exact date for jrounal search
+-g, --tags Search jrounal with tags, you can specify multiple tags, seperated by `;`
+-l, --level Search jrounal by level. You may use `~` to specify the level range 
 -G, --all_tags Display all tags and their count
 
--d, --default_book Prompt user to select the default diary book
--a, --add_book Add a diary book
--B, --edit_book_list Edit the diary book list
+-d, --default_book Prompt user to select the default jrounal book
+-a, --add_book Add a jrounal book
+-B, --edit_book_list Edit the jrounal book list
 
--E, --edit Edit the selected diary
--D, --delete Delete the selected diary
---force_delete Force delete the selected diary without prompt
+-E, --edit Edit the selected jrounal
+-D, --delete Delete the selected jrounal
+--force_delete Force delete the selected jrounal without prompt
 ```
 
-# compile&sintall
-## compile
+# Browse & Search Journals
+-n, --number, browse n journals recently. For example, Browse 10 journals recently:
+```
+jrme -n 10
+```
+-f, --from, browse journals since specified time point. For example:
+```
+jrme -f "last year"
+jrme -f "2018.10"
+jrme -f "last week"
+```
+-t, --to, browse journals before specified time point. For example:
+```
+jrme -f "2018.10" -t "2020-1-2"
+jrme -f "last" -t "yesterday"
+```
+-o, --on browse journals on specified time point. For example:
+```
+jrme -on "today"
+jrme -on "last month"
+```
+-g, --tags, browse journals, that with specified tags. Tags devide by ";". For example:
+```
+jrme -g "tag"
+jrme -g "tag1;tag2;"
+```
+-l, --level, browse journals, with the level between. For example:
+```
+jrme -l "2"
+jrme -l "-12~13"
+```
+**Most of the above options can be combined， For example:**
+```
+jrme -f "last year" -t "yesterday" -n 5
+jrme -o "today" -n 3
+jrme 
+```
+-G, --all_tags, show all tags. Notice: *It will show the number of tags, not the number of journal with the tags.*  
+
+# Modify or Delete Journals
+The journals can be edited by appending -E or --edit option while browsing journal.  For example:
+```
+jrme -on "today" -E
+jrme -f "last year" -t "yesterday" -n 5 -E
+```
+The journals can be deleted by appending -D or --delete option while browsing journal.  For example:
+```
+jrme -f "2014" -t "2018" -g "university;school" -D
+```
+--force_delete option is nearly the same as --delete, but jrme will delete without quering.
+
+# Config Node
+You may have token notice of that there some special words while you are writing journal. They are pairs of "key" and "value". All the keys and values construct "config" as part of journal. The config will be save with journal. Jrme has 3 initial config node. They are "data", level and tags. More config node can be implement join as plugin.
+## date
+The date of journal. Format is YY-MM-DD hh:mm:ss.
+## level
+The importance of journal. The default value is 0.
+## tags
+Tags of journal. Tags should be divide by ";".
+
+# Config file
+The config file is ~/.jrme/config.ini  
+```
+[base]
+editor = Default editor
+
+[plugin]
+config node = Config node plugins. Should be divide by ","
+journal format = Journal format support plugins. Should be divide by ","
+```
+# Plugins
+Jrme is flexible. It support config nodes plugin and journal format plugin to extend function. Plugins are save at *~/.jrme/plugin/*
+## Config Node Plugin
+Every config node include "key" and "valus". Plugins can get whole journal befor user type in journal and while user saving journal. Plugin can modify journal at that time.  
+1. Every plugin should have a default value to set while user prepare to type in journal.
+2. Every plugin can get whole journal befor user type in journal and while user saving journal. Plugin can modify journal at that time.   
+3. jrme has build in 3 config nod. They are date, level and tag. Don`t use the three words in plugin.  
+  
+Jrme project provide an config node plugin as example which is named as "save data". Run build.sh script and you can get it in ./build/plugin/. Move save_data.so to *~/.jrme/plugin/* and modify *~/.jrme/config.ini* for journal to load plugin.   
+~/.jrme/config.ini example：
+```
+[plugin]
+config node = save_date.so
+```
+## Journal Format Plugin
+Users can save journal as different kind of format. Notice that the interface for typ in journal will not change, no matter which kind of format has be select. The format will only change while user save journal. Plugin can provide a list of supporting postfix, but each postfix should not longer then 7 char. Jrme will auto select plugin to open journal.  
+Jrme project provide  an config node plugin as example which support markdown format. Run build.sh script and you can get it in ./build/plugin/. Move save_data.so to *~/.jrme/plugin/* and modify *~/.jrme/config.ini* for journal to load plugin.   
+~/.jrme/config.ini example：
+```
+[plugin]
+journal format = md_journal.so
+```  
+
+# Compile & Install
+## Compile
 Need：gcc,g++  
 Output: ./build/out/jrme  
 Build script: ：build.sh 
 
-## install
+## Install
 Note: The install processes is acturly copy jrme to /usr/bin/. So you need to compile before install, and you also need root permission.  
 install jrme: install.sh  
 install plugin: install_plugin.sh  
