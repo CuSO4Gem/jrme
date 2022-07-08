@@ -19,17 +19,17 @@ limitations under the License.
 #include <sys/stat.h>
 #include <unistd.h>
 
-#include "ConfigNodeMaster.h"
+#include "JAttributeMaster.h"
 #include "date.h"
-#include "DateConfigNode.h"
+#include "DataJAttribute.h"
 #include "debug_print.h"
 #include "EnTimeParser.h"
 #include "iniparser.hpp"
 #include "JrmeConfig.h"
-#include "LevelConfigNode.h"
+#include "LevelJAttribute.h"
 #include "pthread.h"
 #include "SfJournalBook.h"
-#include "TagConfigNode.h"
+#include "TagJAttribute.h"
 #include "TxtEditor.h"
 #include "Utils.h"
 #include "WriteMode.h"
@@ -111,7 +111,7 @@ int journlWriteMode(string bookPath, string timeDescription, string title, strin
 #endif
 
     // todo : more type of time parse from timeDescription
-    ConfigNodeMaster configMaster = ConfigNodeMaster();
+    JAttributeMaster attributeMaster = JAttributeMaster();
     Date date;
     if (timeDescription.length()==0)
         date = Time().toDate();
@@ -134,26 +134,26 @@ int journlWriteMode(string bookPath, string timeDescription, string title, strin
             date.setSecond(timeRet.second);
         }
     }
-    configMaster.setDate(date.stamp());
-    // load config node plugin
+    attributeMaster.setDate(date.stamp());
+    // load JAttribute plugin
     list<string> pluginNameVector = JrmeConfig::getConfigNodePluginNames();
     string pluginName;
     for (auto &it:pluginNameVector)
     {
-        if (!configMaster.addPluginNode(it))
+        if (!attributeMaster.addPluginNode(it))
         {
             printf("warning: plugin %s not find\n", pluginName.c_str());
         }
     }
     
 
-    string config = configMaster.genConfig();
+    string attributePart = attributeMaster.genJAttributePart();
     
     shared_ptr<Journal> journal = make_shared<Journal>();
     journal->setTitle(title);
-    journal->setConfig(config);
+    journal->setAttributePart(attributePart);
     journal->setContent(content);
-    configMaster.preprocess(journal);
+    attributeMaster.preprocess(journal);
 
     /** no all of title, time and content are ready, program will call editor to get a jounal.
      * Otherwise, journal will be save directly.
@@ -164,8 +164,8 @@ int journlWriteMode(string bookPath, string timeDescription, string title, strin
         strBuffer.append("==========journal==========\n");
         strBuffer.append(journal->getTitle());
         strBuffer.append("\n");
-        strBuffer.append("==========config==========\n");
-        strBuffer.append(journal->getConfig());
+        strBuffer.append("=======attributePart=======\n");
+        strBuffer.append(journal->getAttributePart());
         strBuffer.append("==========content==========\n");
         strBuffer.append(journal->getContent());
         TxtEditor editor;
@@ -175,12 +175,12 @@ int journlWriteMode(string bookPath, string timeDescription, string title, strin
         journal = editor.getJournalFromEditor();
         if (!journal)
         {
-            JLOGE("[E] The input journal format error!!\n");
+            JLOGE("[E] The input Formate error!!\n");
             return -1;
         }
     }
     void *tRet;
-    configMaster.postprocess(journal);
+    attributeMaster.postprocess(journal);
     
     pthread_join(openTid, &tRet);
 #ifdef PTHREAD_OPEN

@@ -11,7 +11,7 @@ In your terminal, input `jrme`, the editor (`vi` by default) will be launched. T
 ```
 ==========journal==========
 <input title here>
-==========config==========
+=======attributePart=======
 date=2022-02-26 19:23:32
 tags=
 level=
@@ -108,8 +108,8 @@ jrme -f "2014" -t "2018" -g "university;school" -D
 ```
 --force_delete option is nearly the same as --delete, but jrme will delete without quering.
 
-# Config Node
-You may have token notice of that there some special words while you are writing journal. They are pairs of "key" and "value". All the keys and values construct "config" as part of journal. The config will be save with journal. Jrme has 3 initial config node. They are "data", level and tags. More config node can be implement join as plugin.
+# JAttribute
+You may have token notice of that there some special words while you are writing journal. They are pairs of "key" and "value". All the keys and values construct "config" as part of journal. The config will be save with journal. Jrme has 3 initial JAttribute. They are "data", level and tags. More JAttribute can be implement join as plugin.
 ## date
 The date of journal. Format is YY-MM-DD hh:mm:ss.
 ## level
@@ -124,30 +124,30 @@ The config file is ~/.jrme/config.ini
 editor = Default editor
 
 [plugin]
-config node = Config node plugins. Should be divide by ","
-journal format = Journal format support plugins. Should be divide by ","
+JAttribute = JAttribute plugins. Should be divide by ","
+Formate = Formate support plugins. Should be divide by ","
 ```
 # Plugins
-Jrme is flexible. It support config nodes plugin and journal format plugin to extend function. Plugins are save at *~/.jrme/plugin/*
-## Config Node Plugin
-Every config node include "key" and "valus". Plugins can get whole journal befor user type in journal and while user saving journal. Plugin can modify journal at that time.  
+Jrme is flexible. It support JAttributes plugin and Formate plugin to extend function. Plugins are save at *~/.jrme/plugin/*
+## JAttribute Plugin
+Every JAttribute include "key" and "valus". Plugins can get whole journal befor user type in journal and while user saving journal. Plugin can modify journal at that time.  
 1. Every plugin should have a default value to set while user prepare to type in journal.
 2. Every plugin can get whole journal befor user type in journal and while user saving journal. Plugin can modify journal at that time.   
 3. jrme has build in 3 config nod. They are date, level and tag. Don`t use the three words in plugin.  
   
-Jrme project provide an config node plugin as example which is named as "save data". Run build.sh script and you can get it in ./build/plugin/. Move save_data.so to *~/.jrme/plugin/* and modify *~/.jrme/config.ini* for journal to load plugin.   
+Jrme project provide an JAttribute plugin as example which is named as "save data". Run build.sh script and you can get it in ./build/plugin/. Move save_data.so to *~/.jrme/plugin/* and modify *~/.jrme/config.ini* for journal to load plugin.   
 ~/.jrme/config.ini example：
 ```
 [plugin]
-config node = save_date.so
+JAttribute = save_date.so
 ```
-## Journal Format Plugin
+## Formate Plugin
 Users can save journal as different kind of format. Notice that the interface for typ in journal will not change, no matter which kind of format has be select. The format will only change while user save journal. Plugin can provide a list of supporting postfix, but each postfix should not longer then 7 char. Jrme will auto select plugin to open journal.  
-Jrme project provide  an config node plugin as example which support markdown format. Run build.sh script and you can get it in ./build/plugin/. Move save_data.so to *~/.jrme/plugin/* and modify *~/.jrme/config.ini* for journal to load plugin.   
+Jrme project provide  an JAttribute plugin as example which support markdown format. Run build.sh script and you can get it in ./build/plugin/. Move save_data.so to *~/.jrme/plugin/* and modify *~/.jrme/config.ini* for journal to load plugin.   
 ~/.jrme/config.ini example：
 ```
 [plugin]
-journal format = md_journal.so
+Formate = md_journal.so
 ```  
 
 # Compile & Install

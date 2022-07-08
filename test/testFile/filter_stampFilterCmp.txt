@@ -1,6 +1,6 @@
 ==========journal==========
 from to
-==========config==========
+=======attributePart=======
 date=2014-11-11 09:00:00
 tags=first;
 level=7
@@ -10,7 +10,7 @@ level=7
 
 ========== journal ==========
 just in
-========== config ==========
+========== attributePart ==========
 date=2018-07-01 09:00:00
 tags=first tag;second tag;
 level= -13 
@@ -20,7 +20,7 @@ level= -13
 
 ========== journal ==========
 just in lack hour
-========== config ==========
+========== attributePart ==========
 date=2018-07-03
 tags=first tag;second tag;
 level= -13 
@@ -30,7 +30,7 @@ level= -13
 
 ========== journal ==========
 to
-========== config ==========
+========== attributePart ==========
 date=2022-01-01
 tags=first;second;thirdly;
 level=10

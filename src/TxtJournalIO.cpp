@@ -145,7 +145,7 @@ bool TxtJournalIO::open(string path)
     while (getline(mJournal, lineBuffer))
     {
         
-        if (regex_search(lineBuffer, regexResult, regex("^={2,}[ ]{0,}config[ ]{0,}={2,}")))
+        if (regex_search(lineBuffer, regexResult, regex("^={2,}[ ]{0,}attributePart[ ]{0,}={2,}")))
         {
             finded = true;
             break;
@@ -214,13 +214,13 @@ shared_ptr<Journal> TxtJournalIO::readJournal()
         return nullptr;
     }
 
-    //read config
+    //read attributePart
     finded = false;
     readBuffer.clear();
     while (getline(mJournal, lineBuffer))
     {
         
-        if (regex_search(lineBuffer, regexResult, regex("^={2,}[ ]{0,}config[ ]{0,}={2,}")))
+        if (regex_search(lineBuffer, regexResult, regex("^={2,}[ ]{0,}attributePart[ ]{0,}={2,}")))
         {
             finded = true;
             break;
@@ -275,7 +275,7 @@ shared_ptr<Journal> TxtJournalIO::readJournal()
     }
     if (readBuffer[readBuffer.length()-1] != '\n')
         readBuffer.append("\n");
-    journl->setConfig(readBuffer);
+    journl->setAttributePart(readBuffer);
 
     finded = false;
     readBuffer.clear();
@@ -314,11 +314,11 @@ bool TxtJournalIO::writeJournal(shared_ptr<Journal> journal)
     if (title[title.length()-1]!='\n')
         mJournal.write("\n", 1);
 
-    string config = journal->getConfig();
-    lineBuffer = string("==========config==========\n");
+    string attributePart = journal->getAttributePart();
+    lineBuffer = string("=======attributePart=======\n");
     mJournal.write(lineBuffer.c_str(), lineBuffer.length());
-    mJournal.write(config.c_str(), config.length());
-    if (config[config.length()-1]!='\n')
+    mJournal.write(attributePart.c_str(), attributePart.length());
+    if (attributePart[attributePart.length()-1]!='\n')
         mJournal.write("\n", 1);
 
     string content = journal->getContent();

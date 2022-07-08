@@ -50,7 +50,7 @@ TEST(MdJournalIO, read)
         getline(journalStore, lineBuffer, '#');
         jStandard.setTitle(lineBuffer);
         getline(journalStore, lineBuffer, '#');
-        jStandard.setConfig(lineBuffer);
+        jStandard.setAttributePart(lineBuffer);
         getline(journalStore, lineBuffer, '#');
         jStandard.setContent(lineBuffer);
         ASSERT_TRUE(*journal == jStandard) << "fail in loop " << to_string(i) << "\n" << journal->toString() << jStandard.toString();
@@ -76,7 +76,7 @@ TEST(MdJournalIO, write)
         getline(journalStore, lineBuffer, '#');
         jStandard->setTitle(lineBuffer);
         getline(journalStore, lineBuffer, '#');
-        jStandard->setConfig(lineBuffer);
+        jStandard->setAttributePart(lineBuffer);
         getline(journalStore, lineBuffer, '#');
         jStandard->setContent(lineBuffer);
         
@@ -99,7 +99,7 @@ TEST(MdJournalIO, write)
         getline(journalStore, lineBuffer, '#');
         jStandard.setTitle(lineBuffer);
         getline(journalStore, lineBuffer, '#');
-        jStandard.setConfig(lineBuffer);
+        jStandard.setAttributePart(lineBuffer);
         getline(journalStore, lineBuffer, '#');
         jStandard.setContent(lineBuffer);
         

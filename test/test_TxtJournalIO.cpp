@@ -48,7 +48,7 @@ TEST (TxtJournalIO, read)
             getline (journalStore, lineBuffer, '#');
             jStandard.setTitle (lineBuffer);
             getline (journalStore, lineBuffer, '#');
-            jStandard.setConfig (lineBuffer);
+            jStandard.setAttributePart (lineBuffer);
             getline (journalStore, lineBuffer, '#');
             jStandard.setContent (lineBuffer);
 
@@ -76,7 +76,7 @@ TEST (TxtJournalIO, write)
             getline (journalStore, lineBuffer, '#');
             jStandard->setTitle (lineBuffer);
             getline (journalStore, lineBuffer, '#');
-            jStandard->setConfig (lineBuffer);
+            jStandard->setAttributePart (lineBuffer);
             getline (journalStore, lineBuffer, '#');
             jStandard->setContent (lineBuffer);
 
@@ -102,7 +102,7 @@ TEST (TxtJournalIO, write)
             getline (journalStore, lineBuffer, '#');
             jStandard.setTitle (lineBuffer);
             getline (journalStore, lineBuffer, '#');
-            jStandard.setConfig (lineBuffer);
+            jStandard.setAttributePart (lineBuffer);
             getline (journalStore, lineBuffer, '#');
             jStandard.setContent (lineBuffer);
 

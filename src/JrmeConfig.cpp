@@ -183,8 +183,8 @@ list<string> JrmeConfig::getConfigNodePluginNames()
         return list<string>();
     }
 
-    string plugNames = configFile.GetSection("plugin")->GetValue("config node").AsString();
-    JLOGD("[D] config node plugin ini:%s", plugNames.c_str());
+    string plugNames = configFile.GetSection("plugin")->GetValue("JAttribute").AsString();
+    JLOGD("[D] JAttribute plugin ini:%s", plugNames.c_str());
     istringstream plugNameStream = istringstream(plugNames);
     string pluginName;
     list<string> plugNameVector;
@@ -232,7 +232,7 @@ list<string> JrmeConfig::getJournalIOPluginNames()
         JLOGE("[E] cannot not load ini file!");
         return list<string> ();
     }
-    string plugNames = configFile.GetSection("plugin")->GetValue("journal format").AsString();
+    string plugNames = configFile.GetSection("plugin")->GetValue("Formate").AsString();
     istringstream plugNameStream = istringstream(plugNames);
     string pluginName;
     list<string> plugins;

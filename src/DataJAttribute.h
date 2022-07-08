@@ -13,10 +13,10 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-#ifndef DATE_CONFIG_NODE_H
-#define DATE_CONFIG_NODE_H
+#ifndef DATE_JATTRIBUTE_H
+#define DATE_JATTRIBUTE_H
 
-#include "ConfigNodeBase.h"
+#include "JAttributeBase.h"
 #include "date.h"
 #include "Utils.h"
 
@@ -24,25 +24,25 @@ using namespace ec;
 
 /**
  * @brief 
- * 处理"date"config node，用于记录日记的时间
+ * 处理"date"JAttribute，用于记录日记的时间
  * 
- * Process "date" config node. Mark the date of journal
+ * Process "date" JAttribute. Mark the date of journal
  */
-class DateConfigNode : public ConfigNodeBase
+class DataJAttribute : public JAttributeBase
 {
     Date mDate;
 public:
-    DateConfigNode() {mDate = Time().toDate();};
-    ~DateConfigNode() = default;
+    DataJAttribute() {mDate = Time().toDate();};
+    ~DataJAttribute() = default;
 
     uint32_t apiVersion() {return 1;};
 
     string getKey() {return string("date");};
     string getDefaultValue() {return string("");};
-    void preprocess(shared_ptr<Journal> journal) {setValueToConfig(journal->getConfig(), "date", mDate.toString());};
+    void preprocess(shared_ptr<Journal> journal) {setValueToJAttributePart(journal->getAttributePart(), "date", mDate.toString());};
     void postprocess(shared_ptr<Journal> journal) {return;};
 
-    int32_t innerConfigType() {return DATE_CONFIG;};
+    int32_t getInnerJAttributeType() {return DATE_JATTRIBUTE;};
     void setDate(time_t stamp) {mDate = Date(stamp);};
 };
 

@@ -84,7 +84,7 @@ void SfJournalBook::order()
     for (auto &it:mJournalVector)
     {
         fsdVector[pos].order = pos;
-        fsdVector[pos].stamp = getStampFormConfig(it->getConfig());
+        fsdVector[pos].stamp = getStampFormJAttributePart(it->getAttributePart());
         pos++;
     }
     sort(fsdVector.begin(), fsdVector.end(), fastSortDataCmp);

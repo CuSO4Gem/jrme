@@ -66,7 +66,7 @@ shared_ptr<Journal> TxtEditor::getJournalFromEditor()
     while (getline(iTmpFile, lineBuffer))
     {
         size_t prLen=0;
-        if (regex_search(lineBuffer, regexResult, regex("^={2,}[ ]{0,}config[ ]{0,}={2,}")))
+        if (regex_search(lineBuffer, regexResult, regex("^={2,}[ ]{0,}attributePart[ ]{0,}={2,}")))
         {
             finded = true;
             break;
@@ -95,7 +95,7 @@ shared_ptr<Journal> TxtEditor::getJournalFromEditor()
     if (!finded)
         goto fail;
     else
-        journal->setConfig(readBuffer);
+        journal->setAttributePart(readBuffer);
     
     readBuffer.clear();
     lineBuffer.clear();

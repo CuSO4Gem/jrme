@@ -1,54 +1,49 @@
 ==========journal==========
-Only one tag
-==========config==========
+unit
+=======attributePart=======
 date=2022-01-01 09:00:00
 tags=first;
-level=10
+level=7
 ==========content==========
-first
+7
 ###########################
 
 ========== journal ==========
-Multiple Tag
-========== config ==========
+ten
+========== attributePart ==========
 date=2022-01-01 09:00:00
 tags=first;second;thirdly;
 level=10
 ========== content ==========
-first
-second
-thirdly
+10
 ###########################
 
 ========== journal ==========
-last tag without ";"
-========== config ==========
+positive
+========== attributePart ==========
 date=2022-01-01 09:00:00
 tags=first;second
-level=10
+level=+10
 ========== content ==========
-first
-second
+10
 ###########################
 
 ========== journal ==========
-tag with space at front
-========== config ==========
+negtive
+========== attributePart ==========
 date=2022-01-01 09:00:00
 tags= first;  second;
-level=10
+level=-11
 ========== content ==========
-first
-second
+-11
 ###########################
 
 ========== journal ==========
-tag with space
-========== config ==========
+with space
+========== attributePart ==========
 date=2022-01-01 09:00:00
 tags=first tag;second tag;
-level=10
+level= -13 
 ========== content ==========
-first tag
-second tag
+-13
 ###########################

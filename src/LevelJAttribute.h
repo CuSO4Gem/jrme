@@ -13,31 +13,32 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-#ifndef TAG_CONFIG_NODE_H
-#define TAG_CONFIG_NODE_H
+#ifndef LEVEL_JATTRIBUTE_H
+#define LEVEL_JATTRIBUTE_H
 
-#include "ConfigNodeBase.h"
+#include "JAttributeBase.h"
 
 using namespace ec;
 
 /**
  * @brief 
- * "Tag" config node
+ * "level"关键字的JAttribute
+ * "level" JAttribute
  */
-class TagConfigNode : public ConfigNodeBase
+class LevelJAttribute : public JAttributeBase
 {
 public:
-    TagConfigNode() = default;
-    ~TagConfigNode() = default;
+    LevelJAttribute() = default;
+    ~LevelJAttribute() = default;
 
     uint32_t apiVersion() {return 1;};
 
-    string getKey() {return string("tags");};
+    string getKey() {return string("level");};
     string getDefaultValue() {return string("");};
     void preprocess(shared_ptr<Journal> journal) {return;};
     void postprocess(shared_ptr<Journal> journal) {return;};
 
-    int32_t innerConfigType() {return TAG_CONFIG;};
+    int32_t getInnerJAttributeType() {return LEVEL_JATTRIBUTE;};
 };
 
 #endif

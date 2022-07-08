@@ -18,7 +18,7 @@ limitations under the License.
 #include <sstream>
 
 #include "date.h"
-#include "NodeUtil.h"
+#include "SaveDateUtil.h"
 #include "SaveDate.h"
 
 using namespace std;
@@ -53,8 +53,8 @@ void releaseJournalStruct(struct journal_s journal)
 {
     if (journal.title)
         free(journal.title);
-    if (journal.config)
-        free(journal.config);
+    if (journal.attributePart)
+        free(journal.attributePart);
     if (journal.content)
         free(journal.content);
 }
@@ -68,11 +68,11 @@ void postprocess(void *handle, const struct journal_s *refJournal, struct journa
 {
     struct save_date_s *save_data = (struct save_date_s *)handle;
 
-    string config = string(refJournal->config);
-    setValueToConfig(config, "save date", Time().toDate().toString());
-    retJournal->config = (char *)malloc(config.length()+1);
-    memcpy(retJournal->config, config.c_str(), config.length());
-    (retJournal->config)[config.length()] = '\0';
+    string attributePart = string(refJournal->attributePart);
+    setValueToJAttributePart(attributePart, "save date", Time().toDate().toString());
+    retJournal->attributePart = (char *)malloc(attributePart.length()+1);
+    memcpy(retJournal->attributePart, attributePart.c_str(), attributePart.length());
+    (retJournal->attributePart)[attributePart.length()] = '\0';
 
 /**
  * @note 

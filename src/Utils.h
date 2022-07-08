@@ -42,56 +42,56 @@ void removeMultipleSpaces(string &str);
 
 /**
  * @brief 
- * 从日记的config部分获取指定key的value
- * Given key return value from journal config
+ * 从日记的attributePart部分获取指定key的value
+ * Given key return value from journal attributePart
  * 
- * @param config 
+ * @param attributePart 
  * @param key 
  * @param value 
  * @return true find
  * @return false not find
  */
-bool getValueFromConfig(const string &config, const string &key, string &value);
+bool getValueFromJAttributePart(const string &attributePart, const string &key, string &value);
 
 /**
  * @brief 
- * 向日记的config部分设置指定key的value
- * Set the Value To Config 
+ * 向日记的attributePart部分设置指定key的value
+ * Set the Value To attributePart 
  * 
- * @param config 
+ * @param attributePart 
  * @param key 
  * @param value 
  * @return true 
  * @return false 
  */
-bool setValueToConfig(string &config, const string &key,const string value);
+bool setValueToJAttributePart(string &attributePart, const string &key,const string value);
 
 /**
  * @brief 
- * 从config部分获取时戳
- * Get the Stamp Form Config string
+ * 从attributePart部分获取时戳
+ * Get the Stamp Form attributePart string
  * 
- * @param config 
+ * @param attributePart 
  * @return time_t 
  */
-time_t getStampFormConfig(const string &config);
+time_t getStampFormJAttributePart(const string &attributePart);
 
 /**
  * @brief 
- * 从config部分获取level值
- * Get the Level Form Journal Config
+ * 从attributePart部分获取level值
+ * Get the Level Form Journal attributePart
  * 
- * @param config 
+ * @param attributePart 
  * @return int32_t 
  */
-int32_t getLevelFormConfig(const string &config);
+int32_t getLevelFormJAttributePart(const string &attributePart);
 
 /**
  * @brief 
- * 从config解析config list
- * Get the Tags Form Journal Config
+ * 从attributePart解析tag的vector
+ * Get the Tags Form Journal attributePart
  */
-vector<string> getTagsFormConfig(const string &config);
+vector<string> getTagsFormJAttributePart(const string &attributePart);
 
 /**
  * @brief 
