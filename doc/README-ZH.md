@@ -124,7 +124,7 @@ editor = 调用的系统编辑器
 
 [plugin]
 JAttribute = 插件，多个插件用,分割
-journal format = 日记格式插件，多个插件用,分割
+Formate = 日记格式插件，多个插件用,分割
 ```
 
 # 插件
@@ -147,10 +147,10 @@ JAttribute = save_date.so
 日记格式插件可以有自己支持的格式后缀列表，且后缀长度不超过7。系统会优先选择与第一个支持文件后缀名的日记格式插件。如果失败，依次调用插件尝试打开日记。  
   
 当前工程自带一个简单的markdown格式插件，运行：*build.sh*脚本可以在./build/plugin/获得该插件。将其保存到*~/.jrme/plugin/*并修改配置文件*~/.jrme/config.ini*以便jrme可以载入该插件  
-注意：需要插件顺利加载，需要在配置文件中的journal format加入该插件的文件名。如：
+注意：需要插件顺利加载，需要在配置文件中的Formate加入该插件的文件名。如：
 ```
 [plugin]
-journal format = md_journal.so
+Formate = md_journal.so
 ```
 
 # 编译与安装

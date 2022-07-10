@@ -175,7 +175,7 @@ int journlWriteMode(string bookPath, string timeDescription, string title, strin
         journal = editor.getJournalFromEditor();
         if (!journal)
         {
-            JLOGE("[E] The input journal format error!!\n");
+            JLOGE("[E] The input Formate error!!\n");
             return -1;
         }
     }

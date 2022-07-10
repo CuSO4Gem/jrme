@@ -232,7 +232,7 @@ list<string> JrmeConfig::getJournalIOPluginNames()
         JLOGE("[E] cannot not load ini file!");
         return list<string> ();
     }
-    string plugNames = configFile.GetSection("plugin")->GetValue("journal format").AsString();
+    string plugNames = configFile.GetSection("plugin")->GetValue("Formate").AsString();
     istringstream plugNameStream = istringstream(plugNames);
     string pluginName;
     list<string> plugins;

@@ -125,10 +125,10 @@ editor = Default editor
 
 [plugin]
 JAttribute = JAttribute plugins. Should be divide by ","
-journal format = Journal format support plugins. Should be divide by ","
+Formate = Formate support plugins. Should be divide by ","
 ```
 # Plugins
-Jrme is flexible. It support JAttributes plugin and journal format plugin to extend function. Plugins are save at *~/.jrme/plugin/*
+Jrme is flexible. It support JAttributes plugin and Formate plugin to extend function. Plugins are save at *~/.jrme/plugin/*
 ## JAttribute Plugin
 Every JAttribute include "key" and "valus". Plugins can get whole journal befor user type in journal and while user saving journal. Plugin can modify journal at that time.  
 1. Every plugin should have a default value to set while user prepare to type in journal.
@@ -141,13 +141,13 @@ Jrme project provide an JAttribute plugin as example which is named as "save dat
 [plugin]
 JAttribute = save_date.so
 ```
-## Journal Format Plugin
+## Formate Plugin
 Users can save journal as different kind of format. Notice that the interface for typ in journal will not change, no matter which kind of format has be select. The format will only change while user save journal. Plugin can provide a list of supporting postfix, but each postfix should not longer then 7 char. Jrme will auto select plugin to open journal.  
 Jrme project provide  an JAttribute plugin as example which support markdown format. Run build.sh script and you can get it in ./build/plugin/. Move save_data.so to *~/.jrme/plugin/* and modify *~/.jrme/config.ini* for journal to load plugin.   
 ~/.jrme/config.ini example：
 ```
 [plugin]
-journal format = md_journal.so
+Formate = md_journal.so
 ```  
 
 # Compile & Install
