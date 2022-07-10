@@ -141,10 +141,10 @@ void removeMultipleSpaces(string &str){
     }
 }
 
-bool getValueFromConfig(const string &config, const string &key, string &value)
+bool getValueFromJAttributePart(const string &attributePart, const string &key, string &value)
 {
     string keyBuffer, valueBuffer;
-    istringstream configStream = istringstream(config);
+    istringstream configStream = istringstream(attributePart);
     
     bool finded = false;
     while(configGetline(configStream, keyBuffer, valueBuffer))
@@ -159,10 +159,10 @@ bool getValueFromConfig(const string &config, const string &key, string &value)
     return finded;
 }
 
-bool setValueToConfig(string &config, const string &key,const string value)
+bool setValueToJAttributePart(string &attributePart, const string &key,const string value)
 {
     string keyBuffer, valueBuffer, lineBuffer;
-    istringstream configStream = istringstream(config);
+    istringstream configStream = istringstream(attributePart);
     
     bool finded = false;
     size_t keyBeginPos = configStream.tellg();
@@ -181,17 +181,17 @@ bool setValueToConfig(string &config, const string &key,const string value)
     configStream.seekg(keyBeginPos);
     getline(configStream, lineBuffer);
     size_t len = lineBuffer.length();
-    config.erase(keyBeginPos, len);
+    attributePart.erase(keyBeginPos, len);
     string insertString = key+"="+value;
-    config.insert(keyBeginPos, insertString);
+    attributePart.insert(keyBeginPos, insertString);
 
     return true;
 }
 
-time_t getStampFormConfig(const string &config)
+time_t getStampFormJAttributePart(const string &attributePart)
 {
     string key, value;
-    istringstream configStream = istringstream(config);
+    istringstream configStream = istringstream(attributePart);
     
     bool finded = false;
     while(configGetline(configStream, key, value))
@@ -290,10 +290,10 @@ time_t getStampFormConfig(const string &config)
     return date.stamp();
 }
 
-int32_t getLevelFormConfig(const string &config)
+int32_t getLevelFormJAttributePart(const string &attributePart)
 {
     string key, value;
-    istringstream configStream = istringstream(config);
+    istringstream configStream = istringstream(attributePart);
     
     bool finded = false;
     while(configGetline(configStream, key, value))
@@ -322,10 +322,10 @@ int32_t getLevelFormConfig(const string &config)
     return atoi(value.c_str()+pos);
 }
 
-vector<string> getTagsFormConfig(const string &config)
+vector<string> getTagsFormJAttributePart(const string &attributePart)
 {
     string key, value;
-    istringstream configStream = istringstream(config);
+    istringstream configStream = istringstream(attributePart);
     
     bool finded = false;
     while(configGetline(configStream, key, value))
@@ -401,7 +401,7 @@ shared_ptr<Journal> strToJournal(const string &inStr)
     while (getline(strStream, lineBuffer))
     {
         size_t prLen=0;
-        if (regex_search(lineBuffer, regexResult, regex("^={2,}[ ]{0,}config[ ]{0,}={2,}")))
+        if (regex_search(lineBuffer, regexResult, regex("^={2,}[ ]{0,}attributePart[ ]{0,}={2,}")))
         {
             break;
         }
@@ -439,7 +439,7 @@ shared_ptr<Journal> strToJournal(const string &inStr)
         if (haveContent)
             readBuffer.append(lineBuffer + string("\n"));
     }
-    journl->setConfig(readBuffer);
+    journl->setAttributePart(readBuffer);
     if (strStream.eof())
         return journl;
 

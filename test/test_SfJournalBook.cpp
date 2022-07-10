@@ -54,7 +54,7 @@ TEST (SFJournalBook, total)
     getline (journalStore, lineBuffer, '#');
     jInsert->setTitle (lineBuffer);
     getline (journalStore, lineBuffer, '#');
-    jInsert->setConfig (lineBuffer);
+    jInsert->setAttributePart (lineBuffer);
     getline (journalStore, lineBuffer, '#');
     jInsert->setContent (lineBuffer);
 
@@ -74,11 +74,11 @@ TEST (SFJournalBook, total)
         << "journal on journal book test.txt not eq 4 while verfy";
     bool   inorder    = true;
     size_t loopCount  = journalBookV.size ();
-    time_t stampBefor = getStampFormConfig (journalBookV.at (0)->getConfig ());
+    time_t stampBefor = getStampFormJAttributePart (journalBookV.at (0)->getAttributePart ());
     time_t stampNow;
     for (size_t i = 1; i < loopCount; i++)
         {
-            stampNow = getStampFormConfig (journalBookV.at (i)->getConfig ());
+            stampNow = getStampFormJAttributePart (journalBookV.at (i)->getAttributePart ());
             if (stampBefor < stampNow)
                 {
                     inorder = false;

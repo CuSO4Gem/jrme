@@ -43,7 +43,7 @@ using namespace ec;
 #define FILTER_STAMP_SRC "./testFile/filter_stampFilter.txt"
 #define FILTER_STAMP_DST "./testFile/filter_stampFilterCmp.txt"
 
-TEST(Utils, getTagsFormConfig)
+TEST(Utils, getTagsFormJAttributePart)
 {
     shared_ptr<JournalIOBase> journalIO = make_shared<TxtJournalIO>();
     ASSERT_TRUE(journalIO->open(GET_TAG_BOOK))
@@ -57,7 +57,7 @@ TEST(Utils, getTagsFormConfig)
             if (!journal) break;
 
             vector<string> tagsFromConfig =
-                getTagsFormConfig(journal->getConfig());
+                getTagsFormJAttributePart(journal->getAttributePart());
             // expect tag output are in journal content
             vector<string> tags = vector<string>();
             tags.reserve(tagsFromConfig.size());
@@ -80,7 +80,7 @@ TEST(Utils, getTagsFormConfig)
     ASSERT_EQ(testNumber, 5) << "not run enough test!!";
 }
 
-TEST(Utils, getLevelFormConfig)
+TEST(Utils, getLevelFormJAttributePart)
 {
     shared_ptr<JournalIOBase> journalIO = make_shared<TxtJournalIO>();
     ASSERT_TRUE(journalIO->open(GET_LEVEL_BOOK))
@@ -93,7 +93,7 @@ TEST(Utils, getLevelFormConfig)
             journal = journalIO->readJournal();
             if (!journal) break;
 
-            int32_t levelFromConfig = getLevelFormConfig(journal->getConfig());
+            int32_t levelFromConfig = getLevelFormJAttributePart(journal->getAttributePart());
             // expect tag output are in journal content
             istringstream configStream = istringstream(journal->getContent());
             string        levelS;
@@ -117,8 +117,8 @@ TEST(Filter, stamp)
     ASSERT_GE(bookToCmp->size(), 2);
 
     JournalFilter filter(bookToFilter);
-    time_t        stFrom = getStampFormConfig(bookToFilter->at(0)->getConfig());
-    time_t        stTo   = getStampFormConfig(bookToFilter->at(1)->getConfig());
+    time_t        stFrom = getStampFormJAttributePart(bookToFilter->at(0)->getAttributePart());
+    time_t        stTo   = getStampFormJAttributePart(bookToFilter->at(1)->getAttributePart());
     filter.stampFilter(stFrom, false);
     filter.stampFilter(stTo, true);
     filter.sortByStamp();
@@ -143,8 +143,8 @@ TEST(Filter, level)
     ASSERT_GE(bookToCmp->size(), 2);
 
     JournalFilter filter(bookToFilter);
-    int32_t levelFrom = getLevelFormConfig(bookToFilter->at(0)->getConfig());
-    int32_t levelTo   = getLevelFormConfig(bookToFilter->at(1)->getConfig());
+    int32_t levelFrom = getLevelFormJAttributePart(bookToFilter->at(0)->getAttributePart());
+    int32_t levelTo   = getLevelFormJAttributePart(bookToFilter->at(1)->getAttributePart());
     filter.levelFilter(levelFrom, false);
     filter.levelFilter(levelTo, true);
     filter.sortByLevel();
@@ -170,7 +170,7 @@ TEST(Filter, tags)
 
     JournalFilter  filter(bookToFilter);
     vector<string> filterTags =
-        getTagsFormConfig(bookToFilter->at(0)->getConfig());
+        getTagsFormJAttributePart(bookToFilter->at(0)->getAttributePart());
     filter.withTagsFilter(filterTags);
     vector<size_t> filterOrders = filter.getJournalOrder();
     ASSERT_EQ(filterOrders.size(), bookToCmp->size());

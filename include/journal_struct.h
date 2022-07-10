@@ -26,7 +26,7 @@ limitations under the License.
 struct journal_s
 {
     char *title;
-    char *config;
+    char *attributePart;
     char *content;
 };
 

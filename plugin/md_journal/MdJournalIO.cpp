@@ -176,7 +176,7 @@ bool MdJournalIO::open(string path)
         mJournal.close();
         return false;
     }
-    //config begin
+    //attributePart begin
     finded = false;
     while (getline(mJournal, lineBuffer))
     {
@@ -193,7 +193,7 @@ bool MdJournalIO::open(string path)
         mJournal.close();
         return false;
     }
-    //config end
+    //attributePart end
     finded = false;
     while (getline(mJournal, lineBuffer))
     {
@@ -299,7 +299,7 @@ shared_ptr<Journal> MdJournalIO::readJournal()
         readBuffer.append("\n");
     journl->setTitle(readBuffer);
 
-    /*read config*/
+    /*read attributePart*/
     finded = false;
     readBuffer.clear();
     while (getline(mJournal, lineBuffer))
@@ -330,14 +330,14 @@ shared_ptr<Journal> MdJournalIO::readJournal()
     }
     if (!finded)
     {
-        JLOGE("[E] return null journal while reading config");
+        JLOGE("[E] return null journal while reading attributePart");
         mJournal.close();
         mState = INITED;
         return nullptr;
     }
     if (readBuffer[readBuffer.length()-1] != '\n')
         readBuffer.append("\n");
-    journl->setConfig(readBuffer);
+    journl->setAttributePart(readBuffer);
 
     /*read content*/
     finded = false;
@@ -398,12 +398,12 @@ bool MdJournalIO::writeJournal(shared_ptr<Journal> journal)
     if (title[title.length()-1]!='\n')
         mJournal.write("\n", 1);
 
-    string config = journal->getConfig();
+    string attributePart = journal->getAttributePart();
     string lineBuffer;
     lineBuffer = string("```\n");
     mJournal.write(lineBuffer.c_str(), lineBuffer.length());
-    mJournal.write(config.c_str(), config.length());
-    if (config[config.length()-1]!='\n')
+    mJournal.write(attributePart.c_str(), attributePart.length());
+    if (attributePart[attributePart.length()-1]!='\n')
         mJournal.write("\n", 1);
     mJournal.write(lineBuffer.c_str(), lineBuffer.length());
 
@@ -438,8 +438,8 @@ void releaseJournalStruct(struct journal_s journal)
 {
     if (journal.title)
         free(journal.title);
-    if (journal.config)
-        free(journal.config);
+    if (journal.attributePart)
+        free(journal.attributePart);
     if (journal.content)
         free(journal.content);
 }
@@ -540,7 +540,7 @@ bool readJournal(void *handle, struct journal_s* journal2R)
     if (!journal)
     {
         journal2R->title = NULL;
-        journal2R->config = NULL;
+        journal2R->attributePart = NULL;
         journal2R->content = NULL;
         JLOGD("[D] %s: read jounal == nullptr", PLUGIN_NAME);
         return false;
@@ -554,14 +554,14 @@ bool readJournal(void *handle, struct journal_s* journal2R)
     else
         journal2R->title = NULL;
     
-    strBuffer = journal->getConfig();
+    strBuffer = journal->getAttributePart();
     if (strBuffer.length()>0)
     {
-        journal2R->config = (char*)malloc(strBuffer.length()+1);
-        memcpy(journal2R->config, strBuffer.c_str(), strBuffer.length()+1);
+        journal2R->attributePart = (char*)malloc(strBuffer.length()+1);
+        memcpy(journal2R->attributePart, strBuffer.c_str(), strBuffer.length()+1);
     }
     else
-        journal2R->config = NULL;
+        journal2R->attributePart = NULL;
     
 
     strBuffer = journal->getContent();
@@ -593,7 +593,7 @@ bool writeJournal(void *handle, struct journal_s* journal2W)
         return false;
     }
     MdJournalIO &journalIO = *(MdJournalIO *)handle;
-    if (!journal2W->title || !journal2W->config || !journal2W->content)
+    if (!journal2W->title || !journal2W->attributePart || !journal2W->content)
     {
         JLOGE("[E] %s: journal2W is not avalible while calling %s", PLUGIN_NAME, __func__);
         return false;
@@ -602,8 +602,8 @@ bool writeJournal(void *handle, struct journal_s* journal2W)
     shared_ptr<Journal> journal = make_shared<Journal>();
     string strBuffer = string(journal2W->title);
     journal->setTitle(strBuffer);
-    strBuffer = string(journal2W->config);
-    journal->setConfig(strBuffer);
+    strBuffer = string(journal2W->attributePart);
+    journal->setAttributePart(strBuffer);
     strBuffer = string(journal2W->content);
     journal->setContent(strBuffer);
     return journalIO.writeJournal(journal);

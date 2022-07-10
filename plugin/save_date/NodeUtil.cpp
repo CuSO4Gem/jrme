@@ -78,10 +78,10 @@ bool configGetline(istringstream &configStream, string &key, string &value)
     return true;
 }
 
-bool setValueToConfig(string &config, const string &key,const string value)
+bool setValueToJAttributePart(string &attributePart, const string &key,const string value)
 {
     string keyBuffer, valueBuffer, lineBuffer;
-    istringstream configStream = istringstream(config);
+    istringstream configStream = istringstream(attributePart);
     
     bool finded = false;
     size_t keyBeginPos = configStream.tellg();
@@ -100,9 +100,9 @@ bool setValueToConfig(string &config, const string &key,const string value)
     configStream.seekg(keyBeginPos);
     getline(configStream, lineBuffer);
     size_t len = lineBuffer.length();
-    config.erase(keyBeginPos, len);
+    attributePart.erase(keyBeginPos, len);
     string insertString = key+"="+value;
-    config.insert(keyBeginPos, insertString);
+    attributePart.insert(keyBeginPos, insertString);
 
     return true;
 }

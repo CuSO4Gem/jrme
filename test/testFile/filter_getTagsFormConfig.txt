@@ -1,6 +1,6 @@
 ==========journal==========
 Only one tag
-==========config==========
+==========attributePart==========
 date=2022-01-01 09:00:00
 tags=first;
 level=10
@@ -10,7 +10,7 @@ first
 
 ========== journal ==========
 Multiple Tag
-========== config ==========
+========== attributePart ==========
 date=2022-01-01 09:00:00
 tags=first;second;thirdly;
 level=10
@@ -22,7 +22,7 @@ thirdly
 
 ========== journal ==========
 last tag without ";"
-========== config ==========
+========== attributePart ==========
 date=2022-01-01 09:00:00
 tags=first;second
 level=10
@@ -33,7 +33,7 @@ second
 
 ========== journal ==========
 tag with space at front
-========== config ==========
+========== attributePart ==========
 date=2022-01-01 09:00:00
 tags= first;  second;
 level=10
@@ -44,7 +44,7 @@ second
 
 ========== journal ==========
 tag with space
-========== config ==========
+========== attributePart ==========
 date=2022-01-01 09:00:00
 tags=first tag;second tag;
 level=10

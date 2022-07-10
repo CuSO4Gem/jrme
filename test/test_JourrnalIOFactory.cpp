@@ -51,7 +51,7 @@ TEST(markdown, read)
         getline(journalStore, lineBuffer, '#');
         jStandard.setTitle(lineBuffer);
         getline(journalStore, lineBuffer, '#');
-        jStandard.setConfig(lineBuffer);
+        jStandard.setAttributePart(lineBuffer);
         getline(journalStore, lineBuffer, '#');
         jStandard.setContent(lineBuffer);
         ASSERT_TRUE(*journal == jStandard) << "fail in loop " << to_string(i) << "\n" << journal->toString() << jStandard.toString();
@@ -77,7 +77,7 @@ TEST(markdown, write)
         getline(journalStore, lineBuffer, '#');
         jStandard->setTitle(lineBuffer);
         getline(journalStore, lineBuffer, '#');
-        jStandard->setConfig(lineBuffer);
+        jStandard->setAttributePart(lineBuffer);
         getline(journalStore, lineBuffer, '#');
         jStandard->setContent(lineBuffer);
         
@@ -100,7 +100,7 @@ TEST(markdown, write)
         getline(journalStore, lineBuffer, '#');
         jStandard.setTitle(lineBuffer);
         getline(journalStore, lineBuffer, '#');
-        jStandard.setConfig(lineBuffer);
+        jStandard.setAttributePart(lineBuffer);
         getline(journalStore, lineBuffer, '#');
         jStandard.setContent(lineBuffer);
         
@@ -132,7 +132,7 @@ TEST(txt, read)
         getline(journalStore, lineBuffer, '#');
         jStandard.setTitle(lineBuffer);
         getline(journalStore, lineBuffer, '#');
-        jStandard.setConfig(lineBuffer);
+        jStandard.setAttributePart(lineBuffer);
         getline(journalStore, lineBuffer, '#');
         jStandard.setContent(lineBuffer);
         
@@ -159,7 +159,7 @@ TEST(txt, write)
         getline(journalStore, lineBuffer, '#');
         jStandard->setTitle(lineBuffer);
         getline(journalStore, lineBuffer, '#');
-        jStandard->setConfig(lineBuffer);
+        jStandard->setAttributePart(lineBuffer);
         getline(journalStore, lineBuffer, '#');
         jStandard->setContent(lineBuffer);
         
@@ -182,7 +182,7 @@ TEST(txt, write)
         getline(journalStore, lineBuffer, '#');
         jStandard.setTitle(lineBuffer);
         getline(journalStore, lineBuffer, '#');
-        jStandard.setConfig(lineBuffer);
+        jStandard.setAttributePart(lineBuffer);
         getline(journalStore, lineBuffer, '#');
         jStandard.setContent(lineBuffer);
         

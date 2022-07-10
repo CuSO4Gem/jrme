@@ -30,19 +30,19 @@ class Journal
 {
 private:
     string mTitle;
-    string mConfig;
+    string mAttributePart;
     string mContent;
 
 public:
     Journal() = default;
-    Journal(const string &title, const string &config, const string &content);
+    Journal(const string &title, const string &attributePart, const string &content);
     ~Journal() = default;
 
     void setTitle(const string &title);
-    void setConfig(const string &config);
+    void setAttributePart(const string &attributePart);
     void setContent(const string &content);
     string getTitle();
-    string &getConfig();
+    string &getAttributePart();
     string getContent();
 
     void clear();

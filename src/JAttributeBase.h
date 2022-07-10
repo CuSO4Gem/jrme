@@ -13,8 +13,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-#ifndef CONFIG_NODE_BASE_H
-#define CONFIG_NODE_BASE_H
+#ifndef JATTRIBUTE_BASE_H
+#define JATTRIBUTE_BASE_H
 
 #include <memory>
 #include <string>
@@ -23,23 +23,24 @@ using namespace std;
 
 /**
  * @brief 用于判断是不是内部的config node，插件不需要用到
- * Irrelevant for config node plugin
+ * Irrelevant for JAttribute plugin
  */
-enum innerConfigNode {
-    DATE_CONFIG = 1,
-    TAG_CONFIG,
-    LEVEL_CONFIG,
+enum innerJAttribute {
+    PLUGIN_JATTRIBUTE = 0,
+    DATE_JATTRIBUTE,
+    TAG_JATTRIBTE,
+    LEVEL_JATTRIBUTE,
 };
 
 /**
- * @brief config node的接口类
+ * @brief JAttribute的接口类
  * 
- * interface class of config node 
+ * interface class of JAttribute
  */
-class ConfigNodeBase
+class JAttributeBase
 {
 public:
-    ~ConfigNodeBase() = default;
+    ~JAttributeBase() = default;
 
     virtual uint32_t apiVersion() = 0;
 
@@ -57,10 +58,10 @@ public:
 
     /**
      * @brief 这两个函数不是通用的函数，是专门针对程序自带的几个config node
-     * The tow function is no a general function. It is for the config node, that
+     * The tow function is no a general function. It is for the JAttribute, that
      * build in jrme
      */
-    virtual int32_t innerConfigType()  {return 0;};
+    virtual int32_t getInnerJAttributeType()  {return PLUGIN_JATTRIBUTE;};
     virtual void setDate(time_t stamp) {};
 };
 #endif

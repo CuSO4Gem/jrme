@@ -1,6 +1,6 @@
 ==========journal==========
 unit
-==========config==========
+==========attributePart==========
 date=2022-01-01 09:00:00
 tags=first;
 level=7
@@ -10,7 +10,7 @@ level=7
 
 ========== journal ==========
 ten
-========== config ==========
+========== attributePart ==========
 date=2022-01-01 09:00:00
 tags=first;second;thirdly;
 level=10
@@ -20,7 +20,7 @@ level=10
 
 ========== journal ==========
 positive
-========== config ==========
+========== attributePart ==========
 date=2022-01-01 09:00:00
 tags=first;second
 level=+10
@@ -30,7 +30,7 @@ level=+10
 
 ========== journal ==========
 negtive
-========== config ==========
+========== attributePart ==========
 date=2022-01-01 09:00:00
 tags= first;  second;
 level=-11
@@ -40,7 +40,7 @@ level=-11
 
 ========== journal ==========
 with space
-========== config ==========
+========== attributePart ==========
 date=2022-01-01 09:00:00
 tags=first tag;second tag;
 level= -13 

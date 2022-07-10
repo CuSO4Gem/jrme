@@ -14,41 +14,41 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-#ifndef CONFIG_NODE_MASTER_H
-#define CONFIG_NODE_MASTER_H
+#ifndef JATTRIBUTE_MASTER_H
+#define JATTRIBUTE_MASTER_H
 
 #include <list>
 #include <memory>
 
-#include "ConfigNodeBase.h"
+#include "JAttributeBase.h"
 
 /**
  * @brief 
- * 加载所有的config node，包括插件
- * 管理搜哟逇config node
+ * 加载所有的JAttribute，包括插件
+ * 管理搜哟逇JAttribute
  * 生成日记的config部分
  * 依次调用config node的preprocess()和postprecess()
  * 
- * Load all config node include pulgin.
- * ConfigNodeMaster manage all config node.
- * Generate config of a journal.
+ * Load all JAttribute include pulgin.
+ * JAttributeMaster manage all JAttribute.
+ * Generate JAttribute of a journal.
  * Call preprocess() and postprocess() one by one.
  * 
 */
-class ConfigNodeMaster
+class JAttributeMaster
 {
 private:
-    list<shared_ptr<ConfigNodeBase>> mNodeList;
+    list<shared_ptr<JAttributeBase>> mNodeList;
 
 public:
-    ConfigNodeMaster();
-    ~ConfigNodeMaster() = default;
+    JAttributeMaster();
+    ~JAttributeMaster() = default;
 
     size_t nodeSize();
 
     /**
      * @brief 载入一个config node插件
-     * add plug in node to ConfigNodeMaster
+     * add plug in node to JAttributeMaster
      * 
      * @param name plugin node
      * @return true load plugin success
@@ -59,11 +59,11 @@ public:
 
     /**
      * @brief 根据载入的config node生成日记中的config部分
-     * Generate config in journal by loaded config node
+     * Generate attributePart in journal by loaded attributePart node
      * 
      * @return string 
      */
-    string genConfig();
+    string genJAttributePart();
     /**
      * @brief 依次运行每个载入的config node的preprocess()或者postprocess()
      * Run preprocess() or postprocess() one by one
@@ -72,8 +72,8 @@ public:
     void postprocess(shared_ptr<Journal> journal);
 
     /**
-     * @brief 为 date config node设置时间
-     * set date for date config node.
+     * @brief 为 date JAttribute设置时间
+     * set date for date JAttribute.
      */
     void setDate(time_t stamp);
 };

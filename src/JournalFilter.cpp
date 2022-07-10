@@ -50,7 +50,7 @@ void JournalFilter::tryCache(uint32_t cacheFlag)
         for (auto &it:mGuidance)
         {
             shared_ptr<Journal> journal = mBook->at(it.order);
-            it.stamp = getStampFormConfig(journal->getConfig());
+            it.stamp = getStampFormJAttributePart(journal->getAttributePart());
         }
         mCacheFlag |= CACHE_STAMP;
     }
@@ -60,7 +60,7 @@ void JournalFilter::tryCache(uint32_t cacheFlag)
         for (auto &it:mGuidance)
         {
             shared_ptr<Journal> journal = mBook->at(it.order);
-            it.level = getLevelFormConfig(journal->getConfig());
+            it.level = getLevelFormJAttributePart(journal->getAttributePart());
         }
         mCacheFlag |= CACHE_LEVEL;
     }
@@ -70,7 +70,7 @@ void JournalFilter::tryCache(uint32_t cacheFlag)
         for (auto &it:mGuidance)
         {
             shared_ptr<Journal> journal = mBook->at(it.order);
-            it.tags = getTagsFormConfig(journal->getConfig());
+            it.tags = getTagsFormJAttributePart(journal->getAttributePart());
         }
         mCacheFlag |= CACHE_TAGES;
     }

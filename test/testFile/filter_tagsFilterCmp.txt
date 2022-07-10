@@ -1,6 +1,6 @@
 ==========journal==========
 from to
-==========config==========
+==========attributePart==========
 date=2014-11-11 09:00:00
 tags=first;second;
 level=7
@@ -10,7 +10,7 @@ level=7
 
 ========== journal ==========
 to
-========== config ==========
+========== attributePart ==========
 date=2022-01-01
 tags=first;
 level=10
@@ -20,7 +20,7 @@ level=10
 
 ========== journal ==========
 less then
-========== config ==========
+========== attributePart ==========
 date=2014-05-05 09:00:00
 tags=second
 level=+10
@@ -30,7 +30,7 @@ level=+10
 
 ========== journal ==========
 larger then
-========== config ==========
+========== attributePart ==========
 date=2033-9-01 12:00:00
 tags= first;  second;
 level=-11
@@ -40,7 +40,7 @@ level=-11
 
 ========== journal ==========
 larger then
-========== config ==========
+========== attributePart ==========
 date=2035-9-01 12:00:00
 tags= first;  ttt;
 level=-11
@@ -50,7 +50,7 @@ level=-11
 
 ========== journal ==========
 less then
-========== config ==========
+========== attributePart ==========
 date=2000-05-05 09:00:00
 tags=first;second
 level=+10

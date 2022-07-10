@@ -23,78 +23,78 @@ limitations under the License.
 
 using namespace std;
 
-#include "ConfigNodeMaster.h"
+#include "JAttributeMaster.h"
 #include "date.h"
-#include "DateConfigNode.h"
+#include "DataJAttribute.h"
 #include "Journal.h"
 #include "Utils.h"
 
 using namespace ec;
 
-TEST(DateConfigNode, basic)
+TEST(DataJAttribute, basic)
 {
-    DateConfigNode node;
+    DataJAttribute node;
     Date date;
     bool retBool;
 
-    ASSERT_TRUE(node.getKey() == string("date")) << "config node key not right";
+    ASSERT_TRUE(node.getKey() == string("date")) << "JAttribute key not right";
     string title = string("a temp journal to test");
-    string config = string("");
+    string attributePart = string("");
     string content = string("no more content");
     shared_ptr<Journal> journal = make_shared<Journal>();
     journal->setTitle(title);
-    journal->setConfig(config);
+    journal->setAttributePart(attributePart);
     journal->setContent(content);
 
     date = Date(1970, 1, 1, 9, 0, 0);
     node.setDate(date.stamp());
-    journal->getConfig().append(string("tags=NULL\n"));
-    journal->getConfig().append(node.getKey()+"="+node.getDefaultValue()+"\n");
-    journal->getConfig().append(string("level=0\n"));
+    journal->getAttributePart().append(string("tags=NULL\n"));
+    journal->getAttributePart().append(node.getKey()+"="+node.getDefaultValue()+"\n");
+    journal->getAttributePart().append(string("level=0\n"));
 
     node.preprocess(journal);
     node.postprocess(journal);
     
-    ASSERT_TRUE(date.stamp() == getStampFormConfig(journal->getConfig()));
+    ASSERT_TRUE(date.stamp() == getStampFormJAttributePart(journal->getAttributePart()));
 }
 
-TEST(ConfigNodeMaster, InnerKeyGen)
+TEST(JAttributeMaster, InnerKeyGen)
 {
     list<string> keyList;
     keyList.push_back(string("date="));
     keyList.push_back(string("tags="));
     keyList.push_back(string("level="));
 
-    ConfigNodeMaster nodeMaster;
+    JAttributeMaster nodeMaster;
 
-    string config = nodeMaster.genConfig();
+    string attributePart = nodeMaster.genJAttributePart();
 
     uint32_t findedCount=0;
     uint32_t failCoung=0;
     for (auto &it:keyList)
     {
-        if (config.find(it) != string::npos)
+        if (attributePart.find(it) != string::npos)
             findedCount++;
         else
             failCoung++;
     }
-    ASSERT_TRUE(findedCount==keyList.size()) << "some inner key not find while Config generate";    
+    ASSERT_TRUE(findedCount==keyList.size()) << "some inner key not find while attributePart generate";    
 }
 
-TEST(ConfigNodeMaster, InnerPreprocess)
+TEST(JAttributeMaster, InnerPreprocess)
 {
     shared_ptr<Journal> journal = make_shared<Journal>();
 
-    ConfigNodeMaster nodeMaster;
-    string config = nodeMaster.genConfig();
-    journal->setConfig(config);
-    journal->setTitle(string("config node master"));
+    JAttributeMaster nodeMaster;
+    string attributePart = nodeMaster.genJAttributePart();
+    journal->setAttributePart(attributePart);
+    journal->setTitle(string("attributePart master"));
     nodeMaster.preprocess(journal);
 
-    config = journal->getConfig();
+    attributePart = journal->getAttributePart();
     string key = string("date");
     string value;
-    getValueFromConfig(config, key, value);
+    getValueFromJAttributePart(attributePart, key, value);
     ASSERT_NE(value.length(), 0);
 }
 

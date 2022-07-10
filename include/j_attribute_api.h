@@ -30,10 +30,10 @@ limitations under the License.
 
 /**
  * @brief 
- * config node插件的api
+ * JAttribute插件的api
  * 插件还需要额外暴露以下内容
  * 
- * api of config node plugin
+ * api of JAttribute plugin
  * plugin also need the following elements.
  * 
  * uint32_t api_version

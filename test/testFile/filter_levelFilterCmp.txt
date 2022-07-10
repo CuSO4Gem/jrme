@@ -1,6 +1,6 @@
 ==========journal==========
 from [1]
-==========config==========
+==========attributePart==========
 date=2014-11-11 09:00:00
 tags=first;
 level=-13
@@ -10,7 +10,7 @@ level=-13
 
 ========== journal ==========
 just in [5]
-========== config ==========
+========== attributePart ==========
 date=2018-07-01 09:00:00
 tags=first tag;second tag;
 level= -11
@@ -20,7 +20,7 @@ level= -11
 
 ========== journal ==========
 on [3]
-========== config ==========
+========== attributePart ==========
 date=2014-05-05 09:00:00
 tags=first;second
 level=+10
@@ -30,7 +30,7 @@ level=+10
 
 ========== journal ==========
 less then [8]
-========== config ==========
+========== attributePart ==========
 date=2000-05-05 09:00:00
 tags=first;second
 level=+10
@@ -40,7 +40,7 @@ level=+10
 
 ========== journal ==========
 to [2]
-========== config ==========
+========== attributePart ==========
 date=2022-01-01
 tags=first;second;thirdly;
 level=11
@@ -50,7 +50,7 @@ level=11
 
 ========== journal ==========
 just in [6]
-========== config ==========
+========== attributePart ==========
 date=2035-9-01 12:00:00
 tags= first;  second;
 level=11

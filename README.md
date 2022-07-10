@@ -25,7 +25,7 @@ This project refers to the jrnl project.The jrnl project can well implement the 
 ```
 ==========journal==========
 这里输入标题
-==========config==========
+==========attributePart==========
 date=2022-02-26 19:23:32
 tags=
 level=
@@ -138,7 +138,7 @@ jrme -f "2014" -t "2018" -g "university;school" -D
 editor = 调用的系统编辑器
 
 [plugin]
-config node = 插件，多个插件用,分割
+JAttribute = 插件，多个插件用,分割
 journal format = 日记格式插件，多个插件用,分割
 ```
 
@@ -154,7 +154,7 @@ jrme项目为了向日记添加更多更灵活的附加功能，提供了关于�
 注意：需要插件顺利加载，需要在配置文件中的config node加入该插件的文件名。如：
 ```
 [plugin]
-config node = save_date.so
+JAttribute = save_date.so
 ```
 ## 日记格式插件
 用户可以通过插件实现不过格式的日记存储样式，但是需要注意，无论如何，在用户输入日记的界面是不会改变的，只有保存日记的文本会发生变化。  

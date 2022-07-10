@@ -20,6 +20,6 @@ limitations under the License.
 
 using namespace std;
 
-bool setValueToConfig(string &config, const string &key,const string value);
+bool setValueToJAttributePart(string &attributePart, const string &key,const string value);
 
 #endif

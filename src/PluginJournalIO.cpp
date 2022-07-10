@@ -181,8 +181,8 @@ shared_ptr<Journal> PluginJournalIO::readJournal()
     if (journalRet.title)
         journal->setTitle(string(journalRet.title));
     
-    if (journalRet.config)
-        journal->setConfig(string(journalRet.config));
+    if (journalRet.attributePart)
+        journal->setAttributePart(string(journalRet.attributePart));
     
     if (journalRet.content)
         journal->setContent(string(journalRet.content));
@@ -198,9 +198,9 @@ bool PluginJournalIO::writeJournal(shared_ptr<Journal> journal)
     journal2w.title = (char*)malloc(stringBuffer.length()+1);
     memcpy(journal2w.title, stringBuffer.c_str(), stringBuffer.length()+1);
 
-    stringBuffer = journal->getConfig();
-    journal2w.config = (char *)malloc(stringBuffer.length()+1);
-    memcpy(journal2w.config, stringBuffer.c_str(), stringBuffer.length()+1);
+    stringBuffer = journal->getAttributePart();
+    journal2w.attributePart = (char *)malloc(stringBuffer.length()+1);
+    memcpy(journal2w.attributePart, stringBuffer.c_str(), stringBuffer.length()+1);
 
     stringBuffer = journal->getContent();
     journal2w.content = (char *)malloc(stringBuffer.length()+1);

@@ -19,17 +19,17 @@ limitations under the License.
 #include <sys/stat.h>
 #include <unistd.h>
 
-#include "ConfigNodeMaster.h"
+#include "JAttributeMaster.h"
 #include "date.h"
-#include "DateConfigNode.h"
+#include "DataJAttribute.h"
 #include "debug_print.h"
 #include "EnTimeParser.h"
 #include "iniparser.hpp"
 #include "JrmeConfig.h"
-#include "LevelConfigNode.h"
+#include "LevelJAttribute.h"
 #include "pthread.h"
 #include "SfJournalBook.h"
-#include "TagConfigNode.h"
+#include "TagJAttribute.h"
 #include "TxtEditor.h"
 #include "Utils.h"
 #include "WriteMode.h"
@@ -111,7 +111,7 @@ int journlWriteMode(string bookPath, string timeDescription, string title, strin
 #endif
 
     // todo : more type of time parse from timeDescription
-    ConfigNodeMaster configMaster = ConfigNodeMaster();
+    JAttributeMaster configMaster = JAttributeMaster();
     Date date;
     if (timeDescription.length()==0)
         date = Time().toDate();
@@ -135,7 +135,7 @@ int journlWriteMode(string bookPath, string timeDescription, string title, strin
         }
     }
     configMaster.setDate(date.stamp());
-    // load config node plugin
+    // load JAttribute plugin
     list<string> pluginNameVector = JrmeConfig::getConfigNodePluginNames();
     string pluginName;
     for (auto &it:pluginNameVector)
@@ -147,11 +147,11 @@ int journlWriteMode(string bookPath, string timeDescription, string title, strin
     }
     
 
-    string config = configMaster.genConfig();
+    string attributePart = configMaster.genJAttributePart();
     
     shared_ptr<Journal> journal = make_shared<Journal>();
     journal->setTitle(title);
-    journal->setConfig(config);
+    journal->setAttributePart(attributePart);
     journal->setContent(content);
     configMaster.preprocess(journal);
 
@@ -164,8 +164,8 @@ int journlWriteMode(string bookPath, string timeDescription, string title, strin
         strBuffer.append("==========journal==========\n");
         strBuffer.append(journal->getTitle());
         strBuffer.append("\n");
-        strBuffer.append("==========config==========\n");
-        strBuffer.append(journal->getConfig());
+        strBuffer.append("==========attributePart==========\n");
+        strBuffer.append(journal->getAttributePart());
         strBuffer.append("==========content==========\n");
         strBuffer.append(journal->getContent());
         TxtEditor editor;

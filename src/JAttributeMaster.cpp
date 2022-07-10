@@ -17,25 +17,25 @@ limitations under the License.
 
 #include "JrmeConfig.h"
 
-#include "ConfigNodeMaster.h"
-#include "ConfigNodeBase.h"
-#include "DateConfigNode.h"
+#include "JAttributeMaster.h"
+#include "JAttributeBase.h"
+#include "DataJAttribute.h"
 #include "debug_print.h"
-#include "LevelConfigNode.h"
-#include "TagConfigNode.h"
+#include "LevelJAttribute.h"
+#include "TagJAttribute.h"
 
-#include "config_node_api.h"
+#include "j_attribute_api.h"
 #include "journal_struct.h"
 
 /**
  * @brief 用于打开config node插件
- * To open config node pulgin.
+ * To open JAttribute pulgin.
  */
-class PluginNode : public ConfigNodeBase
+class JAttributePlugin : public JAttributeBase
 {
 private:
     void* mDlHandle = NULL;
-    void* mNodeHandle = NULL;
+    void* mHandle = NULL;
     allocate_instance_fnc p_allocate = NULL;
     release_instance_fnc  p_release = NULL;
     preprocess_fnc  p_preprocess = NULL;
@@ -46,8 +46,8 @@ private:
     const char *mDefaultValue = NULL;
 
 public:
-    PluginNode() = default;
-    ~PluginNode();
+    JAttributePlugin() = default;
+    ~JAttributePlugin();
 
     bool loadPlugin(string name);
 
@@ -58,16 +58,16 @@ public:
     void postprocess(shared_ptr<Journal> journal);
 };
 
-PluginNode::~PluginNode()
+JAttributePlugin::~JAttributePlugin()
 {
-    if (mNodeHandle && p_release)
-        p_release(mNodeHandle);
+    if (mHandle && p_release)
+        p_release(mHandle);
 
     if (mDlHandle)
         dlclose(mDlHandle);
 }
 
-bool PluginNode::loadPlugin(string name)
+bool JAttributePlugin::loadPlugin(string name)
 {
     string path = JrmeConfig::getPluginDir()+name;
     mDlHandle = dlopen(path.c_str(), RTLD_NOW);
@@ -127,8 +127,8 @@ bool PluginNode::loadPlugin(string name)
         return false;
     }
 
-    mNodeHandle = p_allocate();
-    if (!mNodeHandle)
+    mHandle = p_allocate();
+    if (!mHandle)
     {
         dlclose(mDlHandle);
         return false;
@@ -136,12 +136,12 @@ bool PluginNode::loadPlugin(string name)
     return true;
 }
 
-uint32_t PluginNode::apiVersion()
+uint32_t JAttributePlugin::apiVersion()
 {
     return mApiVersion;
 }
 
-string PluginNode::getKey()
+string JAttributePlugin::getKey()
 {
     if (!mKey)
         return string();
@@ -149,7 +149,7 @@ string PluginNode::getKey()
     return string(mKey);
 }
 
-string PluginNode::getDefaultValue()
+string JAttributePlugin::getDefaultValue()
 {
     if (!mDefaultValue)
         return string();
@@ -170,33 +170,33 @@ struct journal_s journal2S(shared_ptr<Journal> journal)
     string strBuffer =  journal->getTitle();
     journalRet.title = (char*)malloc(strBuffer.length()+1);
     memcpy(journalRet.title, strBuffer.c_str(), strBuffer.length()+1);
-    strBuffer = journal->getConfig();
-    journalRet.config = (char*)malloc(strBuffer.length()+1);
-    memcpy(journalRet.config, strBuffer.c_str(), strBuffer.length()+1);
+    strBuffer = journal->getAttributePart();
+    journalRet.attributePart = (char*)malloc(strBuffer.length()+1);
+    memcpy(journalRet.attributePart, strBuffer.c_str(), strBuffer.length()+1);
     strBuffer = journal->getContent();
     journalRet.content = (char*)malloc(strBuffer.length()+1);
     memcpy(journalRet.content, strBuffer.c_str(), strBuffer.length()+1);
     return journalRet;
 }
 
-void PluginNode::preprocess(shared_ptr<Journal> journal)
+void JAttributePlugin::preprocess(shared_ptr<Journal> journal)
 {
     struct journal_s orgJournal = journal2S(journal);
     
     string title = journal->getTitle();
-    string config = journal->getConfig();
+    string attributePart = journal->getAttributePart();
     string content = journal->getContent();
     struct journal_s retJournal = {NULL, NULL, NULL};
-    p_preprocess(mNodeHandle, &orgJournal, &retJournal);
+    p_preprocess(mHandle, &orgJournal, &retJournal);
     if (retJournal.title != NULL)
     {
         string title = string(retJournal.title);
         journal->setTitle(title);
     }
-    if (retJournal.config != NULL)
+    if (retJournal.attributePart != NULL)
     {
-        string config = string(retJournal.config);
-        journal->setConfig(config);
+        string attributePart = string(retJournal.attributePart);
+        journal->setAttributePart(attributePart);
     }
     if (retJournal.content != NULL)
     {
@@ -208,24 +208,24 @@ void PluginNode::preprocess(shared_ptr<Journal> journal)
     return;
 }
 
-void PluginNode::postprocess(shared_ptr<Journal> journal)
+void JAttributePlugin::postprocess(shared_ptr<Journal> journal)
 {
     struct journal_s orgJournal = journal2S(journal);
     
     string title = journal->getTitle();
-    string config = journal->getConfig();
+    string attributePart = journal->getAttributePart();
     string content = journal->getContent();
     struct journal_s retJournal = {NULL, NULL, NULL};
-    p_postprocess(mNodeHandle, &orgJournal, &retJournal);
+    p_postprocess(mHandle, &orgJournal, &retJournal);
     if (retJournal.title != NULL)
     {
         string title = string(retJournal.title);
         journal->setTitle(title);
     }
-    if (retJournal.config != NULL)
+    if (retJournal.attributePart != NULL)
     {
-        string config = string(retJournal.config);
-        journal->setConfig(config);
+        string attributePart = string(retJournal.attributePart);
+        journal->setAttributePart(attributePart);
     }
     if (retJournal.content != NULL)
     {
@@ -239,21 +239,21 @@ void PluginNode::postprocess(shared_ptr<Journal> journal)
 }
 
 
-ConfigNodeMaster::ConfigNodeMaster()
+JAttributeMaster::JAttributeMaster()
 {
-    mNodeList.push_back(make_shared<DateConfigNode>());
-    mNodeList.push_back(make_shared<TagConfigNode>());
-    mNodeList.push_back(make_shared<LevelConfigNode>());
+    mNodeList.push_back(make_shared<DataJAttribute>());
+    mNodeList.push_back(make_shared<TagJAttribute>());
+    mNodeList.push_back(make_shared<LevelJAttribute>());
 }
 
-size_t ConfigNodeMaster::nodeSize()
+size_t JAttributeMaster::nodeSize()
 {
     return mNodeList.size();
 }
 
-bool ConfigNodeMaster::addPluginNode(string name)
+bool JAttributeMaster::addPluginNode(string name)
 {
-    shared_ptr<PluginNode> node = make_shared<PluginNode>();
+    shared_ptr<JAttributePlugin> node = make_shared<JAttributePlugin>();
     if (!node->loadPlugin(name))
     {
         return false;
@@ -262,17 +262,17 @@ bool ConfigNodeMaster::addPluginNode(string name)
     return true;
 }
 
-string ConfigNodeMaster::genConfig()
+string JAttributeMaster::genJAttributePart()
 {
-    string config;
+    string attributePart;
     for (auto &it:mNodeList)
     {
-        config.append(it->getKey() + "=" + it->getDefaultValue() + "\n");
+        attributePart.append(it->getKey() + "=" + it->getDefaultValue() + "\n");
     }
-    return config;
+    return attributePart;
 }
 
-void ConfigNodeMaster::preprocess(shared_ptr<Journal> journal)
+void JAttributeMaster::preprocess(shared_ptr<Journal> journal)
 {
     for (auto &it:mNodeList)
     {
@@ -281,7 +281,7 @@ void ConfigNodeMaster::preprocess(shared_ptr<Journal> journal)
     return;
 }
 
-void ConfigNodeMaster::postprocess(shared_ptr<Journal> journal)
+void JAttributeMaster::postprocess(shared_ptr<Journal> journal)
 {
     for (auto &it:mNodeList)
     {
@@ -290,7 +290,7 @@ void ConfigNodeMaster::postprocess(shared_ptr<Journal> journal)
     return;
 }
 
-void ConfigNodeMaster::setDate(time_t stamp)
+void JAttributeMaster::setDate(time_t stamp)
 {
     for (auto &it:mNodeList)
     {

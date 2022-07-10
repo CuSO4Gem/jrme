@@ -3,7 +3,7 @@ error content
 
 ==========journal==========
 My first journal
-==========config==========
+==========attributePart==========
 date=2022-01-01 09:00:00
 tags=first;second;
 level=10
@@ -14,7 +14,7 @@ the second line.
 
 ========== journal ==========
 have space in spliter
-========== config ==========
+========== attributePart ==========
 date=2022-01-01 09:00:00
 tags=first;second;
 level=10
@@ -24,7 +24,7 @@ hello world!
 
 ========== journal ==========
 with null line in content
-========== config ==========
+========== attributePart ==========
 date=2022-01-01 09:00:00
 tags=first;second;
 level=10
