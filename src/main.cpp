@@ -70,7 +70,7 @@ int main(int argc, char *argv[])
     /* 打印版本号 */
     if (cmd.exist("version"))
     {
-        printf("jrme version 0.9.2.\ndebug level %d\n", DBG_PRINT_ENABLED);
+        printf("jrme version 0.9.3.\ndebug level %d\n", DBG_PRINT_ENABLED);
         return 0;
     }
     /* Select a journal book from journal books list config file as default */
