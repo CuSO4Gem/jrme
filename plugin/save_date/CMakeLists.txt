@@ -6,4 +6,4 @@ set(JRME_SRC_DIR ${PROJECT_SOURCE_DIR}/src/)
 # save_data need source code of jrme，but it is not necessary
 set(JRME_SRC ${JRME_SRC_DIR}/date.cpp)
 
-add_library(${PLUGIN_NAME} SHARED NodeUtil.cpp SaveDate.cpp ${JRME_SRC})
+add_library(${PLUGIN_NAME} SHARED SaveDateUtil.cpp SaveDate.cpp ${JRME_SRC})

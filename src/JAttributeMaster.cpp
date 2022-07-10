@@ -24,7 +24,7 @@ limitations under the License.
 #include "LevelJAttribute.h"
 #include "TagJAttribute.h"
 
-#include "j_attribute_api.h"
+#include "jattribute_plugin_api.h"
 #include "journal_struct.h"
 
 /**

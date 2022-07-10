@@ -108,7 +108,7 @@ jrme -f "2014" -t "2018" -g "university;school" -D
 ```
 --force_delete option is nearly the same as --delete, but jrme will delete without quering.
 
-# Config Node
+# JAttribute
 You may have token notice of that there some special words while you are writing journal. They are pairs of "key" and "value". All the keys and values construct "config" as part of journal. The config will be save with journal. Jrme has 3 initial JAttribute. They are "data", level and tags. More JAttribute can be implement join as plugin.
 ## date
 The date of journal. Format is YY-MM-DD hh:mm:ss.
@@ -124,12 +124,12 @@ The config file is ~/.jrme/config.ini
 editor = Default editor
 
 [plugin]
-JAttribute = Config node plugins. Should be divide by ","
+JAttribute = JAttribute plugins. Should be divide by ","
 journal format = Journal format support plugins. Should be divide by ","
 ```
 # Plugins
-Jrme is flexible. It support config nodes plugin and journal format plugin to extend function. Plugins are save at *~/.jrme/plugin/*
-## Config Node Plugin
+Jrme is flexible. It support JAttributes plugin and journal format plugin to extend function. Plugins are save at *~/.jrme/plugin/*
+## JAttribute Plugin
 Every JAttribute include "key" and "valus". Plugins can get whole journal befor user type in journal and while user saving journal. Plugin can modify journal at that time.  
 1. Every plugin should have a default value to set while user prepare to type in journal.
 2. Every plugin can get whole journal befor user type in journal and while user saving journal. Plugin can modify journal at that time.   

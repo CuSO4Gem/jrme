@@ -13,8 +13,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-#ifndef CONFIG_NODE_API_H
-#define CONFIG_NODE_API_H
+#ifndef JATTRIBUTE_PLUGIN_API_H
+#define JATTRIBUTE_PLUGIN_API_H
 
 #include <stdint.h>
 /**
