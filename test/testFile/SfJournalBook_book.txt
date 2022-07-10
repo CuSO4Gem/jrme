@@ -3,7 +3,7 @@ error content
 
 ==========journal==========
 My first journal
-==========attributePart==========
+=======attributePart=======
 date=2021-02-08 11:33:00
 tags=first;second;
 level=10

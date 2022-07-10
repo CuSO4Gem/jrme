@@ -11,7 +11,7 @@ In your terminal, input `jrme`, the editor (`vi` by default) will be launched. T
 ```
 ==========journal==========
 <input title here>
-==========attributePart==========
+=======attributePart=======
 date=2022-02-26 19:23:32
 tags=
 level=

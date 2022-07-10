@@ -67,7 +67,7 @@ string Journal::toString()
     if (mTitle[mTitle.length()-1] != '\n')
         out.append("\n");
     
-    out.append("==========attributePart==========\n");
+    out.append("=======attributePart=======\n");
     out.append(mAttributePart);
     if (mAttributePart[mAttributePart.length()-1] != '\n')
         out.append("\n");

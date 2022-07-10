@@ -1,6 +1,6 @@
 ==========journal==========
 unit
-==========attributePart==========
+=======attributePart=======
 date=2022-01-01 09:00:00
 tags=first;
 level=7

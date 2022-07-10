@@ -1,6 +1,6 @@
 ==========journal==========
 from to
-==========attributePart==========
+=======attributePart=======
 date=2014-11-11 09:00:00
 tags=first;
 level=7

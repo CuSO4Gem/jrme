@@ -164,7 +164,7 @@ int journlWriteMode(string bookPath, string timeDescription, string title, strin
         strBuffer.append("==========journal==========\n");
         strBuffer.append(journal->getTitle());
         strBuffer.append("\n");
-        strBuffer.append("==========attributePart==========\n");
+        strBuffer.append("=======attributePart=======\n");
         strBuffer.append(journal->getAttributePart());
         strBuffer.append("==========content==========\n");
         strBuffer.append(journal->getContent());

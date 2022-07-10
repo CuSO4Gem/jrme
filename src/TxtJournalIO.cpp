@@ -315,7 +315,7 @@ bool TxtJournalIO::writeJournal(shared_ptr<Journal> journal)
         mJournal.write("\n", 1);
 
     string attributePart = journal->getAttributePart();
-    lineBuffer = string("==========attributePart==========\n");
+    lineBuffer = string("=======attributePart=======\n");
     mJournal.write(lineBuffer.c_str(), lineBuffer.length());
     mJournal.write(attributePart.c_str(), attributePart.length());
     if (attributePart[attributePart.length()-1]!='\n')

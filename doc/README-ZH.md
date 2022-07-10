@@ -10,7 +10,7 @@
 ```
 ==========journal==========
 这里输入标题
-==========attributePart==========
+=======attributePart=======
 date=2022-02-26 19:23:32
 tags=
 level=
