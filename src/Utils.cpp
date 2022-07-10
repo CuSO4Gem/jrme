@@ -67,12 +67,12 @@ void tabToSpace(string &str)
     }
 }
 
-bool configGetline(istringstream &configStream, string &key, string &value)
+bool attributePartGetLine(istringstream &attributePartStream, string &key, string &value)
 {
     string lineBuffer;
     key.clear();
     value.clear();
-    if(!getline(configStream, lineBuffer))
+    if(!getline(attributePartStream, lineBuffer))
         return false;
     
     value = lineBuffer;
@@ -144,10 +144,10 @@ void removeMultipleSpaces(string &str){
 bool getValueFromJAttributePart(const string &attributePart, const string &key, string &value)
 {
     string keyBuffer, valueBuffer;
-    istringstream configStream = istringstream(attributePart);
+    istringstream attributePartStream = istringstream(attributePart);
     
     bool finded = false;
-    while(configGetline(configStream, keyBuffer, valueBuffer))
+    while(attributePartGetLine(attributePartStream, keyBuffer, valueBuffer))
     {
         if (keyBuffer==key)
         {
@@ -162,24 +162,24 @@ bool getValueFromJAttributePart(const string &attributePart, const string &key, 
 bool setValueToJAttributePart(string &attributePart, const string &key,const string value)
 {
     string keyBuffer, valueBuffer, lineBuffer;
-    istringstream configStream = istringstream(attributePart);
+    istringstream attributePartStream = istringstream(attributePart);
     
     bool finded = false;
-    size_t keyBeginPos = configStream.tellg();
-    while(configGetline(configStream, keyBuffer, valueBuffer))
+    size_t keyBeginPos = attributePartStream.tellg();
+    while(attributePartGetLine(attributePartStream, keyBuffer, valueBuffer))
     {
         if (keyBuffer==key)
         {
             finded = true;
             break;
         }
-        keyBeginPos = configStream.tellg();
+        keyBeginPos = attributePartStream.tellg();
     }
     if (!finded)
         return false;
     
-    configStream.seekg(keyBeginPos);
-    getline(configStream, lineBuffer);
+    attributePartStream.seekg(keyBeginPos);
+    getline(attributePartStream, lineBuffer);
     size_t len = lineBuffer.length();
     attributePart.erase(keyBeginPos, len);
     string insertString = key+"="+value;
@@ -191,10 +191,10 @@ bool setValueToJAttributePart(string &attributePart, const string &key,const str
 time_t getStampFormJAttributePart(const string &attributePart)
 {
     string key, value;
-    istringstream configStream = istringstream(attributePart);
+    istringstream attributePartStream = istringstream(attributePart);
     
     bool finded = false;
-    while(configGetline(configStream, key, value))
+    while(attributePartGetLine(attributePartStream, key, value))
     {
         if (key==string("date"))
         {
@@ -293,10 +293,10 @@ time_t getStampFormJAttributePart(const string &attributePart)
 int32_t getLevelFormJAttributePart(const string &attributePart)
 {
     string key, value;
-    istringstream configStream = istringstream(attributePart);
+    istringstream attributePartStream = istringstream(attributePart);
     
     bool finded = false;
-    while(configGetline(configStream, key, value))
+    while(attributePartGetLine(attributePartStream, key, value))
     {
         if (key==string("level"))
         {
@@ -325,10 +325,10 @@ int32_t getLevelFormJAttributePart(const string &attributePart)
 vector<string> getTagsFormJAttributePart(const string &attributePart)
 {
     string key, value;
-    istringstream configStream = istringstream(attributePart);
+    istringstream attributePartStream = istringstream(attributePart);
     
     bool finded = false;
-    while(configGetline(configStream, key, value))
+    while(attributePartGetLine(attributePartStream, key, value))
     {
         if (key==string("tags"))
         {

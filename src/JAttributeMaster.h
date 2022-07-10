@@ -26,8 +26,8 @@ limitations under the License.
  * @brief 
  * 加载所有的JAttribute，包括插件
  * 管理搜哟逇JAttribute
- * 生成日记的config部分
- * 依次调用config node的preprocess()和postprecess()
+ * 生成日记的attributePart部分
+ * 依次调用attributePart node的preprocess()和postprecess()
  * 
  * Load all JAttribute include pulgin.
  * JAttributeMaster manage all JAttribute.
@@ -47,7 +47,7 @@ public:
     size_t nodeSize();
 
     /**
-     * @brief 载入一个config node插件
+     * @brief 载入一个JAttribute插件
      * add plug in node to JAttributeMaster
      * 
      * @param name plugin node
@@ -58,14 +58,14 @@ public:
     bool addPluginNode(list<string> nameList) {return true;};
 
     /**
-     * @brief 根据载入的config node生成日记中的config部分
+     * @brief 根据载入的JAttribute生成日记中的config部分
      * Generate attributePart in journal by loaded attributePart node
      * 
      * @return string 
      */
     string genJAttributePart();
     /**
-     * @brief 依次运行每个载入的config node的preprocess()或者postprocess()
+     * @brief 依次运行每个载入的JAttribute的preprocess()或者postprocess()
      * Run preprocess() or postprocess() one by one
      */
     void preprocess(shared_ptr<Journal> journal);

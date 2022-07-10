@@ -28,7 +28,7 @@ limitations under the License.
 #include "journal_struct.h"
 
 /**
- * @brief 用于打开config node插件
+ * @brief 用于打开JAttribute插件
  * To open JAttribute pulgin.
  */
 class JAttributePlugin : public JAttributeBase

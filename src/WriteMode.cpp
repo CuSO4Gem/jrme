@@ -111,7 +111,7 @@ int journlWriteMode(string bookPath, string timeDescription, string title, strin
 #endif
 
     // todo : more type of time parse from timeDescription
-    JAttributeMaster configMaster = JAttributeMaster();
+    JAttributeMaster attributeMaster = JAttributeMaster();
     Date date;
     if (timeDescription.length()==0)
         date = Time().toDate();
@@ -134,26 +134,26 @@ int journlWriteMode(string bookPath, string timeDescription, string title, strin
             date.setSecond(timeRet.second);
         }
     }
-    configMaster.setDate(date.stamp());
+    attributeMaster.setDate(date.stamp());
     // load JAttribute plugin
     list<string> pluginNameVector = JrmeConfig::getConfigNodePluginNames();
     string pluginName;
     for (auto &it:pluginNameVector)
     {
-        if (!configMaster.addPluginNode(it))
+        if (!attributeMaster.addPluginNode(it))
         {
             printf("warning: plugin %s not find\n", pluginName.c_str());
         }
     }
     
 
-    string attributePart = configMaster.genJAttributePart();
+    string attributePart = attributeMaster.genJAttributePart();
     
     shared_ptr<Journal> journal = make_shared<Journal>();
     journal->setTitle(title);
     journal->setAttributePart(attributePart);
     journal->setContent(content);
-    configMaster.preprocess(journal);
+    attributeMaster.preprocess(journal);
 
     /** no all of title, time and content are ready, program will call editor to get a jounal.
      * Otherwise, journal will be save directly.
@@ -180,7 +180,7 @@ int journlWriteMode(string bookPath, string timeDescription, string title, strin
         }
     }
     void *tRet;
-    configMaster.postprocess(journal);
+    attributeMaster.postprocess(journal);
     
     pthread_join(openTid, &tRet);
 #ifdef PTHREAD_OPEN

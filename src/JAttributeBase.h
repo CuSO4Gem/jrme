@@ -22,7 +22,7 @@ limitations under the License.
 using namespace std;
 
 /**
- * @brief 用于判断是不是内部的config node，插件不需要用到
+ * @brief 用于判断是不是内部的JAttribute，插件不需要用到
  * Irrelevant for JAttribute plugin
  */
 enum innerJAttribute {
@@ -57,7 +57,7 @@ public:
     virtual void postprocess(shared_ptr<Journal> journal) = 0;
 
     /**
-     * @brief 这两个函数不是通用的函数，是专门针对程序自带的几个config node
+     * @brief 这两个函数不是通用的函数，是专门针对程序自带的几个JAttribute
      * The tow function is no a general function. It is for the JAttribute, that
      * build in jrme
      */

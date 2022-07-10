@@ -22,7 +22,7 @@ using namespace ec;
 
 /**
  * @brief 
- * "level"关键字的config node
+ * "level"关键字的JAttribute
  * "level" JAttribute
  */
 class LevelJAttribute : public JAttributeBase

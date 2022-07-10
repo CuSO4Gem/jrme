@@ -31,12 +31,12 @@ limitations under the License.
 using namespace std;
 using namespace ec;
 
-#define GET_TAG_BOOK     "./testFile/filter_getTagsFormConfig.txt"
+#define GET_TAG_BOOK     "./testFile/filter_getTagsFormAttributePart.txt"
 #define TEG_COUNT        "./testFile/filter_tagsCount.txt"
 #define FILTER_TAG_SRC   "./testFile/filter_tagsFilter.txt"
 #define FILTER_TAG_DST   "./testFile/filter_tagsFilterCmp.txt"
 
-#define GET_LEVEL_BOOK   "./testFile/filter_getLevelFormConfig.txt"
+#define GET_LEVEL_BOOK   "./testFile/filter_getLevelFormAttributePart.txt"
 #define FILTER_LEVEL_SRC "./testFile/filter_levelFilter.txt"
 #define FILTER_LEVEL_DST "./testFile/filter_levelFilterCmp.txt"
 
@@ -56,22 +56,22 @@ TEST(Utils, getTagsFormJAttributePart)
             journal = journalIO->readJournal();
             if (!journal) break;
 
-            vector<string> tagsFromConfig =
+            vector<string> tagFromAttributePart =
                 getTagsFormJAttributePart(journal->getAttributePart());
             // expect tag output are in journal content
             vector<string> tags = vector<string>();
-            tags.reserve(tagsFromConfig.size());
+            tags.reserve(tagFromAttributePart.size());
             istringstream tagsStream = istringstream(journal->getContent());
             string        tag;
             while (getline(tagsStream, tag))
                 {
                     tags.push_back(tag);
                 }
-            ASSERT_EQ(tagsFromConfig.size(), tags.size())
+            ASSERT_EQ(tagFromAttributePart.size(), tags.size())
                 << string("tags number not eque, on test case ");
             for (size_t i = 0; i < tags.size(); i++)
                 {
-                    ASSERT_TRUE(tagsFromConfig[i] == tags[i])
+                    ASSERT_TRUE(tagFromAttributePart[i] == tags[i])
                         << string("tags parse error on test case ");
                 }
             testNumber++;
@@ -93,14 +93,14 @@ TEST(Utils, getLevelFormJAttributePart)
             journal = journalIO->readJournal();
             if (!journal) break;
 
-            int32_t levelFromConfig = getLevelFormJAttributePart(journal->getAttributePart());
+            int32_t levelFromAttributePart = getLevelFormJAttributePart(journal->getAttributePart());
             // expect tag output are in journal content
-            istringstream configStream = istringstream(journal->getContent());
+            istringstream attributePartStream = istringstream(journal->getContent());
             string        levelS;
             int32_t       level = -1;
-            ASSERT_TRUE(getline(configStream, levelS));
+            ASSERT_TRUE(getline(attributePartStream, levelS));
             level = atoi(levelS.c_str());
-            ASSERT_EQ(level, levelFromConfig);
+            ASSERT_EQ(level, levelFromAttributePart);
             testNumber++;
             JLOGD("test case %ld pass", testNumber);
         }

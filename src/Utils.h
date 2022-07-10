@@ -42,7 +42,7 @@ void removeMultipleSpaces(string &str);
 
 /**
  * @brief 
- * 从日记的config部分获取指定key的value
+ * 从日记的attributePart部分获取指定key的value
  * Given key return value from journal attributePart
  * 
  * @param attributePart 
@@ -55,7 +55,7 @@ bool getValueFromJAttributePart(const string &attributePart, const string &key, 
 
 /**
  * @brief 
- * 向日记的config部分设置指定key的value
+ * 向日记的attributePart部分设置指定key的value
  * Set the Value To attributePart 
  * 
  * @param attributePart 
@@ -68,7 +68,7 @@ bool setValueToJAttributePart(string &attributePart, const string &key,const str
 
 /**
  * @brief 
- * 从config部分获取时戳
+ * 从attributePart部分获取时戳
  * Get the Stamp Form attributePart string
  * 
  * @param attributePart 
@@ -78,7 +78,7 @@ time_t getStampFormJAttributePart(const string &attributePart);
 
 /**
  * @brief 
- * 从config部分获取level值
+ * 从attributePart部分获取level值
  * Get the Level Form Journal attributePart
  * 
  * @param attributePart 
@@ -88,7 +88,7 @@ int32_t getLevelFormJAttributePart(const string &attributePart);
 
 /**
  * @brief 
- * 从config解析config list
+ * 从attributePart解析tag的vector
  * Get the Tags Form Journal attributePart
  */
 vector<string> getTagsFormJAttributePart(const string &attributePart);

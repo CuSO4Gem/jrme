@@ -27,12 +27,12 @@ void tabToSpace(string &str)
     }
 }
 
-bool configGetline(istringstream &configStream, string &key, string &value)
+bool attributePartGetLine(istringstream &attributePartStream, string &key, string &value)
 {
     string lineBuffer;
     key.clear();
     value.clear();
-    if(!getline(configStream, lineBuffer))
+    if(!getline(attributePartStream, lineBuffer))
         return false;
     
     if (lineBuffer.length() == 0)
@@ -81,24 +81,24 @@ bool configGetline(istringstream &configStream, string &key, string &value)
 bool setValueToJAttributePart(string &attributePart, const string &key,const string value)
 {
     string keyBuffer, valueBuffer, lineBuffer;
-    istringstream configStream = istringstream(attributePart);
+    istringstream attributePartStream = istringstream(attributePart);
     
     bool finded = false;
-    size_t keyBeginPos = configStream.tellg();
-    while(configGetline(configStream, keyBuffer, valueBuffer))
+    size_t keyBeginPos = attributePartStream.tellg();
+    while(attributePartGetLine(attributePartStream, keyBuffer, valueBuffer))
     {
         if (keyBuffer==key)
         {
             finded = true;
             break;
         }
-        keyBeginPos = configStream.tellg();
+        keyBeginPos = attributePartStream.tellg();
     }
     if (!finded)
         return false;
     
-    configStream.seekg(keyBeginPos);
-    getline(configStream, lineBuffer);
+    attributePartStream.seekg(keyBeginPos);
+    getline(attributePartStream, lineBuffer);
     size_t len = lineBuffer.length();
     attributePart.erase(keyBeginPos, len);
     string insertString = key+"="+value;

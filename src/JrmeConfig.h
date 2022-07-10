@@ -81,8 +81,8 @@ public:
 
     /**
      * @brief 
-     * 获取需要载入的config node插件列表
-     * Get the Config Node Plugin Names
+     * 获取需要载入的JAttribute插件列表
+     * Get the JAttribute Plugin Names
      */
     static list<string> getConfigNodePluginNames();
 
