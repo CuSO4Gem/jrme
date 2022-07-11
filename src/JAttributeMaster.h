@@ -44,7 +44,7 @@ public:
     JAttributeMaster();
     ~JAttributeMaster() = default;
 
-    size_t nodeSize();
+    size_t attributeSize();
 
     /**
      * @brief 载入一个JAttribute插件

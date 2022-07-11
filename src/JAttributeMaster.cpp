@@ -246,7 +246,7 @@ JAttributeMaster::JAttributeMaster()
     mNodeList.push_back(make_shared<LevelJAttribute>());
 }
 
-size_t JAttributeMaster::nodeSize()
+size_t JAttributeMaster::attributeSize()
 {
     return mNodeList.size();
 }

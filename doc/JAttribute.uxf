@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="15.0.0">
+  <help_text>Space for diagram notes</help_text>
+  <zoom_level>9</zoom_level>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>531</x>
+      <y>99</y>
+      <w>171</w>
+      <h>117</h>
+    </coordinates>
+    <panel_attributes>/JAttributeBase/
+--
+/+apiVersion()/
+/+getKey()/
+/+preprocess()/
+/+postprocess()/
+/+getInnerJAttributeType()/
+/+setDate()/</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>189</x>
+      <y>81</y>
+      <w>261</w>
+      <h>144</h>
+    </coordinates>
+    <panel_attributes>JAttributeMaster
+--
+-list&lt;shared_ptr&lt;JAttributeBase&gt;&gt; mNodeList
+--
++attributeSize()
++addPluginNode()
++genJAttributePart()
++preprocess()
++postprocess()
++setDate()</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>441</x>
+      <y>99</y>
+      <w>108</w>
+      <h>36</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-
+m2=3..n</panel_attributes>
+    <additional_attributes>10.0;10.0;100.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>765</x>
+      <y>99</y>
+      <w>153</w>
+      <h>153</h>
+    </coordinates>
+    <panel_attributes>JAttributePlugin
+--
+-void* mDlHandle
+-void* mHandle
+--
++loadPlugin()
++apiVersion()
++getKey()
++getDefaultValue()
++preprocess()
++postprocess()</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>693</x>
+      <y>99</y>
+      <w>90</w>
+      <h>27</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;.</panel_attributes>
+    <additional_attributes>10.0;10.0;80.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>450</x>
+      <y>333</y>
+      <w>90</w>
+      <h>27</h>
+    </coordinates>
+    <panel_attributes>TagJAttribute</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>585</x>
+      <y>333</y>
+      <w>90</w>
+      <h>27</h>
+    </coordinates>
+    <panel_attributes>DataJAttribute</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>756</x>
+      <y>333</y>
+      <w>90</w>
+      <h>27</h>
+    </coordinates>
+    <panel_attributes>LevelJAttribute</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>486</x>
+      <y>207</y>
+      <w>63</w>
+      <h>144</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>50.0;10.0;10.0;140.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>621</x>
+      <y>207</y>
+      <w>27</w>
+      <h>144</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;140.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>693</x>
+      <y>207</y>
+      <w>126</w>
+      <h>144</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;120.0;140.0</additional_attributes>
+  </element>
+</diagram>
