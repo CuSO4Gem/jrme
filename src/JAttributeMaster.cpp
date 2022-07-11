@@ -28,8 +28,8 @@ limitations under the License.
 #include "journal_struct.h"
 
 /**
- * @brief 用于打开JAttribute插件
- * To open JAttribute pulgin.
+ * @brief 用于加载JAttribute插件
+ * To load JAttribute pulgin.
  */
 class JAttributePlugin : public JAttributeBase
 {
@@ -203,6 +203,10 @@ void JAttributePlugin::preprocess(shared_ptr<Journal> journal)
         string content = string(retJournal.content);
         journal->setContent(content);
     }
+    /**
+     * 输入的journal_s结构体由jrme释放，输出的由插件释放
+     * input journal_s struct is released by jrme, output struct is released by plugin
+     */
     releaseJournalStruct(orgJournal);
     p_releaseJournal(retJournal);
     return;
@@ -233,6 +237,10 @@ void JAttributePlugin::postprocess(shared_ptr<Journal> journal)
         journal->setContent(content);
     }
 
+    /**
+     * 输入的journal_s结构体由jrme释放，输出的由插件释放
+     * input journal_s struct is released by jrme, output struct is released by plugin
+     */
     releaseJournalStruct(orgJournal);
     p_releaseJournal(retJournal);
     return;
@@ -251,6 +259,14 @@ size_t JAttributeMaster::attributeSize()
     return mNodeList.size();
 }
 
+/**
+ * @brief 加载一个插件
+ * Load a plugin
+ * 
+ * @param name 插件路径。Path of plugin
+ * @return true 加载成功。Load successfully.
+ * @return false 加载失败。Load failed.
+ */
 bool JAttributeMaster::addPluginNode(string name)
 {
     shared_ptr<JAttributePlugin> node = make_shared<JAttributePlugin>();
@@ -262,6 +278,12 @@ bool JAttributeMaster::addPluginNode(string name)
     return true;
 }
 
+/**
+ * @brief 根据加载的JAttribute生成日记中默认的attribute part
+ * Generate default attribute part in journal by loaded JAttribute
+ * 
+ * @return string 
+ */
 string JAttributeMaster::genJAttributePart()
 {
     string attributePart;

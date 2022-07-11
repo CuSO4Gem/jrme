@@ -47,19 +47,23 @@ public:
     virtual string getKey() = 0;
     virtual string getDefaultValue() = 0;
     /**
-     * @brief preprocess()是要求用户输入jrounal之前的处理
-     * postprocess()是用户输入完journal之后的处理
+     * @brief 要求用户输入日记之前的预处理
+     * The pre-processing before inputing a journal
      * 
-     * preprocess() will run before user input journal
-     * postprocess() process after user finish input journal
+     * @param[in,out] journal 日记
      */
     virtual void preprocess(shared_ptr<Journal> journal) = 0;
+    /**
+     * @brief 用户输入完日记之的后处理
+     * the post-processing after user input journal
+     * 
+     * @param[in,out] journal 日记
+     */
     virtual void postprocess(shared_ptr<Journal> journal) = 0;
 
     /**
-     * @brief 这两个函数不是通用的函数，是专门针对程序自带的几个JAttribute
-     * The tow function is no a general function. It is for the JAttribute, that
-     * build in jrme
+     * @brief 判断一个是否为JRME自带的JAttribute
+     * Adjudge if a JAttribute is a JRME's built-in JAttribute
      */
     virtual int32_t getInnerJAttributeType()  {return PLUGIN_JATTRIBUTE;};
     virtual void setDate(time_t stamp) {};

@@ -23,7 +23,6 @@ using namespace std;
 /**
  * @brief 
  * 一篇日记
- * 
  * a journal
  */
 class Journal

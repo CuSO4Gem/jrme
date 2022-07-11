@@ -44,6 +44,12 @@ public:
     JAttributeMaster();
     ~JAttributeMaster() = default;
 
+    /**
+     * @brief 所有加载的JAttribute数量。
+     * The number of all loaded JAttribute.
+     * 
+     * @return JAttribute的数量。The number of JAttribute.
+     */
     size_t attributeSize();
 
     /**
@@ -55,6 +61,15 @@ public:
      * @return false load plugin faild
      */
     bool addPluginNode(string name);
+    
+    /**
+     * @brief 依次载入所有的JAttribute插件。
+     * Load all JAttribute include pulgin.
+     * 
+     * @param nameList 插件路径列表
+     * @return true 所有插件载入都成功了。All plugins loaded successfully.
+     * @return false 由插件载入失败了。One or more plugins loaded failed.
+     */
     bool addPluginNode(list<string> nameList) {return true;};
 
     /**
