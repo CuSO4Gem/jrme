@@ -49,10 +49,12 @@ public:
     ~SfJournalBook() = default;
 
     void setKey(uint8_t key[32]);
+
     bool open(string path);
-    void close();
+    void close();    
     void order();
     bool save();
+
 
     size_t size();
     shared_ptr<Journal> at(size_t pos);

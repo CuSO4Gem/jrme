@@ -25,7 +25,8 @@ shared_ptr<JournalIOBase> JournalIOFactory::getJournalIO(string journalPath)
         return nullptr;
     }
     
-    /*load all journal IO*/
+    /** 加载所有的JournalIO 
+     * Load all JournalIO */
     vector<shared_ptr<JournalIOBase>> ioVector;
     ioVector.push_back(make_shared<TxtJournalIO>());
     JLOGD("[D] load TxtJournal at 0");
@@ -42,7 +43,8 @@ shared_ptr<JournalIOBase> JournalIOFactory::getJournalIO(string journalPath)
         }
     }
 
-    /*get postfix*/
+    /** 获取日记路径的和后缀名
+     * Get journal path and suffix */
     size_t pos;
     for (pos = journalPath.length()-1; pos >= 0; pos--)
     {
@@ -55,7 +57,8 @@ shared_ptr<JournalIOBase> JournalIOFactory::getJournalIO(string journalPath)
         postfix = journalPath.substr(pos+1, journalPath.length()-pos-1);
     }
 
-    /*find postfix, so select journalIO by postfix*/
+    /** 优先选择支持该后缀的JournalIO。
+     * Select JournalIO which support this postfix. */
     i=0;
     if (postfix.length()>0)
     {
@@ -75,8 +78,8 @@ shared_ptr<JournalIOBase> JournalIOFactory::getJournalIO(string journalPath)
         }
     }
 
-    /*not get postfix or can not open journal by postfix
-      so we open journal one by one*/
+    /** 没有支持该后缀的JournalIO，所以依次尝试所有的JournalIO
+     *  No JournalIO support this postfix, so try all JournalIO */
     i=0;
     for (auto &it:ioVector)
     {

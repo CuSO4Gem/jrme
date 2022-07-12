@@ -29,7 +29,6 @@ using namespace std;
 /**
  * @brief 
  * 尝试加载插件，自动选择合适的JournalIO类
- * 
  * Try to load and select applicable JournalIO class
  * 
  */
@@ -41,6 +40,13 @@ public:
     JournalIOFactory() = default;
     ~JournalIOFactory() = default;
 
+    /**
+     * @brief 自动获取JournalIO类的实例
+     * Get JournalIO class instance automatically
+     * 
+     * @param[in] journalPath 日记文件路径。the journal path
+     * @return shared_ptr<JournalIOBase> 如果失败，返回nullptr。if failed, return nullptr
+     */
     shared_ptr<JournalIOBase> getJournalIO(string journalPath);
 };
 

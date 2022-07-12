@@ -54,6 +54,7 @@ public:
      * @brief
      * 获取配置的根目录
      * Get the Config root dirstory
+     * 
      * @return string 
      */
     static string getConfigRootDir();
@@ -62,6 +63,8 @@ public:
      * @brief 
      * 获取记录日记本的文件
      * get path of journak book list config file.
+     * 
+     * @return string 
      */
     static string getJournalBooksCfgPath();
 
@@ -69,6 +72,8 @@ public:
      * @brief 
      * 获取插件目录
      * Get the dir for save plugin
+     * 
+     * @return string 
      */
     static string getPluginDir();
 
@@ -76,6 +81,8 @@ public:
      * @brief 
      * 获取journalIO插件列表
      * Get config of the JournalIO Plugin Names 
+     * 
+     * @return vector<string> 插件名称（不包括路径）。plugin name without path
      */
     static list<string> getJournalIOPluginNames();
 
@@ -83,6 +90,8 @@ public:
      * @brief 
      * 获取需要载入的JAttribute插件列表
      * Get the JAttribute Plugin Names
+     * 
+     * @return vector<string> 插件名称（不包括路径）。plugin name without path
      */
     static list<string> getConfigNodePluginNames();
 
@@ -90,6 +99,8 @@ public:
      * @brief 
      * 获取编辑器名
      * Get the Editor Name
+     * 
+     * @return string 
      */
     static string getEditorName();
 
@@ -97,6 +108,8 @@ public:
      * @brief 
      * 获取默认的日记本保存路径
      * Get the Default Journal Book Path
+     * 
+     * @return string 
      */
     static string getDefaultJournalBookPath();
     
@@ -104,6 +117,8 @@ public:
      * @brief 
      * 设置默认的日记本保存路径
      * Set the Deafult Journal Book Path
+     * 
+     * @param[in] path 日记本文件路径。the journal book path
      */
     static void setDeafultJournalBookPath(string path);
 
@@ -112,6 +127,8 @@ public:
      * @brief 
      * 读取日记保存列表
      * Read journal book list
+     * 
+     * @return vector<string> 日记本文件路径。the journal book path
      */
     static list<string> readJournalBooksCfg();
 
@@ -119,6 +136,10 @@ public:
      * @brief
      * 写入日记保存列表
      * Write journal book list
+     * 
+     * @param[in] books 日记本文件路径列表。the journal book path list
+     * @return true write success
+     * @return false write fail
      */
     static bool writeJournalBooksCfg(list<string> allPath);
 };

@@ -57,7 +57,15 @@ public:
     PluginJournalIO() = default;
     ~PluginJournalIO();
 
-    bool loadPlugin(string name);
+    /**
+     * @brief 加载JournalIO插件
+     * load JournalIO plugin
+     * 
+     * @param[in] name 插件名称（不包括路径）。Name of plugin without path.
+     * @return true 加载成功。Load success.
+     * @return false 加载失败。Load fail.
+     */
+    bool loadPlugin(string path);
 
     uint32_t apiSupport();
     vector<string> formateSupport();

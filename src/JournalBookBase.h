@@ -32,6 +32,11 @@ public:
     virtual void setKey(uint8_t key[32]) = 0;
     virtual bool open(string path) = 0;
     virtual void close() = 0;
+    
+    /**
+     * @brief 日记排序
+     * Order journal
+     */
     virtual void order() = 0;
     virtual bool save() = 0;
     

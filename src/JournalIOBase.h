@@ -36,80 +36,77 @@ class JournalIOBase
 public:
     virtual ~JournalIOBase() = default;
 
-    /**
-     * @brief support api version
-     * 
-     * @return uint32_t api version
-     */
     virtual uint32_t apiSupport() = 0;
 
     /**
-     * @brief support format
+     * @brief 日记接口所支持的格式后缀
+     * format suffix supported by JournalIOBase
      * 
      * @return vector<string> formate list
      */
     virtual vector<string> formateSupport() = 0;
 
-    /**
-     * @brief is IO support Aes-256 encryption
-     * 
-     * @return true 
-     * @return false 
-     */
+
     virtual bool isSupportAes256() = 0;
-
-    /**
-     * @brief Set the Key object to object
-     * 
-     * @param key 
-     */
     virtual void setKey(uint8_t key[32]) = 0;
-
-    /**
-     * @brief clear key
-     * 
-     */
     virtual void clearKey() = 0;
 
     /**
-     * @brief open file and ready to parse
+     * @brief 打开一个文件，准备解析。
+     * open file and ready to parse
      * 
-     * @param path the journal path
+     * @param[in] path 文件的路径。the journal path
      * @return true open success
      * @return false open failed
      */
     virtual bool open(string path) = 0;
 
     /**
-     * @brief close IO file
-     * 
+     * @brief 关闭文件
+     * close file
      */
     virtual void close() = 0;
 
     /**
-     * @brief set read mod, it can read journal
+     * @brief 设置为读取模式
+     * set to read mode
      * 
-     * @return true 
-     * @return false 
+     * @details 读取模式，JrounalIO应该可以依次读取每一篇日记，且不能进行写入操作。
+     * In read mode, JournalIO should be able to read each journal one by one, and can't write.
+     * 
+     * @return true 设置成功。set success
+     * @return false 设置失败。set failed
      */
     virtual bool setReadMod() = 0;
 
     /**
-     * @brief set write mod, it can write journal
+     * @brief 设置为写入模式。
+     * set to write mode
      * 
-     * @return true 
-     * @return false 
+     * @details 写入模式，JournalIO应该从0开始，依次写入每一篇日记，且不能进行读取操作。
+     * In write mode, JournalIO should start from 0 offset,
+     * and write each journal one by one, and can't read.
+     * 
+     * @return true 设置成功。set success
+     * @return false 设置失败。set failed
      */
     virtual bool setWriteMode() = 0;
+
     /**
-     * @brief read and parser from file
-     * @return nullptr: read fail
-     * @return not nllptr: read success
+     * @brief 读取一篇日记
+     * read one journal
+     * 
+     * @return 日记的指针。journal pointer
+     * 
+     * @retval nullptr 读取失败，或者以及读取到文件末尾了。read failed, or reach end of file.
+     * @return not nllptr 读取成功。read success
      */
     virtual shared_ptr<Journal> readJournal() = 0;
 
     /**
-     * @brief write journal to file
+     * @brief 写入一篇日记
+     * write one journal
+     * 
      * @return true 
      * @return false 
      */

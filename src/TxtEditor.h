@@ -36,7 +36,8 @@ public:
      * @brief 
      * 设置editor初始的字符串
      * Set init string of editor
-     * @param initStr 
+     * 
+     * @param[in] initStr 
      */
     void setInitStr(string initStr);
 
@@ -51,6 +52,7 @@ public:
      * @brief 
      * 让用户从editor输入日记
      * Get journal from user
+     * 
      * @return nullptr 用户不希望保存
      */
     shared_ptr<Journal> getJournalFromEditor();
