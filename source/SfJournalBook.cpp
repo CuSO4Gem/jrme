@@ -29,6 +29,8 @@ void SfJournalBook::setKey(uint8_t key[32])
 bool SfJournalBook::open(string path)
 {
     mJournalIO = JournalIOFactory().getJournalIO(path);
+    Journal bk;
+    Journal bk2 = bk;
     if (!mJournalIO)
     {
         JLOGW("[E] Cann't create journalIO");

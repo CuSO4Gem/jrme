@@ -1,4 +1,4 @@
-set(SRC_DIR ${PROJECT_SOURCE_DIR}/src/)
+set(SRC_DIR ${PROJECT_SOURCE_DIR}/source/)
 
 link_libraries(dl m pthread)
 

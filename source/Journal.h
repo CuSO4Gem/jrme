@@ -33,8 +33,8 @@ private:
     string mContent;
 
 public:
-    Journal() = default;
-    Journal(const string &title, const string &attributePart, const string &content);
+    explicit Journal() = default;
+    explicit Journal(const string &title, const string &attributePart, const string &content);
     ~Journal() = default;
 
     void setTitle(const string &title);
