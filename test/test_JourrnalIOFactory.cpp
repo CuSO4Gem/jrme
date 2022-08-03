@@ -24,7 +24,9 @@ limitations under the License.
 #include "JournalIOBase.h"
 #include "JournalIOFactory.h"
 
-using namespace std;
+using std::string;
+using std::ifstream;
+using std::to_string;
 
 #define JOURNAL_SORTE "./testFile/JournalIOFactory_sort.txt"
 #define TXT_JOURNAL_READ "./testFile/JournalIOFactory_read.txt"

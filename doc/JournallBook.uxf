@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="15.0.0">
+  <help_text>Space for diagram notes</help_text>
+  <zoom_level>12</zoom_level>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>252</x>
+      <y>300</y>
+      <w>252</w>
+      <h>324</h>
+    </coordinates>
+    <panel_attributes>/JournalBookBase/
+--
+-id: Long
+_-ClassAttribute: Long_
+--
+/+open(string path)/
+
+/+close()/
+/+order()/
+/+save()/
+
+/+at(size_t pos)/
+/+size()/
+/+insert(size_t pos, shared_ptr&lt;Journal&gt; journal)/
+/+push_front(shared_ptr&lt;Journal&gt; journal)/
+/+push_back(shared_ptr&lt;Journal&gt; journal)/
+/+erase(size_t pos)/
+/+swap(size_t pos1, size_t pos2)/</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>600</x>
+      <y>300</y>
+      <w>372</w>
+      <h>84</h>
+    </coordinates>
+    <panel_attributes>SFJournalBook
+--
+shared_ptr&lt;JournalIOBase&gt; mJournalIO
+vector&lt;shared_ptr&lt;Journal&gt;&gt; mJournalVector</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>492</x>
+      <y>300</y>
+      <w>132</w>
+      <h>36</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;.</panel_attributes>
+    <additional_attributes>10.0;10.0;90.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>684</x>
+      <y>504</y>
+      <w>216</w>
+      <h>276</h>
+    </coordinates>
+    <panel_attributes>Journal
+--
+-string mTitle
+-string mAttributePart
+-string mContent
+--
++setTitle()
++setAttributePart()
++setContent()
++getTitle()
++getAttributePart()
++getContent()
++clear()
++toString()
++operator ==</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>780</x>
+      <y>372</y>
+      <w>60</w>
+      <h>156</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
+m2=0..n</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;110.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1068</x>
+      <y>324</y>
+      <w>180</w>
+      <h>168</h>
+    </coordinates>
+    <panel_attributes>/JournalIOBase/
+--
+/+apiSupport()/
+/+formateSupport()/
+/+open()/
+/+setReadMod()/
+/+setWriteMode()/
+/+readJournal()/
+/+writeJournal()/</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>960</x>
+      <y>324</y>
+      <w>132</w>
+      <h>48</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
+m2=1</panel_attributes>
+    <additional_attributes>10.0;10.0;90.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1056</x>
+      <y>564</y>
+      <w>216</w>
+      <h>96</h>
+    </coordinates>
+    <panel_attributes>TxtJournalIO
+--
+-fstream mJournal
+-string mJournalPath
+-enum processState mState
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1152</x>
+      <y>480</y>
+      <w>36</w>
+      <h>108</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;.</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;70.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1320</x>
+      <y>324</y>
+      <w>216</w>
+      <h>96</h>
+    </coordinates>
+    <panel_attributes>PluginJournalIO
+--
+-void* mDlHandle
+-void* mJournalIOHandle
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1236</x>
+      <y>324</y>
+      <w>108</w>
+      <h>36</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;.</panel_attributes>
+    <additional_attributes>10.0;10.0;70.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>228</x>
+      <y>0</y>
+      <w>348</w>
+      <h>228</h>
+    </coordinates>
+    <panel_attributes>JournalFilter
+--
+-shared_ptr&lt;JournalBookBase&gt; mBook
+--
++getJournalOrder()
++sortByOrder()
++sortByStamp()
++sortByLevel()
++stampFilter()
++levelFilter()
++withTagsFilter()
++tagsCount()</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>360</x>
+      <y>24</y>
+      <w>300</w>
+      <h>300</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>180.0;10.0;230.0;10.0;230.0;190.0;10.0;190.0;10.0;230.0</additional_attributes>
+  </element>
+</diagram>

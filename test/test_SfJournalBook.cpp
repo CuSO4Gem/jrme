@@ -21,7 +21,7 @@ limitations under the License.
 #include <string>
 #include <syscall.h>
 
-using namespace std;
+using std::string;
 
 #include "SfJournalBook.h"
 #include "Utils.h"

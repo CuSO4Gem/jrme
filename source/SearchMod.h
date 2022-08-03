@@ -13,13 +13,20 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-#ifndef SAVE_DATE_UTIL_H
-#define SAVE_DATE_UTIL_H
+#ifndef SEARCH_MOD_H
+#define SEARCH_MOD_H
 
 #include <string>
 
+#include "cmdline.h"
+
 using std::string;
 
-bool setValueToJAttributePart(string &attributePart, const string &key, const string value);
+/**
+ * @brief
+ * 日记搜索功能
+ * search journal
+ */
+int journalSearchMod(cmdline::parser &cmd, string bookPath);
 
 #endif

@@ -22,36 +22,39 @@ limitations under the License.
 #include "debug_print.h"
 #define PLUGIN_NAME "md_journal(plugin)"
 
+using std::ios;
+using std::make_shared;
+using std::smatch;
 
 void md2txtEnter(string &iStr)
 {
     if (iStr.length() == 0)
         return;
-    if (iStr.length()>2 && iStr[iStr.length()-2]=='\r')
-        iStr.erase(iStr.length()-2, 1);
-    if (iStr.length()>2 && iStr.substr(iStr.length()-2,2)=="  ")
-        iStr = iStr.substr(0, iStr.length()-2) + string("\n"); 
+    if (iStr.length() > 2 && iStr[iStr.length() - 2] == '\r')
+        iStr.erase(iStr.length() - 2, 1);
+    if (iStr.length() > 2 && iStr.substr(iStr.length() - 2, 2) == "  ")
+        iStr = iStr.substr(0, iStr.length() - 2) + string("\n");
 }
 
 void txt2mdEnter(string &iStr)
 {
-    if (iStr.length()>2 && iStr[iStr.length()-2]=='\r')
-        iStr.erase(iStr.length()-2, 1);
+    if (iStr.length() > 2 && iStr[iStr.length() - 2] == '\r')
+        iStr.erase(iStr.length() - 2, 1);
     if (iStr.length() == 0)
         return;
     size_t i = 0;
-    while (i<iStr.length())
+    while (i < iStr.length())
     {
-        
-        if (iStr[i]=='\r')
+
+        if (iStr[i] == '\r')
             iStr.erase(i, 1);
-        if (iStr[i]=='\n')
+        if (iStr[i] == '\n')
         {
             iStr.insert(i, "  ");
             i += 3;
         }
         else
-            i++;    
+            i++;
     }
 }
 
@@ -73,7 +76,7 @@ uint32_t MdJournalIO::apiSupport()
 
 vector<string> MdJournalIO::formateSupport()
 {
-    vector<string> formates {string("md")};
+    vector<string> formates{string("md")};
     return formates;
 }
 
@@ -94,7 +97,7 @@ void MdJournalIO::clearKey()
 
 bool MdJournalIO::setReadMod()
 {
-    if(mState==UNINITED)
+    if (mState == UNINITED)
         return false;
 
     if (mJournal.is_open())
@@ -113,7 +116,7 @@ bool MdJournalIO::setReadMod()
 
 bool MdJournalIO::setWriteMode()
 {
-    if(mState==UNINITED)
+    if (mState == UNINITED)
         return false;
 
     if (mJournal.is_open())
@@ -134,10 +137,10 @@ bool MdJournalIO::open(string path)
     if (!mJournal)
     {
         /*maybe file no exist, try too create one*/
-        string cmd = string("touch ")+path;
-        JLOGI("[I] %s: touch journal file: %s", PLUGIN_NAME,cmd.c_str());
+        string cmd = string("touch ") + path;
+        JLOGI("[I] %s: touch journal file: %s", PLUGIN_NAME, cmd.c_str());
         int ret = system(cmd.c_str());
-        if (ret!=0)
+        if (ret != 0)
             return false;
         else
         {
@@ -145,27 +148,27 @@ bool MdJournalIO::open(string path)
             return true;
         }
     }
-    
+
     /*an empty file, just rewrite it*/
     mJournal.seekg(0, ios::end);
-    if (0==mJournal.tellg())
+    if (0 == mJournal.tellg())
     {
         mJournal.close();
         mState = INITED;
         return true;
     }
     mJournal.seekg(0, ios::beg);
-    
+
     /*check there have at list one journal in file*/
     string lineBuffer;
     smatch regexResult;
-    bool finded;
+    bool   finded;
     finded = false;
-    //todo: more strong, some journal may leak some element
+    // todo: more strong, some journal may leak some element
     while (getline(mJournal, lineBuffer))
     {
-        size_t prLen=0;
-        if (lineBuffer.length()>2 && lineBuffer[0]=='#' && lineBuffer[1]==' ')
+        size_t prLen = 0;
+        if (lineBuffer.length() > 2 && lineBuffer[0] == '#' && lineBuffer[1] == ' ')
         {
             finded = true;
             break;
@@ -176,13 +179,12 @@ bool MdJournalIO::open(string path)
         mJournal.close();
         return false;
     }
-    //attributePart begin
+    // attributePart begin
     finded = false;
     while (getline(mJournal, lineBuffer))
     {
-        size_t prLen=0;
-        if (lineBuffer.length()>=3
-        && lineBuffer[0]=='`' && lineBuffer[1]=='`' && lineBuffer[2]=='`')
+        size_t prLen = 0;
+        if (lineBuffer.length() >= 3 && lineBuffer[0] == '`' && lineBuffer[1] == '`' && lineBuffer[2] == '`')
         {
             finded = true;
             break;
@@ -193,13 +195,12 @@ bool MdJournalIO::open(string path)
         mJournal.close();
         return false;
     }
-    //attributePart end
+    // attributePart end
     finded = false;
     while (getline(mJournal, lineBuffer))
     {
-        size_t prLen=0;
-        if (lineBuffer.length()>=3
-        && lineBuffer[0]=='`' && lineBuffer[1]=='`' && lineBuffer[2]=='`')
+        size_t prLen = 0;
+        if (lineBuffer.length() >= 3 && lineBuffer[0] == '`' && lineBuffer[1] == '`' && lineBuffer[2] == '`')
         {
             finded = true;
             break;
@@ -210,7 +211,7 @@ bool MdJournalIO::open(string path)
         mJournal.close();
         return false;
     }
-    //note need to find end ======
+    // note need to find end ======
 
     mJournal.close();
     mState = INITED;
@@ -225,23 +226,23 @@ void MdJournalIO::close()
 
 shared_ptr<Journal> MdJournalIO::readJournal()
 {
-    if (!mJournal.is_open() || mState!=READ)
+    if (!mJournal.is_open() || mState != READ)
         return nullptr;
-        
+
     shared_ptr<Journal> journl = make_shared<Journal>();
-    string lineBuffer;
-    string readBuffer;
-    smatch regexResult;
-    bool finded;
-    size_t i, getSpace;
+    string              lineBuffer;
+    string              readBuffer;
+    smatch              regexResult;
+    bool                finded;
+    size_t              i, getSpace;
     finded = false;
-    //todo: more strong
+    // todo: more strong
     while (getline(mJournal, lineBuffer))
     {
-        if (lineBuffer.length()>=2 && lineBuffer[0]=='#' && lineBuffer[1]==' ')
+        if (lineBuffer.length() >= 2 && lineBuffer[0] == '#' && lineBuffer[1] == ' ')
         {
-            finded = true;
-            lineBuffer = lineBuffer.substr(2, lineBuffer.length()-2);
+            finded     = true;
+            lineBuffer = lineBuffer.substr(2, lineBuffer.length() - 2);
             break;
         }
     }
@@ -259,8 +260,7 @@ shared_ptr<Journal> MdJournalIO::readJournal()
     readBuffer.append(lineBuffer);
     while (getline(mJournal, lineBuffer))
     {
-        if (lineBuffer.length()>=3
-        && lineBuffer[0]=='`' && lineBuffer[1]=='`' && lineBuffer[2]=='`')
+        if (lineBuffer.length() >= 3 && lineBuffer[0] == '`' && lineBuffer[1] == '`' && lineBuffer[2] == '`')
         {
             finded = true;
             break;
@@ -278,11 +278,11 @@ shared_ptr<Journal> MdJournalIO::readJournal()
         mState = INITED;
         return nullptr;
     }
-    i = 0;
+    i        = 0;
     getSpace = 0;
-    while (i<readBuffer.length())
+    while (i < readBuffer.length())
     {
-        if (readBuffer[i] == '\n' && i<readBuffer.length()-1)
+        if (readBuffer[i] == '\n' && i < readBuffer.length() - 1)
             readBuffer[i] = ' ';
 
         if (readBuffer[i] == ' ')
@@ -290,12 +290,12 @@ shared_ptr<Journal> MdJournalIO::readJournal()
         else
             getSpace = 0;
 
-        if (getSpace>1 || readBuffer[i]=='\t')
+        if (getSpace > 1 || readBuffer[i] == '\t')
             readBuffer.erase(i, 1);
         else
-            i++;    
+            i++;
     }
-    if (readBuffer[readBuffer.length()-1] != '\n')
+    if (readBuffer[readBuffer.length() - 1] != '\n')
         readBuffer.append("\n");
     journl->setTitle(readBuffer);
 
@@ -304,27 +304,23 @@ shared_ptr<Journal> MdJournalIO::readJournal()
     readBuffer.clear();
     while (getline(mJournal, lineBuffer))
     {
-        if (lineBuffer.length()>=3
-        && lineBuffer[0]=='`' && lineBuffer[1]=='`' && lineBuffer[2]=='`')
+        if (lineBuffer.length() >= 3 && lineBuffer[0] == '`' && lineBuffer[1] == '`' && lineBuffer[2] == '`')
         {
             finded = true;
             break;
         }
-        
+
         /* ignore the line wich without any content*/
         bool haveContent = false;
         for (size_t i = 0; i < lineBuffer.length(); i++)
         {
-            if (lineBuffer[i] != ' ' &&
-                lineBuffer[i] != '\t' &&
-                lineBuffer[i] != '\r' &&
-                lineBuffer[i] != '\n')
+            if (lineBuffer[i] != ' ' && lineBuffer[i] != '\t' && lineBuffer[i] != '\r' && lineBuffer[i] != '\n')
             {
                 haveContent = true;
                 break;
             }
         }
-        
+
         if (haveContent)
             readBuffer.append(lineBuffer + string("\n"));
     }
@@ -335,7 +331,7 @@ shared_ptr<Journal> MdJournalIO::readJournal()
         mState = INITED;
         return nullptr;
     }
-    if (readBuffer[readBuffer.length()-1] != '\n')
+    if (readBuffer[readBuffer.length() - 1] != '\n')
         readBuffer.append("\n");
     journl->setAttributePart(readBuffer);
 
@@ -344,8 +340,7 @@ shared_ptr<Journal> MdJournalIO::readJournal()
     readBuffer.clear();
     while (getline(mJournal, lineBuffer))
     {
-        if (lineBuffer.length()>=3 && 
-        lineBuffer[0] == '*' && lineBuffer[1] == '*' && lineBuffer[2] == '*')
+        if (lineBuffer.length() >= 3 && lineBuffer[0] == '*' && lineBuffer[1] == '*' && lineBuffer[2] == '*')
         {
             break;
         }
@@ -360,7 +355,7 @@ shared_ptr<Journal> MdJournalIO::readJournal()
         mJournal.close();
         mState = INITED;
     }
-    if (readBuffer[readBuffer.length()-1] != '\n')
+    if (readBuffer[readBuffer.length() - 1] != '\n')
         readBuffer.append("\n");
     journl->setContent(readBuffer);
 
@@ -369,19 +364,19 @@ shared_ptr<Journal> MdJournalIO::readJournal()
 
 bool MdJournalIO::writeJournal(shared_ptr<Journal> journal)
 {
-    if (!mJournal.is_open() || mState!=WRITE)
+    if (!mJournal.is_open() || mState != WRITE)
         return false;
 
-    string title = string("# ") + journal->getTitle();
-    size_t i = 0;
+    string title    = string("# ") + journal->getTitle();
+    size_t i        = 0;
     size_t getSpace = 0;
     /**
      * markdown title is only one line. convert '\n' to ' '
      * and remove mutly space
      * */
-    while (i<title.length())
+    while (i < title.length())
     {
-        if (title[i] == '\n' && i<title.length()-1)
+        if (title[i] == '\n' && i < title.length() - 1)
             title[i] = ' ';
 
         if (title[i] == ' ')
@@ -389,13 +384,13 @@ bool MdJournalIO::writeJournal(shared_ptr<Journal> journal)
         else
             getSpace = 0;
 
-        if (getSpace>1 || title[i]=='\r')
+        if (getSpace > 1 || title[i] == '\r')
             title.erase(i, 1);
         else
-            i++;    
+            i++;
     }
     mJournal.write(title.c_str(), title.length());
-    if (title[title.length()-1]!='\n')
+    if (title[title.length() - 1] != '\n')
         mJournal.write("\n", 1);
 
     string attributePart = journal->getAttributePart();
@@ -403,14 +398,14 @@ bool MdJournalIO::writeJournal(shared_ptr<Journal> journal)
     lineBuffer = string("```\n");
     mJournal.write(lineBuffer.c_str(), lineBuffer.length());
     mJournal.write(attributePart.c_str(), attributePart.length());
-    if (attributePart[attributePart.length()-1]!='\n')
+    if (attributePart[attributePart.length() - 1] != '\n')
         mJournal.write("\n", 1);
     mJournal.write(lineBuffer.c_str(), lineBuffer.length());
 
     string content = journal->getContent();
     txt2mdEnter(content);
     mJournal.write(content.c_str(), content.length());
-    if (content[content.length()-1]!='\n')
+    if (content[content.length() - 1] != '\n')
         mJournal.write("\n", 1);
     lineBuffer = string("***\n");
     mJournal.write(lineBuffer.c_str(), lineBuffer.length());
@@ -418,196 +413,196 @@ bool MdJournalIO::writeJournal(shared_ptr<Journal> journal)
 }
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
-void *allocate_instance()
-{
-    return new MdJournalIO();
-}
+    void *allocate_instance()
+    {
+        return new MdJournalIO();
+    }
 
-void release_instance(void *handle)
-{
-    if (!handle)
+    void release_instance(void *handle)
+    {
+        if (!handle)
+            return;
+
+        delete (MdJournalIO *)handle;
+    }
+
+    void releaseJournalStruct(struct journal_s journal)
+    {
+        if (journal.title)
+            free(journal.title);
+        if (journal.attributePart)
+            free(journal.attributePart);
+        if (journal.content)
+            free(journal.content);
+    }
+
+    uint32_t apiSupport(void *handle)
+    {
+        if (!handle)
+            return 0;
+        MdJournalIO &journalIO = *(MdJournalIO *)handle;
+
+        return journalIO.apiSupport();
+    }
+
+    const char *formateSupport(void *handle, size_t *line_num)
+    {
+        if (!handle)
+            return NULL;
+        MdJournalIO   &journalIO = *(MdJournalIO *)handle;
+        vector<string> fList     = journalIO.formateSupport();
+        int32_t cpyLen = fList[0].length() < (FORMATE_TABLE_COLUM - 1) ? fList[0].length() : (FORMATE_TABLE_COLUM - 1);
+        memcpy(formateList[0], fList[0].c_str(), cpyLen);
+        formateList[0][cpyLen + 1] = '\n';
+        *line_num                  = 1;
+        return formateList[0];
+    }
+
+    bool isSupportAes256(void *handle)
+    {
+        if (!handle)
+            return false;
+        MdJournalIO &journalIO = *(MdJournalIO *)handle;
+        return journalIO.isSupportAes256();
+    }
+
+    void setKey(void *handle, uint8_t key[32])
+    {
+        if (!handle)
+            return;
+        MdJournalIO &journalIO = *(MdJournalIO *)handle;
+        journalIO.setKey(key);
         return;
-    
-    delete (MdJournalIO *)handle;
-}
-
-void releaseJournalStruct(struct journal_s journal)
-{
-    if (journal.title)
-        free(journal.title);
-    if (journal.attributePart)
-        free(journal.attributePart);
-    if (journal.content)
-        free(journal.content);
-}
-
-uint32_t apiSupport(void *handle)
-{
-    if (!handle)
-        return 0;
-    MdJournalIO &journalIO = *(MdJournalIO *)handle;
-
-    return journalIO.apiSupport();
-}
-
-const char* formateSupport(void *handle, size_t *line_num)
-{
-    if (!handle)
-        return NULL;
-    MdJournalIO &journalIO = *(MdJournalIO *)handle;
-    vector<string> fList = journalIO.formateSupport();
-    int32_t cpyLen = fList[0].length() < (FORMATE_TABLE_COLUM-1) ? fList[0].length() : (FORMATE_TABLE_COLUM-1);
-    memcpy(formateList[0], fList[0].c_str(), cpyLen);
-    formateList[0][cpyLen+1] = '\n';
-    *line_num = 1;
-    return formateList[0];
-}
-
-bool isSupportAes256(void *handle)
-{
-    if (!handle)
-        return false;
-    MdJournalIO &journalIO = *(MdJournalIO *)handle;
-    return journalIO.isSupportAes256();
-}
-
-void setKey(void *handle, uint8_t key[32])
-{
-    if (!handle)
-        return ;
-    MdJournalIO &journalIO = *(MdJournalIO *)handle;
-    journalIO.setKey(key);
-    return;
-}
-
-void clearKey(void *handle)
-{
-    if (!handle)
-        return ;
-    MdJournalIO &journalIO = *(MdJournalIO *)handle;
-    journalIO.clearKey();
-}
-
-bool setReadMod(void *handle)
-{
-    if (!handle)
-        return false;
-    MdJournalIO &journalIO = *(MdJournalIO *)handle;
-    return journalIO.setReadMod();
-}
-
-bool setWriteMode(void *handle)
-{
-    if (!handle)
-        return false;
-    MdJournalIO &journalIO = *(MdJournalIO *)handle;
-    return journalIO.setWriteMode();
-}
-
-bool openIO(void *handle, const char* path)
-{
-    if (!handle)
-        return false;
-    MdJournalIO &journalIO = *(MdJournalIO *)handle;
-    return journalIO.open(string(path));
-}
-
-void closeIO(void *handle)
-{
-    if (!handle)
-        return ;
-    MdJournalIO &journalIO = *(MdJournalIO *)handle;
-    journalIO.close();
-}
-
-bool readJournal(void *handle, struct journal_s* journal2R)
-{
-    if (!handle)
-    {
-        JLOGE("[E] %s: handle is null while calling %s", PLUGIN_NAME, __func__);
-        return false;
     }
-    MdJournalIO &journalIO = *(MdJournalIO *)handle;
-    if (!journal2R)
-    {
-        JLOGD("[D] %s: read jounal == nullptr", PLUGIN_NAME);
-        return false;
-    }
-    shared_ptr<Journal> journal = journalIO.readJournal();
-    if (!journal)
-    {
-        journal2R->title = NULL;
-        journal2R->attributePart = NULL;
-        journal2R->content = NULL;
-        JLOGD("[D] %s: read jounal == nullptr", PLUGIN_NAME);
-        return false;
-    }
-    string strBuffer =  journal->getTitle();
-    if (strBuffer.length()>0)
-    {
-        journal2R->title = (char*)malloc(strBuffer.length()+1);
-        memcpy(journal2R->title, strBuffer.c_str(), strBuffer.length()+1);
-    }
-    else
-        journal2R->title = NULL;
-    
-    strBuffer = journal->getAttributePart();
-    if (strBuffer.length()>0)
-    {
-        journal2R->attributePart = (char*)malloc(strBuffer.length()+1);
-        memcpy(journal2R->attributePart, strBuffer.c_str(), strBuffer.length()+1);
-    }
-    else
-        journal2R->attributePart = NULL;
-    
 
-    strBuffer = journal->getContent();
-    if (strBuffer.length()>0)
+    void clearKey(void *handle)
     {
-        journal2R->content = (char*)malloc(strBuffer.length()+1);
-        memcpy(journal2R->content, strBuffer.c_str(), strBuffer.length()+1);
+        if (!handle)
+            return;
+        MdJournalIO &journalIO = *(MdJournalIO *)handle;
+        journalIO.clearKey();
     }
-    else
-        journal2R->content = NULL;
 
-    JLOGD("[D] %s: read jounal success", PLUGIN_NAME);
-/**
- * @note 
- * journal2R不需要插件主动调用releaseJournalStruct()释放，
- * jrme会调用插件的releaseJournalStruct()。
- * 
- * journal2R does not require the plugin to actively call releaseJournalStruct() to release,
- * jrme will call releaseJournalStruct() in plugin.
- */
-    return true;
-}
+    bool setReadMod(void *handle)
+    {
+        if (!handle)
+            return false;
+        MdJournalIO &journalIO = *(MdJournalIO *)handle;
+        return journalIO.setReadMod();
+    }
 
-bool writeJournal(void *handle, struct journal_s* journal2W)
-{
-    if (!handle)
+    bool setWriteMode(void *handle)
     {
-        JLOGE("[E] %s: handle is null while calling %s", PLUGIN_NAME, __func__);
-        return false;
+        if (!handle)
+            return false;
+        MdJournalIO &journalIO = *(MdJournalIO *)handle;
+        return journalIO.setWriteMode();
     }
-    MdJournalIO &journalIO = *(MdJournalIO *)handle;
-    if (!journal2W->title || !journal2W->attributePart || !journal2W->content)
+
+    bool openIO(void *handle, const char *path)
     {
-        JLOGE("[E] %s: journal2W is not avalible while calling %s", PLUGIN_NAME, __func__);
-        return false;
+        if (!handle)
+            return false;
+        MdJournalIO &journalIO = *(MdJournalIO *)handle;
+        return journalIO.open(string(path));
     }
-    
-    shared_ptr<Journal> journal = make_shared<Journal>();
-    string strBuffer = string(journal2W->title);
-    journal->setTitle(strBuffer);
-    strBuffer = string(journal2W->attributePart);
-    journal->setAttributePart(strBuffer);
-    strBuffer = string(journal2W->content);
-    journal->setContent(strBuffer);
-    return journalIO.writeJournal(journal);
-}
+
+    void closeIO(void *handle)
+    {
+        if (!handle)
+            return;
+        MdJournalIO &journalIO = *(MdJournalIO *)handle;
+        journalIO.close();
+    }
+
+    bool readJournal(void *handle, struct journal_s *journal2R)
+    {
+        if (!handle)
+        {
+            JLOGE("[E] %s: handle is null while calling %s", PLUGIN_NAME, __func__);
+            return false;
+        }
+        MdJournalIO &journalIO = *(MdJournalIO *)handle;
+        if (!journal2R)
+        {
+            JLOGD("[D] %s: read jounal == nullptr", PLUGIN_NAME);
+            return false;
+        }
+        shared_ptr<Journal> journal = journalIO.readJournal();
+        if (!journal)
+        {
+            journal2R->title         = NULL;
+            journal2R->attributePart = NULL;
+            journal2R->content       = NULL;
+            JLOGD("[D] %s: read jounal == nullptr", PLUGIN_NAME);
+            return false;
+        }
+        string strBuffer = journal->getTitle();
+        if (strBuffer.length() > 0)
+        {
+            journal2R->title = (char *)malloc(strBuffer.length() + 1);
+            memcpy(journal2R->title, strBuffer.c_str(), strBuffer.length() + 1);
+        }
+        else
+            journal2R->title = NULL;
+
+        strBuffer = journal->getAttributePart();
+        if (strBuffer.length() > 0)
+        {
+            journal2R->attributePart = (char *)malloc(strBuffer.length() + 1);
+            memcpy(journal2R->attributePart, strBuffer.c_str(), strBuffer.length() + 1);
+        }
+        else
+            journal2R->attributePart = NULL;
+
+        strBuffer = journal->getContent();
+        if (strBuffer.length() > 0)
+        {
+            journal2R->content = (char *)malloc(strBuffer.length() + 1);
+            memcpy(journal2R->content, strBuffer.c_str(), strBuffer.length() + 1);
+        }
+        else
+            journal2R->content = NULL;
+
+        JLOGD("[D] %s: read jounal success", PLUGIN_NAME);
+        /**
+         * @note
+         * journal2R不需要插件主动调用releaseJournalStruct()释放，
+         * jrme会调用插件的releaseJournalStruct()。
+         *
+         * journal2R does not require the plugin to actively call releaseJournalStruct() to release,
+         * jrme will call releaseJournalStruct() in plugin.
+         */
+        return true;
+    }
+
+    bool writeJournal(void *handle, struct journal_s *journal2W)
+    {
+        if (!handle)
+        {
+            JLOGE("[E] %s: handle is null while calling %s", PLUGIN_NAME, __func__);
+            return false;
+        }
+        MdJournalIO &journalIO = *(MdJournalIO *)handle;
+        if (!journal2W->title || !journal2W->attributePart || !journal2W->content)
+        {
+            JLOGE("[E] %s: journal2W is not avalible while calling %s", PLUGIN_NAME, __func__);
+            return false;
+        }
+
+        shared_ptr<Journal> journal   = make_shared<Journal>();
+        string              strBuffer = string(journal2W->title);
+        journal->setTitle(strBuffer);
+        strBuffer = string(journal2W->attributePart);
+        journal->setAttributePart(strBuffer);
+        strBuffer = string(journal2W->content);
+        journal->setContent(strBuffer);
+        return journalIO.writeJournal(journal);
+    }
 
 #ifdef __cplusplus
 }

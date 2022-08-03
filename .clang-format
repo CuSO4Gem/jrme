@@ -3,3 +3,5 @@ AlignConsecutiveDeclarations: true
 AlignConsecutiveAssignments: Consecutive
 AlignConsecutiveMacros: Consecutive
 IndentWidth: 4
+IndentAccessModifiers: false
+AccessModifierOffset: -4

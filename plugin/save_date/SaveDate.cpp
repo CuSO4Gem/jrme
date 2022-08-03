@@ -14,75 +14,75 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 #include <malloc.h>
-#include <string>
 #include <sstream>
+#include <string>
 
-#include "date.h"
-#include "SaveDateUtil.h"
 #include "SaveDate.h"
+#include "SaveDateUtil.h"
+#include "date.h"
 
-using namespace std;
-using namespace ec;
+using ec::Date;
+using ec::Time;
 
 struct save_date_s
 {
     uint32_t node;
 };
 
-
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
-void *allocate_instance()
-{
-    struct save_date_s *save_data = (struct save_date_s *)malloc(sizeof(struct save_date_s));
-    return save_data;
-}
+    void *allocate_instance()
+    {
+        struct save_date_s *save_data = (struct save_date_s *)malloc(sizeof(struct save_date_s));
+        return save_data;
+    }
 
-void release_instance(void *handle)
-{
-    struct save_date_s *save_data = (struct save_date_s *)handle;
-    if (!save_data)
+    void release_instance(void *handle)
+    {
+        struct save_date_s *save_data = (struct save_date_s *)handle;
+        if (!save_data)
+            return;
+
+        free(save_data);
+    }
+
+    void releaseJournalStruct(struct journal_s journal)
+    {
+        if (journal.title)
+            free(journal.title);
+        if (journal.attributePart)
+            free(journal.attributePart);
+        if (journal.content)
+            free(journal.content);
+    }
+
+    void preprocess(void *handle, const struct journal_s *refJournal, struct journal_s *retJournal)
+    {
         return;
+    }
 
-    free(save_data);
-}
+    void postprocess(void *handle, const struct journal_s *refJournal, struct journal_s *retJournal)
+    {
+        struct save_date_s *save_data = (struct save_date_s *)handle;
 
-void releaseJournalStruct(struct journal_s journal)
-{
-    if (journal.title)
-        free(journal.title);
-    if (journal.attributePart)
-        free(journal.attributePart);
-    if (journal.content)
-        free(journal.content);
-}
+        string attributePart = string(refJournal->attributePart);
+        setValueToJAttributePart(attributePart, "save date", Time().toDate().toString());
+        retJournal->attributePart = (char *)malloc(attributePart.length() + 1);
+        memcpy(retJournal->attributePart, attributePart.c_str(), attributePart.length());
+        (retJournal->attributePart)[attributePart.length()] = '\0';
 
-void preprocess(void *handle, const struct journal_s *refJournal, struct journal_s *retJournal)
-{
-    return;
-}
-
-void postprocess(void *handle, const struct journal_s *refJournal, struct journal_s *retJournal)
-{
-    struct save_date_s *save_data = (struct save_date_s *)handle;
-
-    string attributePart = string(refJournal->attributePart);
-    setValueToJAttributePart(attributePart, "save date", Time().toDate().toString());
-    retJournal->attributePart = (char *)malloc(attributePart.length()+1);
-    memcpy(retJournal->attributePart, attributePart.c_str(), attributePart.length());
-    (retJournal->attributePart)[attributePart.length()] = '\0';
-
-/**
- * @note 
- * retJournal不需要插件主动调用releaseJournalStruct()释放，
- * jrme会调用插件的releaseJournalStruct()。
- * 
- * retJournal does not require the plugin to actively call releaseJournalStruct() to release,
- * jrme will call releaseJournalStruct() in plugin.
- */
-}
+        /**
+         * @note
+         * retJournal不需要插件主动调用releaseJournalStruct()释放，
+         * jrme会调用插件的releaseJournalStruct()。
+         *
+         * retJournal does not require the plugin to actively call releaseJournalStruct() to release,
+         * jrme will call releaseJournalStruct() in plugin.
+         */
+    }
 
 #ifdef __cplusplus
 }

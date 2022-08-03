@@ -28,8 +28,8 @@ limitations under the License.
 #include "date.h"
 #include "debug_print.h"
 
-using namespace std;
-using namespace ec;
+using std::string;
+using ec::Date;
 
 #define GET_TAG_BOOK     "./testFile/filter_getTagsFormAttributePart.txt"
 #define TEG_COUNT        "./testFile/filter_tagsCount.txt"

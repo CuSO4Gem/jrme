@@ -13,13 +13,18 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-#ifndef SAVE_DATE_UTIL_H
-#define SAVE_DATE_UTIL_H
+#ifndef WRITE_MODE_H
+#define WRITE_MODE_H
 
 #include <string>
 
 using std::string;
 
-bool setValueToJAttributePart(string &attributePart, const string &key, const string value);
+/**
+ * @brief
+ * 写日记
+ * Wirte journal
+ */
+int journlWriteMode(string bookPath, string timeDescription, string title, string content);
 
 #endif

@@ -18,10 +18,10 @@ limitations under the License.
 
 #include <stddef.h>
 /**
- * @note 
+ * @note
  * 插件和jrme都需要实现自己的releaseJournalStruct()函数。
  * 其实journal_release.c里面已经实现了，编译的时候加上就好了。
- * 
+ *
  * plugin and jrme need to impelement releaseJournalStruct() function.
  * Actually it has been impelement in journal_release.c. Add the file while
  * compile, that will be fine.
@@ -29,16 +29,16 @@ limitations under the License.
 #include "journal_struct.h"
 
 /**
- * @brief 
+ * @brief
  * 所支持格式的字符串长度。格式列表应该按照n*FORMATE_TABLE_COLUM保存
- * 
+ *
  * The string length of supported formats.
  * Table should be saved as n*FORMATE TABLE COLUM
  */
 #define FORMATE_TABLE_COLUM (8)
 
 /**
- * @brief 
+ * @brief
  * JournalIO插件需要实现的API
  * JournalIO plugin API
  */
@@ -46,15 +46,15 @@ typedef void *(*allocate_instance_fnc)();
 typedef void (*release_instance_fnc)(void *handle);
 
 typedef uint32_t (*apiSupport_fnc)(void *handle);
-typedef const char* (*formateSupport_fnc)(void *handle, size_t *line_num);
+typedef const char *(*formateSupport_fnc)(void *handle, size_t *line_num);
 typedef bool (*isSupportAes256_fnc)(void *handle);
 typedef void (*setKey_fnc)(void *handle, uint8_t key[32]);
 typedef bool (*clearKey_fnc)(void *handle);
-typedef bool (*openIO_fnc)(void *handle, const char* path);
+typedef bool (*openIO_fnc)(void *handle, const char *path);
 typedef void (*closeIO_fnc)(void *handle);
 typedef bool (*readMode_fnc)(void *handle);
 typedef bool (*writeMode_fnc)(void *handle);
-typedef bool (*readJournal_fnc)(void *handle, struct journal_s*);
-typedef bool (*writeJournal_fnc)(void *handle, struct journal_s*);
+typedef bool (*readJournal_fnc)(void *handle, struct journal_s *);
+typedef bool (*writeJournal_fnc)(void *handle, struct journal_s *);
 
 #endif

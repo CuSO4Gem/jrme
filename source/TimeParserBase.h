@@ -13,13 +13,23 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-#ifndef SAVE_DATE_UTIL_H
-#define SAVE_DATE_UTIL_H
+#ifndef TIME_PARSER_BASE_H
+#define TIME_PARSER_BASE_H
 
 #include <string>
 
+#include "timeParserType.h"
+
 using std::string;
 
-bool setValueToJAttributePart(string &attributePart, const string &key, const string value);
+class TimeParserBase
+{
+public:
+    ~TimeParserBase() = default;
+
+    virtual timeParserRet parse(string description) = 0;
+
+    virtual bool loadPlugin(string path) {return true;};
+};
 
 #endif

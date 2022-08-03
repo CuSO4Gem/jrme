@@ -13,17 +13,17 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-#ifndef MD_JOURNAL_IO_H
-#define MD_JOURNAL_IO_H
+#ifndef TXT_JOURNAL_IO_H
+#define TXT_JOURNAL_IO_H
 
 #include <fstream>
 #include <memory>
 
 #include "Journal.h"
 #include "JournalIOBase.h"
-#include "journal_io_api.h"
 
 using std::fstream;
+using std::ios;
 
 enum processState
 {
@@ -33,17 +33,21 @@ enum processState
     WRITE
 };
 
-class MdJournalIO : public JournalIOBase
+/**
+ * @brief
+ * txt格式的日记IO
+ * IO txt formate journal
+ */
+class TxtJournalIO : public JournalIOBase
 {
 private:
     fstream           mJournal;
     string            mJournalPath;
-    size_t            mFileSize;
     enum processState mState;
 
 public:
-    MdJournalIO();
-    ~MdJournalIO();
+    TxtJournalIO();
+    ~TxtJournalIO();
 
     uint32_t       apiSupport();
     vector<string> formateSupport();
@@ -58,36 +62,5 @@ public:
     shared_ptr<Journal> readJournal();
     bool                writeJournal(shared_ptr<Journal> journal);
 };
-
-char formateList[1][FORMATE_TABLE_COLUM] = {"md"};
-
-#ifdef __cplusplus
-extern "C"
-{
-#endif
-#pragma GCC visibility push(default)
-
-    void *allocate_instance();
-    void  release_instance(void *handle);
-
-    void releaseJournalStruct(struct journal_s journal);
-
-    uint32_t    apiSupport(void *handle);
-    const char *formateSupport(void *handle, size_t *line_num);
-    bool        isSupportAes256(void *handle);
-    void        setKey(void *handle, uint8_t key[32]);
-    void        clearKey(void *handle);
-
-    bool setReadMod(void *handle);
-    bool setWriteMode(void *handle);
-    bool openIO(void *handle, const char *path);
-    void closeIO(void *handle);
-    bool readJournal(void *handle, struct journal_s *journal2R);
-    bool writeJournal(void *handle, struct journal_s *journal2W);
-
-#pragma GCC visibility pop
-#ifdef __cplusplus
-}
-#endif
 
 #endif
