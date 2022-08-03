@@ -17,19 +17,21 @@ limitations under the License.
 #define JOURNAL_IO_BASE_H
 
 #include <memory>
-#include <vector>
 #include <string>
+#include <vector>
 
 #include "Journal.h"
 
-using namespace std;
+using std::shared_ptr;
+using std::string;
+using std::vector;
 
 /**
- * @brief 
+ * @brief
  * 用于日记IO的接口类型，为了实现不同格式的日记保存工作
- * 
+ *
  * Interface class for IO journal. To support different formate of journal.
- * 
+ *
  */
 class JournalIOBase
 {
@@ -41,20 +43,19 @@ public:
     /**
      * @brief 日记接口所支持的格式后缀
      * format suffix supported by JournalIOBase
-     * 
+     *
      * @return vector<string> formate list
      */
     virtual vector<string> formateSupport() = 0;
 
-
-    virtual bool isSupportAes256() = 0;
+    virtual bool isSupportAes256()       = 0;
     virtual void setKey(uint8_t key[32]) = 0;
-    virtual void clearKey() = 0;
+    virtual void clearKey()              = 0;
 
     /**
      * @brief 打开一个文件，准备解析。
      * open file and ready to parse
-     * 
+     *
      * @param[in] path 文件的路径。the journal path
      * @return true open success
      * @return false open failed
@@ -70,10 +71,10 @@ public:
     /**
      * @brief 设置为读取模式
      * set to read mode
-     * 
+     *
      * @details 读取模式，JrounalIO应该可以依次读取每一篇日记，且不能进行写入操作。
      * In read mode, JournalIO should be able to read each journal one by one, and can't write.
-     * 
+     *
      * @return true 设置成功。set success
      * @return false 设置失败。set failed
      */
@@ -82,11 +83,11 @@ public:
     /**
      * @brief 设置为写入模式。
      * set to write mode
-     * 
+     *
      * @details 写入模式，JournalIO应该从0开始，依次写入每一篇日记，且不能进行读取操作。
      * In write mode, JournalIO should start from 0 offset,
      * and write each journal one by one, and can't read.
-     * 
+     *
      * @return true 设置成功。set success
      * @return false 设置失败。set failed
      */
@@ -95,9 +96,9 @@ public:
     /**
      * @brief 读取一篇日记
      * read one journal
-     * 
+     *
      * @return 日记的指针。journal pointer
-     * 
+     *
      * @retval nullptr 读取失败，或者以及读取到文件末尾了。read failed, or reach end of file.
      * @return not nllptr 读取成功。read success
      */
@@ -106,9 +107,9 @@ public:
     /**
      * @brief 写入一篇日记
      * write one journal
-     * 
-     * @return true 
-     * @return false 
+     *
+     * @return true
+     * @return false
      */
     virtual bool writeJournal(shared_ptr<Journal> journal) = 0;
 };

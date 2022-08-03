@@ -20,10 +20,10 @@ limitations under the License.
 
 #include "cmdline.h"
 
-using namespace std;
+using std::string;
 
 /**
- * @brief 
+ * @brief
  * 日记搜索功能
  * search journal
  */

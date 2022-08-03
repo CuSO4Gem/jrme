@@ -21,6 +21,10 @@ limitations under the License.
 /*debug */
 #include "debug_print.h"
 
+using std::make_shared;
+using std::regex;
+using std::smatch;
+
 TxtJournalIO::TxtJournalIO()
 {
     mState = UNINITED;
@@ -39,7 +43,7 @@ uint32_t TxtJournalIO::apiSupport()
 
 vector<string> TxtJournalIO::formateSupport()
 {
-    vector<string> formates {string("txt")};
+    vector<string> formates{string("txt")};
     return formates;
 }
 
@@ -60,7 +64,7 @@ void TxtJournalIO::clearKey()
 
 bool TxtJournalIO::setReadMod()
 {
-    if(mState==UNINITED)
+    if (mState == UNINITED)
         return false;
 
     if (mJournal.is_open())
@@ -76,7 +80,7 @@ bool TxtJournalIO::setReadMod()
 
 bool TxtJournalIO::setWriteMode()
 {
-    if(mState==UNINITED)
+    if (mState == UNINITED)
         return false;
 
     if (mJournal.is_open())
@@ -98,10 +102,10 @@ bool TxtJournalIO::open(string path)
     if (!mJournal)
     {
         /*maybe file no exist, try too create one*/
-        string cmd = string("touch ")+path;
-        JLOGI("[I] touch journal file: %s",cmd.c_str());
+        string cmd = string("touch ") + path;
+        JLOGI("[I] touch journal file: %s", cmd.c_str());
         int ret = system(cmd.c_str());
-        if (ret!=0)
+        if (ret != 0)
             return false;
         else
         {
@@ -112,7 +116,7 @@ bool TxtJournalIO::open(string path)
 
     /*an empty file, just rewrite it*/
     mJournal.seekg(0, ios::end);
-    if (0==mJournal.tellg())
+    if (0 == mJournal.tellg())
     {
         mJournal.close();
         mState = INITED;
@@ -123,12 +127,12 @@ bool TxtJournalIO::open(string path)
     /*check there have at list one journal in file*/
     string lineBuffer;
     smatch regexResult;
-    bool finded;
+    bool   finded;
     finded = false;
-    //todo: more strong, some journal may leak some element
+    // todo: more strong, some journal may leak some element
     while (getline(mJournal, lineBuffer))
     {
-        
+
         if (regex_search(lineBuffer, regexResult, regex("^={2,}[ ]{0,}journal[ ]{0,}={2,}")))
         {
             finded = true;
@@ -144,7 +148,7 @@ bool TxtJournalIO::open(string path)
     finded = false;
     while (getline(mJournal, lineBuffer))
     {
-        
+
         if (regex_search(lineBuffer, regexResult, regex("^={2,}[ ]{0,}attributePart[ ]{0,}={2,}")))
         {
             finded = true;
@@ -160,7 +164,7 @@ bool TxtJournalIO::open(string path)
     finded = false;
     while (getline(mJournal, lineBuffer))
     {
-        
+
         if (regex_search(lineBuffer, regexResult, regex("^={2,}[ ]{0,}content[ ]{0,}={2,}")))
         {
             finded = true;
@@ -173,7 +177,7 @@ bool TxtJournalIO::open(string path)
         return false;
     }
 
-    //note need to find end ======
+    // note need to find end ======
 
     mJournal.close();
     mState = INITED;
@@ -188,17 +192,17 @@ void TxtJournalIO::close()
 
 shared_ptr<Journal> TxtJournalIO::readJournal()
 {
-    if (!mJournal.is_open() || mState!=READ)
+    if (!mJournal.is_open() || mState != READ)
         return nullptr;
-        
+
     shared_ptr<Journal> journl = make_shared<Journal>();
-    string lineBuffer;
-    string readBuffer;
-    smatch regexResult;
-    bool finded;
+    string              lineBuffer;
+    string              readBuffer;
+    smatch              regexResult;
+    bool                finded;
     finded = false;
-    //todo: more strong
-    //read title
+    // todo: more strong
+    // read title
     while (getline(mJournal, lineBuffer))
     {
         if (regex_search(lineBuffer, regexResult, regex("^={2,}[ ]{0,}journal[ ]{0,}={2,}")))
@@ -214,12 +218,12 @@ shared_ptr<Journal> TxtJournalIO::readJournal()
         return nullptr;
     }
 
-    //read attributePart
+    // read attributePart
     finded = false;
     readBuffer.clear();
     while (getline(mJournal, lineBuffer))
     {
-        
+
         if (regex_search(lineBuffer, regexResult, regex("^={2,}[ ]{0,}attributePart[ ]{0,}={2,}")))
         {
             finded = true;
@@ -234,36 +238,33 @@ shared_ptr<Journal> TxtJournalIO::readJournal()
         mState = INITED;
         return nullptr;
     }
-    if (readBuffer[readBuffer.length()-1] != '\n')
+    if (readBuffer[readBuffer.length() - 1] != '\n')
         readBuffer.append("\n");
     journl->setTitle(readBuffer);
 
-    //read content
+    // read content
     finded = false;
     readBuffer.clear();
     while (getline(mJournal, lineBuffer))
     {
-        
+
         if (regex_search(lineBuffer, regexResult, regex("^={2,}[ ]{0,}content[ ]{0,}={2,}")))
         {
             finded = true;
             break;
         }
-        
+
         /* ignore the line wich without any content*/
         bool haveContent = false;
         for (size_t i = 0; i < lineBuffer.length(); i++)
         {
-            if (lineBuffer[i] != ' ' &&
-                lineBuffer[i] != '\t' &&
-                lineBuffer[i] != '\r' &&
-                lineBuffer[i] != '\n')
+            if (lineBuffer[i] != ' ' && lineBuffer[i] != '\t' && lineBuffer[i] != '\r' && lineBuffer[i] != '\n')
             {
                 haveContent = true;
                 break;
             }
         }
-        
+
         if (haveContent)
             readBuffer.append(lineBuffer + string("\n"));
     }
@@ -273,7 +274,7 @@ shared_ptr<Journal> TxtJournalIO::readJournal()
         mState = INITED;
         return nullptr;
     }
-    if (readBuffer[readBuffer.length()-1] != '\n')
+    if (readBuffer[readBuffer.length() - 1] != '\n')
         readBuffer.append("\n");
     journl->setAttributePart(readBuffer);
 
@@ -281,7 +282,7 @@ shared_ptr<Journal> TxtJournalIO::readJournal()
     readBuffer.clear();
     while (getline(mJournal, lineBuffer))
     {
-        
+
         if (regex_search(lineBuffer, regexResult, regex("^#{4,}[ ,\t,\r,\n]{0,}$")))
         {
             finded = true;
@@ -295,7 +296,7 @@ shared_ptr<Journal> TxtJournalIO::readJournal()
         mJournal.close();
         mState = INITED;
     }
-    if (readBuffer[readBuffer.length()-1] != '\n')
+    if (readBuffer[readBuffer.length() - 1] != '\n')
         readBuffer.append("\n");
     journl->setContent(readBuffer);
 
@@ -304,28 +305,28 @@ shared_ptr<Journal> TxtJournalIO::readJournal()
 
 bool TxtJournalIO::writeJournal(shared_ptr<Journal> journal)
 {
-    if (!mJournal.is_open() || mState!=WRITE)
+    if (!mJournal.is_open() || mState != WRITE)
         return false;
 
     string lineBuffer = string("==========journal==========\n");
-    string title = journal->getTitle();
+    string title      = journal->getTitle();
     mJournal.write(lineBuffer.c_str(), lineBuffer.length());
     mJournal.write(title.c_str(), title.length());
-    if (title[title.length()-1]!='\n')
+    if (title[title.length() - 1] != '\n')
         mJournal.write("\n", 1);
 
     string attributePart = journal->getAttributePart();
-    lineBuffer = string("=======attributePart=======\n");
+    lineBuffer           = string("=======attributePart=======\n");
     mJournal.write(lineBuffer.c_str(), lineBuffer.length());
     mJournal.write(attributePart.c_str(), attributePart.length());
-    if (attributePart[attributePart.length()-1]!='\n')
+    if (attributePart[attributePart.length() - 1] != '\n')
         mJournal.write("\n", 1);
 
     string content = journal->getContent();
-    lineBuffer = string("==========content==========\n");
+    lineBuffer     = string("==========content==========\n");
     mJournal.write(lineBuffer.c_str(), lineBuffer.length());
     mJournal.write(content.c_str(), content.length());
-    if (content[content.length()-1]!='\n')
+    if (content[content.length() - 1] != '\n')
         mJournal.write("\n", 1);
 
     lineBuffer = string("###########################\n\n");

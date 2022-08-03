@@ -18,10 +18,10 @@ limitations under the License.
 
 #include <string>
 
-using namespace std;
+using std::string;
 
 /**
- * @brief 
+ * @brief
  * 写日记
  * Wirte journal
  */

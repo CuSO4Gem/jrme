@@ -23,8 +23,6 @@ limitations under the License.
 #include "Utils.h"
 #include "debug_print.h"
 
-using namespace std;
-
 string JrmeConfig::getConfigRootDir()
 {
     char const *home = getenv("HOME");
@@ -35,8 +33,8 @@ string JrmeConfig::getConfigRootDir()
 /**
  * @brief 没有任何配置信息情况下的日记本路径。
  * The default journal book path when no config file exists.
- * 
- * @return string 
+ *
+ * @return string
  */
 string JrmeConfig::getInitJournalBookPath()
 {

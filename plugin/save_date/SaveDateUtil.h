@@ -18,7 +18,7 @@ limitations under the License.
 
 #include <string>
 
-using namespace std;
+using std::string;
 
 bool setValueToJAttributePart(string &attributePart, const string &key,const string value);
 

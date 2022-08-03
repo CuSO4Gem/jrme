@@ -30,8 +30,14 @@ limitations under the License.
 #include "EnTimeParser.h"
 #include "date.h"
 
-using namespace ec;
-using namespace std;
+using ec::Date;
+using ec::Time;
+using std::list;
+using std::min;
+using std::regex;
+using std::smatch;
+using std::swap;
+using std::vector;
 
 /**
  * @brief 所有的月份缩写
@@ -86,7 +92,7 @@ inline bool isLetter(const char ch)
  * 因为有一些为缩写的单词，结尾就是会有“.”，例如“jan.”。
  * If the end of string is “.”, then it will be regarded as a string.
  * Because some words are abbreviated, the end of string is “.”, such as “jan.”.
- * 
+ *
  * @param[in] str 字符串
  * @return true 是全字母字符串。is only letters.
  * @return false 不是全字母字符串。is not only letters.
@@ -114,7 +120,7 @@ inline bool isLetterOnly(const string &str)
 /**
  * @brief 计算最低非0位的位置
  * Return the position of the lowest non-zero bit.
- * 
+ *
  * @param[in] b 字节
  * @return uint32_t 最低非0位的位置。
  * The position of the lowest non-zero bit.
@@ -184,7 +190,7 @@ size_t nextWord(const string &str, size_t pos)
 /**
  * @brief 获取字符串的第一个单词
  * Get the first word of string.
- * 
+ *
  * @param[in] str 字符串。string
  * @return string 第一个单词。First word.
  */
@@ -211,7 +217,7 @@ string getWord(const string &str)
 /**
  * @brief 擦除字符串的第一个单词
  * Erase the first word of string.
- * 
+ *
  * @param str 字符串。string
  */
 void eraseWrod(string &str)
@@ -228,7 +234,7 @@ void eraseWrod(string &str)
 /**
  * @brief 将所有的日期计算指令打印出来。
  * Print all the date calculation instructions.
- * 
+ *
  * @param[in] instVector 日期计算指令。Date calculation instructions.
  */
 void printVmInst(vector<vmInst> &instVector)
@@ -244,9 +250,9 @@ void printVmInst(vector<vmInst> &instVector)
 
 /**
  * @brief 将日期描述语句解析为具体时间的类。之所以要这个类，是因为以后可能会开发插件来支持各种语言
- * Parse the date description sentence to a class that can represent the specific time. 
+ * Parse the date description sentence to a class that can represent the specific time.
  * The Reason why I need this class is because. I will develop a plugin to support various languages.
- * 
+ *
  */
 class Parser
 {
@@ -279,7 +285,7 @@ class Parser
  * Constructor
  * @details 会将字符串全部转换为小写
  * String will be converted to lower case.
- * 
+ *
  * @param[in] intStr 需要解析的日期描述语句。Date description sentence.
  */
 Parser::Parser(const string &intStr)
@@ -293,8 +299,8 @@ Parser::Parser(const string &intStr)
 /**
  * @brief 获取具体时间。
  * Get the specific time.
- * 
- * @return timeParserRet 
+ *
+ * @return timeParserRet
  */
 timeParserRet Parser::getTime()
 {
@@ -464,11 +470,11 @@ timeParserRet Parser::getTime()
 /**
  * @brief 依次处理日期计算指令，计算出日期。
  * Process each date calculation instruction, calculate the date.
- * 
+ *
  * @param[in] vmInsts 指令。instructions
  * @param[in] resultFlag 有效的日期标志。valid date flag
  * @param[in] estimation 对结果的可信度估计。Reliable of the result.
- * @return Date 
+ * @return Date
  */
 Date Parser::parseVM(vector<vmInst> &vmInsts, uint32_t *resultFlag, int32_t *estimation)
 {
@@ -672,7 +678,7 @@ Date Parser::parseVM(vector<vmInst> &vmInsts, uint32_t *resultFlag, int32_t *est
             setDateWeek(resultDate, &flagOut, tmpDate, &flagWeek);
             flagWeekOut |= flagWeek;
             break;
-        
+
         /**
          * 一个星期中的某一个
          * Day in a week
@@ -847,8 +853,8 @@ Date Parser::parseVM(vector<vmInst> &vmInsts, uint32_t *resultFlag, int32_t *est
  * Order the command list. The command that need to be processed first will be placed in front of the list.
  * @details 指令顺序为am，pm，dd，yy，mo，mn，md。
  * Order of the command is am, pm, dd, yy, mo, mn, md.
- * 
- * @param instVector 
+ *
+ * @param instVector
  */
 void Parser::instSrot(vector<vmInst> &instVector)
 {
@@ -915,7 +921,7 @@ void Parser::prepare()
 /**
  * @brief 将AM和AM关键字解析成日期计算指令并放入mVmInst。
  * Parse AM and AM keywords to date calculation instructions and put them in mVmInst.
- * 
+ *
  * @param[in] words 要解析的字符串。The string to be parsed.
  */
 void Parser::parseAmPm(string &words)
@@ -1108,7 +1114,7 @@ size_t Parser::parseSampleUnit(string &words, vector<vmInst> &instVector)
 
 /**
  * @brief 解析常见的格式化时间表达式，例如YYYY-MM-DD HH:MM:SS
- * Parse common formatted time expressions, Such as YYYY-MM-DD HH:MM:SS 
+ * Parse common formatted time expressions, Such as YYYY-MM-DD HH:MM:SS
  *
  * @param[in] words 要解析的字符串。String to be parsed.
  * @param[out] instVector 输出的命令。Output commands.

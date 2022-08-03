@@ -21,7 +21,7 @@ limitations under the License.
 
 #include <string>
 
-using namespace std;
+using std::string;
 
 #include "JAttributeMaster.h"
 #include "date.h"
@@ -29,7 +29,7 @@ using namespace std;
 #include "Journal.h"
 #include "Utils.h"
 
-using namespace ec;
+using ec::Date;
 
 TEST(DataJAttribute, basic)
 {

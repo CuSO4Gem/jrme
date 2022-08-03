@@ -18,7 +18,7 @@ limitations under the License.
 
 #include "JAttributeBase.h"
 
-using namespace ec;
+using ec::Date;
 
 /**
  * @brief 

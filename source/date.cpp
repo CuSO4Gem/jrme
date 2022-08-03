@@ -10,7 +10,10 @@
 #include <sstream>
 #include <iomanip>
 #include <string.h>
-using namespace std;
+
+using std::string;
+using std::setw;
+using std::setfill;
 
 #ifdef PLATFORM_WINDOWS
 

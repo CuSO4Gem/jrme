@@ -16,7 +16,7 @@ limitations under the License.
 #include <stdint.h>
 #include <string>
 
-using namespace std;
+using std::string;
 
 #include "EnTimeParser.h"
 #include "JournalFilter.h"

@@ -17,6 +17,8 @@ limitations under the License.
 
 #include "debug_print.h"
 
+using std::make_shared;
+
 shared_ptr<JournalIOBase> JournalIOFactory::getJournalIO(string journalPath)
 {
     if (journalPath.length() == 0)
@@ -24,15 +26,15 @@ shared_ptr<JournalIOBase> JournalIOFactory::getJournalIO(string journalPath)
         JLOGW("[W] ournalIOFactory::%s, get null file name", __func__);
         return nullptr;
     }
-    
-    /** 加载所有的JournalIO 
+
+    /** 加载所有的JournalIO
      * Load all JournalIO */
     vector<shared_ptr<JournalIOBase>> ioVector;
     ioVector.push_back(make_shared<TxtJournalIO>());
     JLOGD("[D] load TxtJournal at 0");
-    size_t i = 1;
+    size_t       i       = 1;
     list<string> plugins = JrmeConfig::getJournalIOPluginNames();
-    for (auto &it:plugins)
+    for (auto &it : plugins)
     {
         shared_ptr<PluginJournalIO> pluginIO = make_shared<PluginJournalIO>();
         if (pluginIO->loadPlugin(it))
@@ -46,28 +48,28 @@ shared_ptr<JournalIOBase> JournalIOFactory::getJournalIO(string journalPath)
     /** 获取日记路径的和后缀名
      * Get journal path and suffix */
     size_t pos;
-    for (pos = journalPath.length()-1; pos >= 0; pos--)
+    for (pos = journalPath.length() - 1; pos >= 0; pos--)
     {
         if (journalPath[pos] == '.')
             break;
     }
     string postfix = string();
-    if (pos>0 && pos<journalPath.length()-1)
+    if (pos > 0 && pos < journalPath.length() - 1)
     {
-        postfix = journalPath.substr(pos+1, journalPath.length()-pos-1);
+        postfix = journalPath.substr(pos + 1, journalPath.length() - pos - 1);
     }
 
     /** 优先选择支持该后缀的JournalIO。
      * Select JournalIO which support this postfix. */
-    i=0;
-    if (postfix.length()>0)
+    i = 0;
+    if (postfix.length() > 0)
     {
-        for (auto &it:ioVector)
+        for (auto &it : ioVector)
         {
             vector<string> formates = it->formateSupport();
-            for (auto &itf:formates)
+            for (auto &itf : formates)
             {
-                if (itf==postfix && it->open(journalPath))
+                if (itf == postfix && it->open(journalPath))
                 {
                     it->close();
                     JLOGD("[D] match postfix return journalIO %d", i);
@@ -80,8 +82,8 @@ shared_ptr<JournalIOBase> JournalIOFactory::getJournalIO(string journalPath)
 
     /** 没有支持该后缀的JournalIO，所以依次尝试所有的JournalIO
      *  No JournalIO support this postfix, so try all JournalIO */
-    i=0;
-    for (auto &it:ioVector)
+    i = 0;
+    for (auto &it : ioVector)
     {
         if (it->open(journalPath))
         {

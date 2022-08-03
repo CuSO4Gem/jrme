@@ -22,7 +22,11 @@ limitations under the License.
 #include "Journal.h"
 #include "JournalIOBase.h"
 
-enum processState {
+using std::fstream;
+using std::ios;
+
+enum processState
+{
     UNINITED,
     INITED,
     READ,
@@ -30,33 +34,33 @@ enum processState {
 };
 
 /**
- * @brief 
+ * @brief
  * txt格式的日记IO
  * IO txt formate journal
  */
 class TxtJournalIO : public JournalIOBase
 {
 private:
-    fstream mJournal;
-    string mJournalPath;
+    fstream           mJournal;
+    string            mJournalPath;
     enum processState mState;
 
 public:
     TxtJournalIO();
     ~TxtJournalIO();
 
-    uint32_t apiSupport();
+    uint32_t       apiSupport();
     vector<string> formateSupport();
-    bool isSupportAes256();
-    void setKey(uint8_t key[32]);
-    void clearKey();
-    
-    bool setReadMod();
-    bool setWriteMode();
-    bool open(string path);
-    void close();
+    bool           isSupportAes256();
+    void           setKey(uint8_t key[32]);
+    void           clearKey();
+
+    bool                setReadMod();
+    bool                setWriteMode();
+    bool                open(string path);
+    void                close();
     shared_ptr<Journal> readJournal();
-    bool writeJournal(shared_ptr<Journal> journal);
+    bool                writeJournal(shared_ptr<Journal> journal);
 };
 
 #endif

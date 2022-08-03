@@ -24,6 +24,8 @@ limitations under the License.
 /*debug*/
 #include "debug_print.h"
 
+using std::make_shared;
+
 #define FUNC_PTR_CHECK(ptr) if (!(ptr)) { if (mDlHandle) {dlclose(mDlHandle);} return false; }
 
 PluginJournalIO::~PluginJournalIO()

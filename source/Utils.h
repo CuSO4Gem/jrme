@@ -20,90 +20,89 @@ limitations under the License.
 #include <string>
 #include <vector>
 
-#include "date.h"
 #include "Journal.h"
 #include "JournalBookBase.h"
+#include "date.h"
 
-using namespace::std;
-using namespace::ec;
+using namespace ::std;
+using namespace ::ec;
 
 inline bool isNumChar(const char ch)
 {
-    return '0'<=ch && ch<='9';
+    return '0' <= ch && ch <= '9';
 }
 
-
 /**
- * @brief 
+ * @brief
  * 移除连续的多个空格
  * remove multiple space from string
  */
 void removeMultipleSpaces(string &str);
 
 /**
- * @brief 
+ * @brief
  * 从日记的attributePart部分获取指定key的value
  * Given key return value from journal attributePart
- * 
- * @param attributePart 
- * @param key 
- * @param value 
+ *
+ * @param attributePart
+ * @param key
+ * @param value
  * @return true find
  * @return false not find
  */
 bool getValueFromJAttributePart(const string &attributePart, const string &key, string &value);
 
 /**
- * @brief 
+ * @brief
  * 向日记的attributePart部分设置指定key的value
- * Set the Value To attributePart 
- * 
- * @param attributePart 
- * @param key 
- * @param value 
- * @return true 
- * @return false 
+ * Set the Value To attributePart
+ *
+ * @param attributePart
+ * @param key
+ * @param value
+ * @return true
+ * @return false
  */
-bool setValueToJAttributePart(string &attributePart, const string &key,const string value);
+bool setValueToJAttributePart(string &attributePart, const string &key, const string value);
 
 /**
- * @brief 
+ * @brief
  * 从attributePart部分获取时戳
  * Get the Stamp Form attributePart string
- * 
- * @param attributePart 
- * @return time_t 
+ *
+ * @param attributePart
+ * @return time_t
  */
 time_t getStampFormJAttributePart(const string &attributePart);
 
 /**
- * @brief 
+ * @brief
  * 从attributePart部分获取level值
  * Get the Level Form Journal attributePart
- * 
- * @param attributePart 
- * @return int32_t 
+ *
+ * @param attributePart
+ * @return int32_t
  */
 int32_t getLevelFormJAttributePart(const string &attributePart);
 
 /**
- * @brief 
+ * @brief
  * 从attributePart解析tag的vector
  * Get the Tags Form Journal attributePart
  */
 vector<string> getTagsFormJAttributePart(const string &attributePart);
 
 /**
- * @brief 
+ * @brief
  * 将字符串转换为日记（只能txt格式）
  * Get string to journal (txt formate)
  */
 shared_ptr<Journal> strToJournal(const string &inStr);
 
 /**
- * @brief 
+ * @brief
  * 转移路径除开头的空格，将~转换为绝对路径
- * 
+ *
  * conver rawPath to a valid path
  * remove spaces at begin, conver ~ to home dir
  */
@@ -117,12 +116,12 @@ string validPath(string rawPath);
 string getFilePath();
 
 /**
- * @brief 
+ * @brief
  * 自动创建一个日记本类型
  * select journal book by path
- * 
- * @param path 
- * @return shared_ptr<JournalBookBase> 
+ *
+ * @param path
+ * @return shared_ptr<JournalBookBase>
  */
 shared_ptr<JournalBookBase> bookFactory(string path);
 #endif

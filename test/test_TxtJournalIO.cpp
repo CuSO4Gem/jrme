@@ -20,7 +20,9 @@ limitations under the License.
 
 #include <string>
 
-using namespace std;
+using std::string;
+using std::ifstream;
+using std::to_string;
 
 #include "Journal.h"
 #include "JournalIOBase.h"

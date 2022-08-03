@@ -15,12 +15,13 @@ limitations under the License.
 */
 #ifndef TXT_EDITOR_H
 #define TXT_EDITOR_H
-#include <string>
 #include <memory>
+#include <string>
 
 #include "Journal.h"
 
-using namespace std;
+using std::shared_ptr;
+using std::string;
 
 class TxtEditor
 {
@@ -33,26 +34,26 @@ public:
     ~TxtEditor() = default;
 
     /**
-     * @brief 
+     * @brief
      * 设置editor初始的字符串
      * Set init string of editor
-     * 
-     * @param[in] initStr 
+     *
+     * @param[in] initStr
      */
     void setInitStr(string initStr);
 
     /**
-     * @brief 
+     * @brief
      * 清除editor初始的字符串
      * Clear init string of editr
      */
     void clearInitStr();
 
     /**
-     * @brief 
+     * @brief
      * 让用户从editor输入日记
      * Get journal from user
-     * 
+     *
      * @return nullptr 用户不希望保存
      */
     shared_ptr<Journal> getJournalFromEditor();

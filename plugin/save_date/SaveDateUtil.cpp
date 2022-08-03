@@ -16,6 +16,9 @@ limitations under the License.
 #include "SaveDateUtil.h"
 #include "sstream"
 
+using std::istringstream;
+using std::min;
+
 void tabToSpace(string &str)
 {
     size_t pos;

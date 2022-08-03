@@ -17,33 +17,58 @@ limitations under the License.
 #define DATE_JATTRIBUTE_H
 
 #include "JAttributeBase.h"
-#include "date.h"
 #include "Utils.h"
+#include "date.h"
 
-using namespace ec;
+using ec::Date;
 
 /**
- * @brief 
+ * @brief
  * 处理"date"JAttribute，用于记录日记的时间
- * 
+ *
  * Process "date" JAttribute. Mark the date of journal
  */
 class DataJAttribute : public JAttributeBase
 {
     Date mDate;
+
 public:
-    DataJAttribute() {mDate = Time().toDate();};
+    DataJAttribute()
+    {
+        mDate = Time().toDate();
+    };
     ~DataJAttribute() = default;
 
-    uint32_t apiVersion() {return 1;};
+    uint32_t apiVersion()
+    {
+        return 1;
+    };
 
-    string getKey() {return string("date");};
-    string getDefaultValue() {return string("");};
-    void preprocess(shared_ptr<Journal> journal) {setValueToJAttributePart(journal->getAttributePart(), "date", mDate.toString());};
-    void postprocess(shared_ptr<Journal> journal) {return;};
+    string getKey()
+    {
+        return string("date");
+    };
+    string getDefaultValue()
+    {
+        return string("");
+    };
+    void preprocess(shared_ptr<Journal> journal)
+    {
+        setValueToJAttributePart(journal->getAttributePart(), "date", mDate.toString());
+    };
+    void postprocess(shared_ptr<Journal> journal)
+    {
+        return;
+    };
 
-    int32_t getInnerJAttributeType() {return DATE_JATTRIBUTE;};
-    void setDate(time_t stamp) {mDate = Date(stamp);};
+    int32_t getInnerJAttributeType()
+    {
+        return DATE_JATTRIBUTE;
+    };
+    void setDate(time_t stamp)
+    {
+        mDate = Date(stamp);
+    };
 };
 
 #endif

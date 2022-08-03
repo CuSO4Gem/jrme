@@ -22,7 +22,7 @@ limitations under the License.
 #include "journal_io_api.h"
 
 /**
- * @brief 
+ * @brief
  * 加载和使用JournalIO插件
  * load and use JournalIO plugin
  */
@@ -31,27 +31,27 @@ class PluginJournalIO : public JournalIOBase
 private:
     string mJournalPath;
 
-    void* mDlHandle = NULL;
-    void* mJournalIOHandle = NULL;
-    uint32_t mApiSupport;
+    void          *mDlHandle        = NULL;
+    void          *mJournalIOHandle = NULL;
+    uint32_t       mApiSupport;
     vector<string> mFormate;
 
     releaseJournal_fnc p_releaseJournal = NULL;
 
     allocate_instance_fnc p_allocate_instance = NULL;
-    release_instance_fnc p_release_instance = NULL;
+    release_instance_fnc  p_release_instance  = NULL;
 
-    apiSupport_fnc p_apiSupport = NULL;
-    formateSupport_fnc p_formateSupport = NULL;
+    apiSupport_fnc      p_apiSupport      = NULL;
+    formateSupport_fnc  p_formateSupport  = NULL;
     isSupportAes256_fnc p_isSupportAes256 = NULL;
-    setKey_fnc p_setKey = NULL;
-    clearKey_fnc p_clearKey = NULL;
-    openIO_fnc p_openIO = NULL;
-    closeIO_fnc p_closeIO = NULL;
-    readMode_fnc p_readMode = NULL;
-    writeMode_fnc p_writeMode = NULL;
-    readJournal_fnc p_readJournal = NULL;
-    writeJournal_fnc p_writeJournal = NULL;
+    setKey_fnc          p_setKey          = NULL;
+    clearKey_fnc        p_clearKey        = NULL;
+    openIO_fnc          p_openIO          = NULL;
+    closeIO_fnc         p_closeIO         = NULL;
+    readMode_fnc        p_readMode        = NULL;
+    writeMode_fnc       p_writeMode       = NULL;
+    readJournal_fnc     p_readJournal     = NULL;
+    writeJournal_fnc    p_writeJournal    = NULL;
 
 public:
     PluginJournalIO() = default;
@@ -60,25 +60,25 @@ public:
     /**
      * @brief 加载JournalIO插件
      * load JournalIO plugin
-     * 
+     *
      * @param[in] name 插件名称（不包括路径）。Name of plugin without path.
      * @return true 加载成功。Load success.
      * @return false 加载失败。Load fail.
      */
     bool loadPlugin(string path);
 
-    uint32_t apiSupport();
+    uint32_t       apiSupport();
     vector<string> formateSupport();
-    bool isSupportAes256();
-    void setKey(uint8_t key[32]);
-    void clearKey();
-    
-    bool setReadMod();
-    bool setWriteMode();
-    bool open(string path);
-    void close();
+    bool           isSupportAes256();
+    void           setKey(uint8_t key[32]);
+    void           clearKey();
+
+    bool                setReadMod();
+    bool                setWriteMode();
+    bool                open(string path);
+    void                close();
     shared_ptr<Journal> readJournal();
-    bool writeJournal(shared_ptr<Journal> journal);
+    bool                writeJournal(shared_ptr<Journal> journal);
 };
 
 #endif

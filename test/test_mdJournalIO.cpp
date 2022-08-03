@@ -21,7 +21,11 @@ limitations under the License.
 
 #include <string>
 
-using namespace std;
+using std::string;
+using std::ifstream;
+using std::make_shared;
+using std::to_string;
+using std::ios;
 
 #include "Journal.h"
 #include "PluginJournalIO.h"

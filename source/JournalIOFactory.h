@@ -19,36 +19,33 @@ limitations under the License.
 #include <memory>
 #include <string>
 
-#include "TxtJournalIO.h"
 #include "JournalIOBase.h"
 #include "JrmeConfig.h"
 #include "PluginJournalIO.h"
+#include "TxtJournalIO.h"
 
-using namespace std;
+using std::string;
 
 /**
- * @brief 
+ * @brief
  * 尝试加载插件，自动选择合适的JournalIO类
  * Try to load and select applicable JournalIO class
- * 
+ *
  */
 class JournalIOFactory
 {
-private:
-    /* data */
 public:
-    JournalIOFactory() = default;
+    JournalIOFactory()  = default;
     ~JournalIOFactory() = default;
 
     /**
      * @brief 自动获取JournalIO类的实例
      * Get JournalIO class instance automatically
-     * 
+     *
      * @param[in] journalPath 日记文件路径。the journal path
      * @return shared_ptr<JournalIOBase> 如果失败，返回nullptr。if failed, return nullptr
      */
     shared_ptr<JournalIOBase> getJournalIO(string journalPath);
 };
-
 
 #endif

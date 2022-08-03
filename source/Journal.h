@@ -18,36 +18,36 @@ limitations under the License.
 
 #include <string>
 
-using namespace std;
+using std::string;
 
 /**
- * @brief 
+ * @brief
  * 一篇日记
  * a journal
  */
 class Journal
 {
-private:
-    string mTitle;
-    string mAttributePart;
-    string mContent;
-
 public:
     explicit Journal() = default;
     explicit Journal(const string &title, const string &attributePart, const string &content);
     ~Journal() = default;
 
-    void setTitle(const string &title);
-    void setAttributePart(const string &attributePart);
-    void setContent(const string &content);
-    string getTitle();
+    void    setTitle(const string &title);
+    void    setAttributePart(const string &attributePart);
+    void    setContent(const string &content);
+    string  getTitle();
     string &getAttributePart();
-    string getContent();
+    string  getContent();
 
-    void clear();
+    void   clear();
     string toString();
 
-    bool operator ==(Journal &anotherJournal);
+    bool operator==(Journal &anotherJournal);
+
+private:
+    string mTitle;
+    string mAttributePart;
+    string mContent;
 };
 
 #endif

@@ -15,11 +15,13 @@ limitations under the License.
 */
 #include "Journal.h"
 
+using std::hash;
+
 Journal::Journal(const string &title, const string &attributePart, const string &content)
 {
-    mTitle = title;
+    mTitle         = title;
     mAttributePart = attributePart;
-    mContent = content;
+    mContent       = content;
 }
 
 void Journal::setTitle(const string &title)
@@ -42,7 +44,7 @@ string Journal::getTitle()
     return mTitle;
 }
 
-string& Journal::getAttributePart()
+string &Journal::getAttributePart()
 {
     return mAttributePart;
 }
@@ -54,9 +56,9 @@ string Journal::getContent()
 
 void Journal::clear()
 {
-    mTitle = string("");
+    mTitle         = string("");
     mAttributePart = string("");
-    mContent = string("");
+    mContent       = string("");
 }
 
 string Journal::toString()
@@ -64,29 +66,29 @@ string Journal::toString()
     string out;
     out.append("==========journal==========\n");
     out.append(mTitle);
-    if (mTitle[mTitle.length()-1] != '\n')
+    if (mTitle[mTitle.length() - 1] != '\n')
         out.append("\n");
-    
+
     out.append("=======attributePart=======\n");
     out.append(mAttributePart);
-    if (mAttributePart[mAttributePart.length()-1] != '\n')
+    if (mAttributePart[mAttributePart.length() - 1] != '\n')
         out.append("\n");
-    
+
     out.append("==========content==========\n");
     out.append(mContent);
-    if (mContent[mContent.length()-1] != '\n')
+    if (mContent[mContent.length() - 1] != '\n')
         out.append("\n");
-    
+
     out.append("###########################\n");
 
     return out;
 }
 
-bool Journal::operator ==(Journal &anotherJournal)
+bool Journal::operator==(Journal &anotherJournal)
 {
     hash<string> hFunc;
-    size_t h1 = hFunc(this->toString());
-    size_t h2 = hFunc(anotherJournal.toString());
+    size_t       h1 = hFunc(this->toString());
+    size_t       h2 = hFunc(anotherJournal.toString());
     if (h1 == h2)
         return true;
     return false;

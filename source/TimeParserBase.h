@@ -20,7 +20,7 @@ limitations under the License.
 
 #include "timeParserType.h"
 
-using namespace std;
+using std::string;
 
 class TimeParserBase
 {

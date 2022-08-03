@@ -21,6 +21,13 @@ limitations under the License.
 #include <regex>
 #include <sstream>
 
+using std::ifstream;
+using std::make_shared;
+using std::ofstream;
+using std::regex;
+using std::smatch;
+using std::strcat;
+
 TxtEditor::TxtEditor(string initStr)
 {
     mInitStr = initStr;
@@ -47,15 +54,15 @@ shared_ptr<Journal> TxtEditor::getJournalFromEditor()
     string   tmpFilePath = JrmeConfig::getConfigRootDir() + ".journal.tmp";
     ofstream oTmpFile;
     oTmpFile.open(tmpFilePath);
-    oTmpFile << mInitStr << endl;
+    oTmpFile << mInitStr << std::endl;
     oTmpFile.close();
 
     /** 调用配置文件中指定的文本编辑器
      * Call the text editor specified in the config file
      */
     string cmdEditor = string();
-    cmdEditor = JrmeConfig::getEditorName();
-    ret       = system((cmdEditor + " " + tmpFilePath).c_str());
+    cmdEditor        = JrmeConfig::getEditorName();
+    ret              = system((cmdEditor + " " + tmpFilePath).c_str());
 
     /** 用户写入完成后，逐行读取临时文件，并将其内容放入Journal对象中
      * When user finished writing, read the temporary file line by line and put the content into Journal object

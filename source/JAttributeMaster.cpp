@@ -33,18 +33,6 @@ limitations under the License.
  */
 class JAttributePlugin : public JAttributeBase
 {
-private:
-    void* mDlHandle = NULL;
-    void* mHandle = NULL;
-    allocate_instance_fnc p_allocate = NULL;
-    release_instance_fnc  p_release = NULL;
-    preprocess_fnc  p_preprocess = NULL;
-    postprocess_fnc  p_postprocess = NULL;
-    releaseJournal_fnc p_releaseJournal = NULL;
-    uint32_t mApiVersion;
-    const char *mKey = NULL;
-    const char *mDefaultValue = NULL;
-
 public:
     JAttributePlugin() = default;
     ~JAttributePlugin();
@@ -56,6 +44,18 @@ public:
     string getDefaultValue();
     void preprocess(shared_ptr<Journal> journal);
     void postprocess(shared_ptr<Journal> journal);
+
+private:
+    void* mDlHandle = NULL;
+    void* mHandle = NULL;
+    allocate_instance_fnc p_allocate = NULL;
+    release_instance_fnc  p_release = NULL;
+    preprocess_fnc  p_preprocess = NULL;
+    postprocess_fnc  p_postprocess = NULL;
+    releaseJournal_fnc p_releaseJournal = NULL;
+    uint32_t mApiVersion;
+    const char *mKey = NULL;
+    const char *mDefaultValue = NULL;
 };
 
 JAttributePlugin::~JAttributePlugin()

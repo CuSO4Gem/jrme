@@ -24,7 +24,10 @@ limitations under the License.
 #include "JournalBookBase.h"
 #include "memory"
 
-using namespace std;
+using std::map;
+using std::shared_ptr;
+using std::string;
+using std::vector;
 
 /**
  * @brief 日记过滤时需要的缓存
@@ -50,21 +53,7 @@ typedef struct guidance_s
 
 class JournalFilter
 {
-  private:
-    shared_ptr<JournalBookBase> mBook;
-    vector<guidance>            mGuidance;
-    uint32_t                    mCacheFlag;
-
-    void tryCache(uint32_t cacheFlag);
-
-    static bool orderAscCmp(const guidance &d1, const guidance &d2);
-    static bool orderDescCmp(const guidance &d1, const guidance &d2);
-    static bool stampAscCmp(const guidance &d1, const guidance &d2);
-    static bool stampDescCmp(const guidance &d1, const guidance &d2);
-    static bool levelAscCmp(const guidance &d1, const guidance &d2);
-    static bool levelDescCmp(const guidance &d1, const guidance &d2);
-
-  public:
+public:
     JournalFilter(shared_ptr<JournalBookBase> book);
     ~JournalFilter() = default;
 
@@ -136,6 +125,20 @@ class JournalFilter
      * @return map<string,int> tag and count.
      */
     map<string, size_t> tagsCount();
+
+private:
+    shared_ptr<JournalBookBase> mBook;
+    vector<guidance>            mGuidance;
+    uint32_t                    mCacheFlag;
+
+    void tryCache(uint32_t cacheFlag);
+
+    static bool orderAscCmp(const guidance &d1, const guidance &d2);
+    static bool orderDescCmp(const guidance &d1, const guidance &d2);
+    static bool stampAscCmp(const guidance &d1, const guidance &d2);
+    static bool stampDescCmp(const guidance &d1, const guidance &d2);
+    static bool levelAscCmp(const guidance &d1, const guidance &d2);
+    static bool levelDescCmp(const guidance &d1, const guidance &d2);
 };
 
 #endif

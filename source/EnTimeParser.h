@@ -19,7 +19,7 @@ limitations under the License.
 #include "TimeParserBase.h"
 
 /**
- * @brief 
+ * @brief
  * 将英语的时间描述转换为具体的时间
  * Transfert english sentance to date.
  */
@@ -28,7 +28,7 @@ class EnTimeParser : public TimeParserBase
 private:
     /* data */
 public:
-    EnTimeParser() = default;
+    EnTimeParser()  = default;
     ~EnTimeParser() = default;
 
     timeParserRet parse(string description);

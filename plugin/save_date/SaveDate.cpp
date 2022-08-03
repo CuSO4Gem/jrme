@@ -21,8 +21,8 @@ limitations under the License.
 #include "SaveDateUtil.h"
 #include "SaveDate.h"
 
-using namespace std;
-using namespace ec;
+using ec::Date;
+using ec::Time;
 
 struct save_date_s
 {
