@@ -22,7 +22,7 @@ using std::min;
 void tabToSpace(string &str)
 {
     size_t pos;
-    while (pos<str.length())
+    while (pos < str.length())
     {
         if (str[pos] == '\t')
             str[pos] = ' ';
@@ -35,17 +35,17 @@ bool attributePartGetLine(istringstream &attributePartStream, string &key, strin
     string lineBuffer;
     key.clear();
     value.clear();
-    if(!getline(attributePartStream, lineBuffer))
+    if (!getline(attributePartStream, lineBuffer))
         return false;
-    
+
     if (lineBuffer.length() == 0)
         return true;
-    
+
     tabToSpace(lineBuffer);
     size_t pos = 0;
-    while (pos<lineBuffer.length())
+    while (pos < lineBuffer.length())
     {
-        if (lineBuffer[pos]=='=')
+        if (lineBuffer[pos] == '=')
         {
             key = lineBuffer.substr(0, pos);
             break;
@@ -53,44 +53,44 @@ bool attributePartGetLine(istringstream &attributePartStream, string &key, strin
         pos++;
     }
 
-    lineBuffer.erase(0, min(pos+1, lineBuffer.length()));
-    
+    lineBuffer.erase(0, min(pos + 1, lineBuffer.length()));
+
     /*remove space front and back*/
-    while (key.length()>0 && key[0]==' ')
+    while (key.length() > 0 && key[0] == ' ')
     {
         key.erase(0);
     }
-    while (key.length()>0 && key[key.length()-1]==' ')
+    while (key.length() > 0 && key[key.length() - 1] == ' ')
     {
-        key.erase(key.length()-1);
+        key.erase(key.length() - 1);
     }
 
-    if (lineBuffer.length()==0)
+    if (lineBuffer.length() == 0)
         return true;
-    
+
     value = lineBuffer;
     /*remove space front and back*/
-    while (value.length()>0 && value[0]==' ')
+    while (value.length() > 0 && value[0] == ' ')
     {
         value.erase(0);
     }
-    while (value.length()>0 && value[value.length()-1]==' ')
+    while (value.length() > 0 && value[value.length() - 1] == ' ')
     {
-        value.erase(value.length()-1);
+        value.erase(value.length() - 1);
     }
     return true;
 }
 
-bool setValueToJAttributePart(string &attributePart, const string &key,const string value)
+bool setValueToJAttributePart(string &attributePart, const string &key, const string value)
 {
-    string keyBuffer, valueBuffer, lineBuffer;
+    string        keyBuffer, valueBuffer, lineBuffer;
     istringstream attributePartStream = istringstream(attributePart);
-    
-    bool finded = false;
+
+    bool   finded      = false;
     size_t keyBeginPos = attributePartStream.tellg();
-    while(attributePartGetLine(attributePartStream, keyBuffer, valueBuffer))
+    while (attributePartGetLine(attributePartStream, keyBuffer, valueBuffer))
     {
-        if (keyBuffer==key)
+        if (keyBuffer == key)
         {
             finded = true;
             break;
@@ -99,12 +99,12 @@ bool setValueToJAttributePart(string &attributePart, const string &key,const str
     }
     if (!finded)
         return false;
-    
+
     attributePartStream.seekg(keyBeginPos);
     getline(attributePartStream, lineBuffer);
     size_t len = lineBuffer.length();
     attributePart.erase(keyBeginPos, len);
-    string insertString = key+"="+value;
+    string insertString = key + "=" + value;
     attributePart.insert(keyBeginPos, insertString);
 
     return true;

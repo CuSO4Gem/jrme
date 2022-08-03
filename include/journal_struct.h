@@ -19,7 +19,7 @@ limitations under the License.
 #include <malloc.h>
 
 /**
- * @brief 
+ * @brief
  * 用于插件与jrme传递jrounal
  * Deliver bewteen jrme and plugin
  */
@@ -33,16 +33,17 @@ struct journal_s
 typedef void (*releaseJournal_fnc)(struct journal_s);
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
-/**
- * @brief 
- * 插件和jrme都需要实现自己的releaseJournalStruct()函数。
- * 
- * plugin and jrme need to impelement releaseJournalStruct() function.
- */
-void releaseJournalStruct(struct journal_s journal);
+    /**
+     * @brief
+     * 插件和jrme都需要实现自己的releaseJournalStruct()函数。
+     *
+     * plugin and jrme need to impelement releaseJournalStruct() function.
+     */
+    void releaseJournalStruct(struct journal_s journal);
 #ifdef __cplusplus
 }
 #endif

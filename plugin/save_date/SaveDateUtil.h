@@ -20,6 +20,6 @@ limitations under the License.
 
 using std::string;
 
-bool setValueToJAttributePart(string &attributePart, const string &key,const string value);
+bool setValueToJAttributePart(string &attributePart, const string &key, const string value);
 
 #endif

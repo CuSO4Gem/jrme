@@ -35,13 +35,13 @@ enum processState
 
 class MdJournalIO : public JournalIOBase
 {
-  private:
+private:
     fstream           mJournal;
     string            mJournalPath;
     size_t            mFileSize;
     enum processState mState;
 
-  public:
+public:
     MdJournalIO();
     ~MdJournalIO();
 
